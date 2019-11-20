@@ -5,6 +5,7 @@ public class Wall extends Element {
 		Coordinate tmp = new Coordinate(x,y);
 		Coord=tmp;
 		Solid=true;
+		Destroyable = true;
 	}
 
 }
