@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GameLogic {
 	Bomber Character;
@@ -38,9 +40,46 @@ public class GameLogic {
 		}
 		
 		if(key==32 && Can_Place_Bomb()==true) {	//Space
-			Bomb b = new Bomb(Character.getX(),Character.getY(),m);
+			Bomb b = new Bomb(Character.getX(),Character.getY(),this);
+			b.Start_Countdown(new Explode(b));
 			m.Add_Element(b);
 		}
+	}
+	
+	private class Explode extends TimerTask{
+		private Bomb b;
+		
+		Explode (Bomb x){
+			this.b=x;
+		}
+		
+		public void run() {
+			m.Remove_Element(this.b);
+			Propagate_Explosion(b.getX(),b.getY());
+		}
+		
+	}
+	
+	private class Remove_Explosion extends TimerTask{
+		private ArrayList<Element> array;
+		
+		Remove_Explosion(ArrayList<Element> x){
+			this.array=x;
+		}
+		
+		public void run() {
+			for(int i=0;i<array.size();i++) {
+				m.Remove_Element(array.get(i));
+			}
+		}
+	}
+	
+	private void Propagate_Explosion(int x,int y) {
+		Explosion Exp = new Explosion(x,y,this);
+		ArrayList<Element> tmp = Exp.Propagate();
+		m.Add_Element_Array(tmp);
+		Timer tt = new Timer();
+		tt.schedule(new Remove_Explosion(tmp), 100);
 	}
 	
 	private boolean Can_Place_Bomb() {

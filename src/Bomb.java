@@ -2,28 +2,18 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Bomb extends Element{
-	Timer tt;
-	TimerTask explode = new Helper();
-	Map m;
+	Timer tt = new Timer();
+	GameLogic L;
 	
-	Bomb(int x,int y, Map m1){
+	Bomb(int x,int y, GameLogic GL){
 		Coordinate tmp = new Coordinate(x,y);
 		Coord=tmp;
 		Solid=true;
-		m=m1;
-		tt = new Timer();
-		tt.schedule(explode,2000);
+		L=GL;
 	}
 	
-	private class Helper extends TimerTask{
-		
-		public void run() {
-			Explode();
-		}
-		
+	public void Start_Countdown(TimerTask t){
+		tt.schedule(t,2000);
 	}
 	
-	private void Explode() {
-		m.Remove_Element(this);
-	}
 }

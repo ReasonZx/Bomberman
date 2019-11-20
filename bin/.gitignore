@@ -10,3 +10,6 @@
 /Map.class
 /Wall.class
 /halo.class
+/GameLogic$Explode.class
+/Explosion.class
+/GameLogic$Remove_Explosion.class

@@ -32,10 +32,17 @@ public class Map {
 			return 0;
 		
 		for(int i=0;i<Get_List_Elements(cha.getX(),cha.getY()).size();i++)
-			if(Get_List_Elements(cha.getX(),cha.getY()).get(i).getClass() == cha.getClass() )
+			if(Get_List_Elements(cha.getX(),cha.getY()).get(i).getClass() == cha.getClass() ) {
 				Get_List_Elements(cha.getX(),cha.getY()).remove(i);
+				return 1;
+			}
 		
 		return 1;
+	}
+	
+	public void Add_Element_Array(ArrayList<Element> x) {
+		for(int i=0;i<x.size();i++)
+			this.Add_Element(x.get(i));
 	}
 	
 	public boolean Has_Element(int x,int y) {
@@ -49,6 +56,14 @@ public class Map {
 	
 		for(int i=0;i<Get_List_Elements(x,y).size();i++) {
 			if(Get_List_Elements(x,y).get(i).Is_Solid()==true)
+				return true;
+		}
+		return false;
+	}
+	
+	public boolean Has_Destroyable_Element(int x,int y) {
+		for(int i=0;i<Get_List_Elements(x,y).size();i++) {
+			if(Get_List_Elements(x,y).get(i).Is_Destroyable()==true)
 				return true;
 		}
 		return false;
@@ -85,5 +100,21 @@ public class Map {
 	
 	private ArrayList<Element> Get_List_Elements(int x,int y){
 		return elements.get(x).get(y);
+	}
+	
+	public int Get_RightBound() {
+		return RightBound;
+	}
+	
+	public int Get_LeftBound() {
+		return LeftBound;
+	}
+	
+	public int Get_BotBound() {
+		return BotBound;
+	}
+	
+	public int Get_TopBound() {
+		return TopBound;
 	}
 }
