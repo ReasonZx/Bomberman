@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 
 public class Explosion extends Element{
-	GameLogic L;
 	
 	Explosion(int x,int y, GameLogic GL){
 		Coordinate tmp = new Coordinate(x,y);

@@ -3,7 +3,6 @@ import java.util.TimerTask;
 
 public class Bomb extends Element{
 	Timer tt = new Timer();
-	GameLogic L;
 	
 	Bomb(int x,int y, GameLogic GL){
 		Coordinate tmp = new Coordinate(x,y);

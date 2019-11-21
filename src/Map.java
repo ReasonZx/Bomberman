@@ -87,6 +87,17 @@ public class Map {
 		return false;
 	}
 	
+	public boolean Has_Explosion(int x,int y) {
+		if(Has_Element(x,y)==true) {
+			for(int i=0;i<Get_List_Elements(x,y).size();i++) {
+				if(Get_List_Elements(x,y).get(i) instanceof Explosion) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	private void Initialize_Space() {
 		elements = new ArrayList<ArrayList<ArrayList<Element>>>(RightBound-1);
 		

@@ -3,6 +3,7 @@ public abstract class Element{
 	protected Coordinate Coord;
 	protected boolean Solid;
 	protected boolean Destroyable=false;
+	GameLogic L;
 	
 	public int getX() {
 		return Coord.getX();
@@ -22,5 +23,9 @@ public abstract class Element{
 	
 	public boolean Is_Destroyable() {
 		return Destroyable;
+	}
+	
+	public void Set_GameLogic(GameLogic x) {
+		L=x;
 	}
 }
