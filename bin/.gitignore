@@ -1,3 +1,6 @@
 /GUI_setup.class
 /sprites/
 /normal_bomb.png
+/Gamestate.class
+/GameOverState.class
+/StartGameState.class
