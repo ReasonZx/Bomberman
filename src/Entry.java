@@ -2,11 +2,13 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import org.newdawn.slick.SlickException;
+
 public class Entry {
 	 static GameLogic L;
 	 static Bomber Elemento;
 	
-	 public static void main(String[] args) {
+	 public static void main(String[] args) throws SlickException {
 	        /* Use an appropriate Look and Feel */
 	        try {
 	            //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");

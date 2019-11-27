@@ -1,10 +1,13 @@
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 
 public class Bomber extends Element{
 	
-	Bomber(int x,int y){
+	Bomber(int x,int y) throws SlickException{
 		Coordinate tmp = new Coordinate(x,y);
 		Coord=tmp;
 		Solid=true;
+		img = new Image("sprites/parado.png");
 	}
 	
 	public void MoveUp() {
@@ -22,4 +25,6 @@ public class Bomber extends Element{
 	public void MoveDown() {
 		Coord.MoveDown();
 	}
+	
+	
 }

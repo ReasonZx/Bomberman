@@ -10,23 +10,37 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class Gamestate extends BasicGameState{
 
-	private Image bomber_im = null;
-	private Element bomber;
+	 static GameLogic L;
+	 static Bomber Elemento;
 	
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-		bomber_im = new Image("sprites/parado.png");
+		 Elemento=new Bomber(1,1);
+	     L=new GameLogic(Elemento);
 	}
 
 	public void update(GameContainer container, StateBasedGame sbg, int arg2) throws SlickException {
-		if(container.getInput().isKeyPressed(Input.KEY_1)) {
-			sbg.enterState(3);
+		if(container.getInput().isKeyPressed(Input.KEY_W)) {
+			L.Action(87);
+		}
+		if(container.getInput().isKeyPressed(Input.KEY_S)) {
+			L.Action(83);
+		}
+		if(container.getInput().isKeyPressed(Input.KEY_A)) {
+			L.Action(65);
+		}
+		if(container.getInput().isKeyPressed(Input.KEY_D)) {
+			L.Action(68);
+		}
+		if(container.getInput().isKeyPressed(Input.KEY_SPACE)) {
+			L.Action(32);
 		}
 	}
 	
 
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics g) throws SlickException {
 		g.drawString("Game state", 50, 50);
-		bomber_im.draw(bomber.getX(),bomber.getY());
+		g.drawString(Elemento.toString(),100,100);
+		//bomber_im.draw(bomber.getX(),bomber.getY());
 		
 	}
 
