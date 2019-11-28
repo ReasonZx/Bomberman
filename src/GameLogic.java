@@ -46,8 +46,6 @@ public class GameLogic {
 			m.Add_Element(b);
 			//System.out.println("created new bomb");
 		}
-		
-		Death_Check();
 	
 	}
 
@@ -81,15 +79,12 @@ public class GameLogic {
 		
 	}
 	
-	
 	private void Propagate_Explosion(int x,int y) {
 		Explosion Exp = new Explosion(x,y,this);
 		ArrayList<Element> tmp = Exp.Propagate();
 		m.Add_Element_Array(tmp);
 		Timer tt = new Timer();
 		tt.schedule(new Remove_Explosion(tmp), 100);
-		Death_Check();
-
 	}
 	
 	private boolean Can_Place_Bomb() {
@@ -101,35 +96,35 @@ public class GameLogic {
 		return true;
 	}
 	
-	private void Death_Check(){
+	public void Death_Check(){
 		if(Character.Death_Check()==true){
 			System.out.println("YOU DEAD MAN");
 		}
 	}
 	
 	private boolean MoveLeftPermitted(){
-		if(m.Out_Of_Bounds(Character.getX()-1,Character.getY())==true)
+		if(m.Out_Of_Bounds(Character.getX()-1,Character.getY())==true || Character.Can_Walk()==false)
 			return false;
 		
 		return !m.Has_Solid_Element(Character.getX()-1,Character.getY());
 	}
 	
 	private boolean MoveRightPermitted(){
-		if(m.Out_Of_Bounds(Character.getX()+1,Character.getY())==true)
+		if(m.Out_Of_Bounds(Character.getX()+1,Character.getY())==true || Character.Can_Walk()==false)
 			return false;
 		
 		return !m.Has_Solid_Element(Character.getX()+1,Character.getY());
 	}
 	
 	private boolean MoveDownPermitted(){
-		if(m.Out_Of_Bounds(Character.getX(),Character.getY()+1)==true)
+		if(m.Out_Of_Bounds(Character.getX(),Character.getY()+1)==true || Character.Can_Walk()==false)
 			return false;
 		
 		return !m.Has_Solid_Element(Character.getX(),Character.getY()+1);
 	}
 	
 	private boolean MoveUpPermitted(){
-		if(m.Out_Of_Bounds(Character.getX(),Character.getY()-1)==true)
+		if(m.Out_Of_Bounds(Character.getX(),Character.getY()-1)==true || Character.Can_Walk()==false)
 			return false;
 		
 		return !m.Has_Solid_Element(Character.getX(),Character.getY()-1);

@@ -6,6 +6,7 @@ import java.util.TimerTask;
 
 public class Bomber extends Element{
 	protected boolean bomb_cd;
+	protected boolean Walking_cd;
 	
 	Bomber(int x,int y) throws SlickException{
 		Coordinate tmp = new Coordinate(x,y);
@@ -15,23 +16,35 @@ public class Bomber extends Element{
 		img = new Image("sprites/parado.png");
 
 		bomb_cd=false;
-
+		Walking_cd=false;
 	}
 	
 	public void MoveUp() {
 		Coord.MoveUp();
+		Walking_cd=true;
+		Timer tt = new Timer();
+		tt.schedule(new Walk_Cd(), 200);
 	}
 	
 	public void MoveRight() {
 		Coord.MoveRight();
+		Walking_cd=true;
+		Timer tt = new Timer();
+		tt.schedule(new Walk_Cd(), 200);
 	}
 	
 	public void MoveLeft() {
 		Coord.MoveLeft();
+		Walking_cd=true;
+		Timer tt = new Timer();
+		tt.schedule(new Walk_Cd(), 200);
 	}
 	
 	public void MoveDown() {
 		Coord.MoveDown();
+		Walking_cd=true;
+		Timer tt = new Timer();
+		tt.schedule(new Walk_Cd(), 200);
 	}
 
 	public void Used_Bomb(){
@@ -44,6 +57,10 @@ public class Bomber extends Element{
 		return !bomb_cd;
 	}
 	
+	public boolean Can_Walk() {
+		return !Walking_cd;
+	}
+	
 	public boolean Death_Check(){
 		return L.m.Has_Explosion(Coord.getX(),Coord.getY());
 	}
@@ -52,6 +69,13 @@ public class Bomber extends Element{
 		
 		public void run(){
 			bomb_cd=false;
+		}
+	}
+	
+	private class Walk_Cd extends TimerTask{
+		
+		public void run(){
+			Walking_cd=false;
 		}
 	}
 

@@ -37,6 +37,8 @@ public class Gamestate extends BasicGameState{
 		if(container.getInput().isKeyPressed(Input.KEY_SPACE)) {
 			L.Action(32);
 		}
+		
+		L.Death_Check();
 	}
 	
 
@@ -50,13 +52,13 @@ public class Gamestate extends BasicGameState{
 					elements=L.m.Get_List_Elements(x, y);
 					for(int i = 0; i < elements.size(); i++) 
 						if(elements.get(i) instanceof Bomb ) {
-							g.drawImage(bombs.Get_Image(), 32*bombs.getX(), 32*bombs.getY());
+							//g.drawImage(bombs.Get_Image(), 32*bombs.getX(), 32*bombs.getY());
 						}
 						else if(elements.get(i) instanceof Bomber ) {
-							g.drawImage(player.Get_Image(), 32*player.getX(), 32*player.getY());
+							//g.drawImage(player.Get_Image(), 32*player.getX(), 32*player.getY());
 						}
 						else if(elements.get(i) instanceof Wall ) {
-							g.drawImage(walls.Get_Image(), 32*walls.getX(), 32*walls.getY());
+							//g.drawImage(walls.Get_Image(), 32*walls.getX(), 32*walls.getY());
 						}
 					}
 		}
