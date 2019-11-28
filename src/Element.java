@@ -4,11 +4,9 @@ public abstract class Element{
 	protected Coordinate Coord;
 	protected boolean Solid;
 	protected boolean Destroyable=false;
-<<<<<<< src/Element.java
+
 	Image img;
-=======
 	GameLogic L;
->>>>>>> src/Element.java
 	
 	public int getX() {
 		return Coord.getX();
@@ -30,16 +28,15 @@ public abstract class Element{
 		return Destroyable;
 	}
 	
-<<<<<<< src/Element.java
+
 	public Image Get_Image() {
 		return img;
 	}
 	
 	public String toString() {
 		return Integer.toString(getX()) + Integer.toString(getY());
-=======
+	}
 	public void Set_GameLogic(GameLogic x) {
 		L=x;
->>>>>>> src/Element.java
 	}
 }
