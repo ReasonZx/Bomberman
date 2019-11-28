@@ -1,10 +1,8 @@
-<<<<<<< src/Bomber.java
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
-=======
 import java.util.Timer;
 import java.util.TimerTask;
->>>>>>> src/Bomber.java
+
 
 public class Bomber extends Element{
 	protected boolean bomb_cd;
@@ -13,11 +11,11 @@ public class Bomber extends Element{
 		Coordinate tmp = new Coordinate(x,y);
 		Coord=tmp;
 		Solid=true;
-<<<<<<< src/Bomber.java
+
 		img = new Image("sprites/parado.png");
-=======
+
 		bomb_cd=false;
->>>>>>> src/Bomber.java
+
 	}
 	
 	public void MoveUp() {
@@ -35,10 +33,7 @@ public class Bomber extends Element{
 	public void MoveDown() {
 		Coord.MoveDown();
 	}
-	
-<<<<<<< src/Bomber.java
-	
-=======
+
 	public void Used_Bomb(){
 		bomb_cd=true;
 		Timer tt = new Timer();
@@ -59,5 +54,5 @@ public class Bomber extends Element{
 			bomb_cd=false;
 		}
 	}
->>>>>>> src/Bomber.java
+
 }
