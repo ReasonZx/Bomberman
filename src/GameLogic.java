@@ -11,6 +11,7 @@ public class GameLogic {
 		ArrayList<Element> y = new ArrayList<Element>();
 		y.add(Character);
 		m = new Map(y);
+		Character.Set_GameLogic(this);
 	}
 
 	public void Action(int key) {
@@ -43,7 +44,11 @@ public class GameLogic {
 			Bomb b = new Bomb(Character.getX(),Character.getY(),this);
 			b.Start_Countdown(new Explode(b));
 			m.Add_Element(b);
+			//System.out.println("created new bomb");
 		}
+		
+		Death_Check();
+	
 	}
 	
 	private class Explode extends TimerTask{
@@ -74,21 +79,64 @@ public class GameLogic {
 		}
 	}
 	
+<<<<<<< src/GameLogic.java
+	private class Explode extends TimerTask{
+		private Bomb b;
+		
+		Explode (Bomb x){
+			this.b=x;
+		}
+		
+		public void run() {
+			m.Remove_Element(this.b);
+			Propagate_Explosion(b.getX(),b.getY());
+		}
+		
+	}
+	
+	private class Remove_Explosion extends TimerTask{
+		private ArrayList<Element> array;
+		
+		Remove_Explosion(ArrayList<Element> x){
+			this.array=x;
+		}
+		
+		public void run() {
+			for(int i=0;i<array.size();i++) {
+				m.Remove_Element(array.get(i));
+			}
+		}
+	}
+	
+=======
+>>>>>>> src/GameLogic.java
 	private void Propagate_Explosion(int x,int y) {
 		Explosion Exp = new Explosion(x,y,this);
 		ArrayList<Element> tmp = Exp.Propagate();
 		m.Add_Element_Array(tmp);
 		Timer tt = new Timer();
 		tt.schedule(new Remove_Explosion(tmp), 100);
+<<<<<<< src/GameLogic.java
+=======
+		Death_Check();
+>>>>>>> src/GameLogic.java
 	}
 	
 	private boolean Can_Place_Bomb() {
-		if(m.Has_Bomb(Character.getX(),Character.getY())==true)
-			return false;
+			if(Character.Can_Use_Bomb()==false || m.Has_Bomb(Character.getX(),Character.getY())==true)
+				return false;
+		
+		Character.Used_Bomb();
 		
 		return true;
 	}
-
+	
+	private void Death_Check(){
+		if(Character.Death_Check()==true){
+			System.out.println("YOU DEAD MAN");
+		}
+	}
+	
 	private boolean MoveLeftPermitted(){
 		if(m.Out_Of_Bounds(Character.getX()-1,Character.getY())==true)
 			return false;
