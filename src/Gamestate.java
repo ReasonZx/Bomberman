@@ -22,16 +22,16 @@ public class Gamestate extends BasicGameState{
 	}
 
 	public void update(GameContainer container, StateBasedGame sbg, int arg2) throws SlickException {
-		if(container.getInput().isKeyPressed(Input.KEY_W)) {
+		if(container.getInput().isKeyDown(Input.KEY_W)) {
 			L.Action(87);
 		}
-		if(container.getInput().isKeyPressed(Input.KEY_S)) {
+		if(container.getInput().isKeyDown(Input.KEY_S)) {
 			L.Action(83);
 		}
-		if(container.getInput().isKeyPressed(Input.KEY_A)) {
+		if(container.getInput().isKeyDown(Input.KEY_A)) {
 			L.Action(65);
 		}
-		if(container.getInput().isKeyPressed(Input.KEY_D)) {
+		if(container.getInput().isKeyDown(Input.KEY_D)) {
 			L.Action(68);
 		}
 		if(container.getInput().isKeyPressed(Input.KEY_SPACE)) {

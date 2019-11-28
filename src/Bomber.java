@@ -7,6 +7,7 @@ import java.util.TimerTask;
 public class Bomber extends Element{
 	protected boolean bomb_cd;
 	protected boolean Walking_cd;
+	int cooldown = 200; //milliseconds
 	
 	Bomber(int x,int y) throws SlickException{
 		Coordinate tmp = new Coordinate(x,y);
@@ -23,28 +24,28 @@ public class Bomber extends Element{
 		Coord.MoveUp();
 		Walking_cd=true;
 		Timer tt = new Timer();
-		tt.schedule(new Walk_Cd(), 200);
+		tt.schedule(new Walk_Cd(), cooldown);
 	}
 	
 	public void MoveRight() {
 		Coord.MoveRight();
 		Walking_cd=true;
 		Timer tt = new Timer();
-		tt.schedule(new Walk_Cd(), 200);
+		tt.schedule(new Walk_Cd(), cooldown);
 	}
 	
 	public void MoveLeft() {
 		Coord.MoveLeft();
 		Walking_cd=true;
 		Timer tt = new Timer();
-		tt.schedule(new Walk_Cd(), 200);
+		tt.schedule(new Walk_Cd(), cooldown);
 	}
 	
 	public void MoveDown() {
 		Coord.MoveDown();
 		Walking_cd=true;
 		Timer tt = new Timer();
-		tt.schedule(new Walk_Cd(), 200);
+		tt.schedule(new Walk_Cd(), cooldown);
 	}
 
 	public void Used_Bomb(){
