@@ -2,6 +2,8 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.newdawn.slick.SlickException;
+
 public class GameLogic {
 	Bomber Character;
 	Map m;
@@ -14,7 +16,7 @@ public class GameLogic {
 		Character.Set_GameLogic(this);
 	}
 
-	public void Action(int key) {
+	public void Action(int key) throws SlickException {
 		
 		if(key==65 && MoveLeftPermitted()) { //A
 			m.Remove_Element(Character);

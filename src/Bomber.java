@@ -11,9 +11,7 @@ public class Bomber extends Element{
 		Coordinate tmp = new Coordinate(x,y);
 		Coord=tmp;
 		Solid=true;
-
 		img = new Image("sprites/parado.png");
-
 		bomb_cd=false;
 
 	}

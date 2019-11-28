@@ -13,7 +13,6 @@ public class Gamestate extends BasicGameState{
 	 static GameLogic L;
 	 static Bomber player;
 	 static Wall walls;
-	 static Bomb bombs;
 	 private ArrayList<Element> elements;
 	
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -49,21 +48,13 @@ public class Gamestate extends BasicGameState{
 			for(int y = 0 ; y < L.m.Get_BotBound() ; y++) {
 					elements=L.m.Get_List_Elements(x, y);
 					for(int i = 0; i < elements.size(); i++) 
-						if(elements.get(i) instanceof Bomb ) {
-							g.drawImage(bombs.Get_Image(), 32*bombs.getX(), 32*bombs.getY());
-						}
-						else if(elements.get(i) instanceof Bomber ) {
-							g.drawImage(player.Get_Image(), 32*player.getX(), 32*player.getY());
-						}
-						else if(elements.get(i) instanceof Wall ) {
-							g.drawImage(walls.Get_Image(), 32*walls.getX(), 32*walls.getY());
-						}
-					}
+						g.drawImage(elements.get(i).Get_Image(), 32*elements.get(i).getX(), 32*elements.get(i).getY());
+			}
 		}
 	}
 
 	public int getID() {
 		return 2;
-	}
+	} 
 
 }
