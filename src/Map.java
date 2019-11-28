@@ -109,7 +109,7 @@ public class Map {
 		}
 	}
 	
-	private ArrayList<Element> Get_List_Elements(int x,int y){
+	public ArrayList<Element> Get_List_Elements(int x,int y){
 		return elements.get(x).get(y);
 	}
 	

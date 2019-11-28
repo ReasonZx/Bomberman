@@ -79,13 +79,47 @@ public class GameLogic {
 		}
 	}
 	
+<<<<<<< src/GameLogic.java
+	private class Explode extends TimerTask{
+		private Bomb b;
+		
+		Explode (Bomb x){
+			this.b=x;
+		}
+		
+		public void run() {
+			m.Remove_Element(this.b);
+			Propagate_Explosion(b.getX(),b.getY());
+		}
+		
+	}
+	
+	private class Remove_Explosion extends TimerTask{
+		private ArrayList<Element> array;
+		
+		Remove_Explosion(ArrayList<Element> x){
+			this.array=x;
+		}
+		
+		public void run() {
+			for(int i=0;i<array.size();i++) {
+				m.Remove_Element(array.get(i));
+			}
+		}
+	}
+	
+=======
+>>>>>>> src/GameLogic.java
 	private void Propagate_Explosion(int x,int y) {
 		Explosion Exp = new Explosion(x,y,this);
 		ArrayList<Element> tmp = Exp.Propagate();
 		m.Add_Element_Array(tmp);
 		Timer tt = new Timer();
 		tt.schedule(new Remove_Explosion(tmp), 100);
+<<<<<<< src/GameLogic.java
+=======
 		Death_Check();
+>>>>>>> src/GameLogic.java
 	}
 	
 	private boolean Can_Place_Bomb() {
