@@ -16,8 +16,9 @@ public class Gamestate extends BasicGameState{
 	 private ArrayList<Element> elements;
 	
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-		 player=new Bomber(1,1);
+		 player = new Bomber(1,1);
 	     L=new GameLogic(player);
+	     walls = new Wall(3,3);
 	}
 
 	public void update(GameContainer container, StateBasedGame sbg, int arg2) throws SlickException {
