@@ -1,4 +1,5 @@
 import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 
 public abstract class Element{
 	protected Coordinate Coord;
@@ -28,6 +29,9 @@ public abstract class Element{
 		return Destroyable;
 	}
 	
+	protected void Set_Image(Image tmp) throws SlickException{
+		img = tmp.copy();
+	}
 
 	public Image Get_Image() {
 		return img;
@@ -36,6 +40,7 @@ public abstract class Element{
 	public String toString() {
 		return Integer.toString(getX()) + Integer.toString(getY());
 	}
+	
 	public void Set_GameLogic(GameLogic x) {
 		L=x;
 	}

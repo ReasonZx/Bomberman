@@ -7,14 +7,20 @@ import java.util.TimerTask;
 public class Bomber extends Element{
 	protected boolean bomb_cd;
 	protected boolean Walking_cd;
-	int cooldown = 200; //milliseconds
+	private int cooldown = 1000; //milliseconds
+	protected int move_res = 20;
+	protected int progression_count;
+	Image StopFw = new Image("sprites/parado.png");
+	Image WalkFw1 = new Image("sprites/andar1.png");
+	Image WalkFw2 = new Image("sprites/andar2.png");
+	
 	
 	Bomber(int x,int y) throws SlickException{
 		Coordinate tmp = new Coordinate(x,y);
 		Coord=tmp;
 		Solid=true;
 
-		img = new Image("sprites/parado.png");
+		Set_Image(StopFw);
 
 		bomb_cd=false;
 		Walking_cd=false;
@@ -22,30 +28,29 @@ public class Bomber extends Element{
 	
 	public void MoveUp() {
 		Coord.MoveUp();
-		Walking_cd=true;
-		Timer tt = new Timer();
-		tt.schedule(new Walk_Cd(), cooldown);
+		Start_Walking();
 	}
 	
 	public void MoveRight() {
 		Coord.MoveRight();
-		Walking_cd=true;
-		Timer tt = new Timer();
-		tt.schedule(new Walk_Cd(), cooldown);
+		Start_Walking();
 	}
 	
 	public void MoveLeft() {
 		Coord.MoveLeft();
-		Walking_cd=true;
-		Timer tt = new Timer();
-		tt.schedule(new Walk_Cd(), cooldown);
+		Start_Walking();
 	}
 	
 	public void MoveDown() {
 		Coord.MoveDown();
+		Start_Walking();
+	}
+	
+	private void Start_Walking(){
 		Walking_cd=true;
 		Timer tt = new Timer();
-		tt.schedule(new Walk_Cd(), cooldown);
+		tt.schedule(new Walking(),0,cooldown/move_res);
+		progression_count=0;
 	}
 
 	public void Used_Bomb(){
@@ -73,10 +78,39 @@ public class Bomber extends Element{
 		}
 	}
 	
-	private class Walk_Cd extends TimerTask{
+	public int Get_Progression_Count() {
+		return progression_count;
+	}
+	
+	private class Walking extends TimerTask{
+		private boolean feet=false;
 		
 		public void run(){
-			Walking_cd=false;
+			progression_count++;
+			
+			if(feet) {
+				feet=!feet;
+				try {
+					Set_Image(WalkFw1);
+				} catch (SlickException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			else {
+				feet=!feet;
+				try {
+					Set_Image(WalkFw2);
+				} catch (SlickException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			if(progression_count==move_res){
+				Walking_cd=false;
+				this.cancel();
+			}
 		}
 	}
 

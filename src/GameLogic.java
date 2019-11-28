@@ -2,6 +2,8 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.newdawn.slick.SlickException;
+
 public class GameLogic {
 	Bomber Character;
 	Map m;
@@ -14,7 +16,7 @@ public class GameLogic {
 		Character.Set_GameLogic(this);
 	}
 
-	public void Action(int key) {
+	public void Action(int key) throws SlickException {
 		
 		if(key==65 && MoveLeftPermitted()) { //A
 			m.Remove_Element(Character);
@@ -42,7 +44,7 @@ public class GameLogic {
 		
 		if(key==32 && Can_Place_Bomb()==true) {	//Space
 			Bomb b = new Bomb(Character.getX(),Character.getY(),this);
-			b.Start_Countdown(new Explode(b));
+			b.Start_Countdown();
 			m.Add_Element(b);
 			//System.out.println("created new bomb");
 		}
@@ -64,19 +66,9 @@ public class GameLogic {
 		}
 	}
 	
-
-	private class Explode extends TimerTask{
-		private Bomb b;
-		
-		Explode (Bomb x){
-			this.b=x;
-		}
-		
-		public void run() {
-			m.Remove_Element(this.b);
-			Propagate_Explosion(b.getX(),b.getY());
-		}
-		
+	public void Explode(Bomb b){
+		m.Remove_Element(b);
+		Propagate_Explosion(b.getX(),b.getY());
 	}
 	
 	private void Propagate_Explosion(int x,int y) {
