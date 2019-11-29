@@ -1,19 +1,15 @@
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import org.newdawn.slick.SlickException;
 
 public class GameLogic {
 	Bomber Character;
 	Map m;
+	Image_Library lib;
 	
-	GameLogic(Bomber x){
-		Character=x;
+	GameLogic(Image_Library l){
 		ArrayList<Element> y = new ArrayList<Element>();
-		y.add(Character);
 		m = new Map(y);
-		Character.Set_GameLogic(this);
+		lib=l;
 	}
 
 	public void Action(int key) throws SlickException {
@@ -51,32 +47,20 @@ public class GameLogic {
 	
 	}
 
-	
-	private class Remove_Explosion extends TimerTask{
-		private ArrayList<Element> array;
-		
-		Remove_Explosion(ArrayList<Element> x){
-			this.array=x;
-		}
-		
-		public void run() {
-			for(int i=0;i<array.size();i++) {
-				m.Remove_Element(array.get(i));
-			}
-		}
+	public void Place_Character(Bomber b) {
+		Character=b;
+		m.Add_Element(Character);
 	}
 	
-	public void Explode(Bomb b){
+	public void Explode(Bomb b) throws SlickException{
 		m.Remove_Element(b);
-		Propagate_Explosion(b.getX(),b.getY());
+		Propagate_Explosion(b.getX(),b.getY(),b);
 	}
 	
-	private void Propagate_Explosion(int x,int y) {
-		Explosion Exp = new Explosion(x,y,this);
+	private void Propagate_Explosion(int x,int y,Bomb b) throws SlickException {
+		Explosion Exp = new Explosion(x,y,this,0,b);
 		ArrayList<Element> tmp = Exp.Propagate();
 		m.Add_Element_Array(tmp);
-		Timer tt = new Timer();
-		tt.schedule(new Remove_Explosion(tmp), 100);
 	}
 	
 	private boolean Can_Place_Bomb() {

@@ -6,8 +6,8 @@ public abstract class Element{
 	protected boolean Solid;
 	protected boolean Destroyable=false;
 
-	Image img;
-	GameLogic L;
+	protected Image img;
+	protected GameLogic L;
 	
 	public int getX() {
 		return Coord.getX();
@@ -35,6 +35,13 @@ public abstract class Element{
 
 	public Image Get_Image() {
 		return img;
+	}
+	
+	public boolean Has_Image() {
+		if(img==null)
+			return false;
+		else
+			return true;
 	}
 	
 	public String toString() {
