@@ -4,17 +4,13 @@ public class Map {
 	private ArrayList<ArrayList<ArrayList<Element>>> elements;
 	int LeftBound, RightBound, TopBound, BotBound;
 	
-	Map(ArrayList<Element> x){
-		LeftBound=0;
-		RightBound=10;
-		TopBound=0;
-		BotBound=10;
+	Map(int LB,int RB,int TB,int BB){
+		LeftBound=LB;
+		RightBound=RB;
+		TopBound=TB;
+		BotBound=BB;
 		
 		Initialize_Space();
-		
-		for (int i=0;i<x.size();i++) {
-			Add_Element(x.get(i));
-		}
 	}
 	
 	public int Add_Element(Element cha) {
@@ -28,6 +24,8 @@ public class Map {
 	}
 	
 	public int Remove_Element(Element cha) {
+		if(cha==null)
+			return 0;
 		if(Has_Element(cha.getX(),cha.getY())==false)
 			return 0;
 		
@@ -109,6 +107,15 @@ public class Map {
 		}
 	}
 	
+	public Element GetWall(int x,int y){
+		
+		for(int i=0;i<Get_List_Elements(x,y).size();i++) 
+			if(Get_List_Elements(x,y).get(i) instanceof Wall) 
+				return Get_List_Elements(x,y).get(i);
+		
+		return null;
+	}
+	
 	public ArrayList<Element> Get_List_Elements(int x,int y){
 		return elements.get(x).get(y);
 	}
@@ -118,7 +125,7 @@ public class Map {
 	}
 	
 	public int Get_LeftBound() {
-		return LeftBound;
+		return LeftBound+1;
 	}
 	
 	public int Get_BotBound() {
@@ -126,6 +133,6 @@ public class Map {
 	}
 	
 	public int Get_TopBound() {
-		return TopBound;
+		return TopBound+1;
 	}
 }

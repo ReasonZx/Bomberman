@@ -21,6 +21,7 @@ public class Gamestate extends BasicGameState{
 		 lib = new Image_Library();
 	     L=new GameLogic(lib);
 	     player=new Bomber(1,1,L);
+	     L.Create_Map(1);
 	     L.Place_Character(player);
 	}
 
@@ -55,10 +56,16 @@ public class Gamestate extends BasicGameState{
 		for(int x = 0 ; x < L.m.Get_RightBound() ; x++) {
 			for(int y = 0 ; y < L.m.Get_BotBound() ; y++) {
 					elements=L.m.Get_List_Elements(x, y);
-					for(int i = 0; i < elements.size(); i++)
-						if(elements.get(i).Has_Image())
-							g.drawImage(elements.get(i).Get_Image(), 32*elements.get(i).getX(), 32*elements.get(i).getY());
+					for(int i = 0; i < elements.size(); i++) {
+						Element tmp = elements.get(i);
+						
+						if(tmp.Has_Image()) {
+							g.drawImage(tmp.Get_Image(),
+										tmp.Get_Scale()*tmp.getX() + tmp.Get_OffsetX(), 
+										tmp.Get_Scale()*tmp.getY() + tmp.Get_OffsetY());
+						}
 					}
+				}
 		}
 	}
 

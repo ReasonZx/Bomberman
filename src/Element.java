@@ -5,6 +5,8 @@ public abstract class Element{
 	protected Coordinate Coord;
 	protected boolean Solid;
 	protected boolean Destroyable=false;
+	protected int GUI_Scale;
+	protected int GUI_OffsetX,GUI_OffsetY;
 
 	protected Image img;
 	protected GameLogic L;
@@ -42,6 +44,18 @@ public abstract class Element{
 			return false;
 		else
 			return true;
+	}
+	
+	public int Get_Scale() {
+		return GUI_Scale;
+	}
+	
+	public int Get_OffsetX() {
+		return GUI_OffsetX;
+	}
+	
+	public int Get_OffsetY() {
+		return GUI_OffsetY;
 	}
 	
 	public String toString() {

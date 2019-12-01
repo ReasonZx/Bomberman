@@ -20,6 +20,9 @@ public class Explosion extends Element{
 		Coord=tmp;
 		Solid=false;
 		L=GL;
+		GUI_Scale=64;
+		GUI_OffsetX=-16;
+		GUI_OffsetY=-16;
 		if(type==0)
 			L.lib.Flag_For_Change(this,Cross);
 		if(type==1)
@@ -31,42 +34,63 @@ public class Explosion extends Element{
 	public ArrayList<Element> Propagate() throws SlickException{
 		ArrayList<Element> ret = new ArrayList<Element>();
 		ret.add(this);
+		int i;
 		
-		for(int i=Coord.getX()-1;i>L.m.Get_LeftBound();i--) {
+		for(i=Coord.getX()-1;i>=L.m.Get_LeftBound();i--) {
 			if(L.m.Has_Destroyable_Element(i,Coord.getY())==false)
 				ret.add(new Explosion(i,Coord.getY(),L,1,null));
-			else
+			else{
+				L.m.Remove_Element(L.m.GetWall(i,Coord.getY()));
+				if(i!=Coord.getX()-1)
+					L.lib.Flag_For_Change(ret.get(ret.size()-1),LeftEnd);
 				break;
+			}
 		}
 		
-		//L.lib.Flag_For_Change(this,LeftEnd);
+		if(i==L.m.Get_LeftBound()-1 && Coord.getX()!=L.m.Get_LeftBound())
+			L.lib.Flag_For_Change(ret.get(ret.size()-1),LeftEnd);
 		
-		for(int i=Coord.getX()+1;i<L.m.Get_RightBound();i++) {
+		for(i=Coord.getX()+1;i<L.m.Get_RightBound();i++) {
 			if(L.m.Has_Destroyable_Element(i,Coord.getY())==false)
 				ret.add(new Explosion(i,Coord.getY(),L,1,null));
-			else
+			else{
+				L.m.Remove_Element(L.m.GetWall(i,Coord.getY()));
+				if(i!=Coord.getX()+1)
+					L.lib.Flag_For_Change(ret.get(ret.size()-1),RightEnd);
 				break;
+			}
 		}
 		
-		//L.lib.Flag_For_Change(this,RightEnd);
+		if(i==L.m.Get_RightBound() && Coord.getX()!=L.m.Get_RightBound())
+			L.lib.Flag_For_Change(ret.get(ret.size()-1),RightEnd);
 		
-		for(int i=Coord.getY()-1;i>L.m.Get_TopBound();i--) {
+		for(i=Coord.getY()-1;i>=L.m.Get_TopBound();i--) {
 			if(L.m.Has_Destroyable_Element(Coord.getX(),i)==false)
 				ret.add(new Explosion(Coord.getX(),i,L,2,null));
-			else
+			else{
+				L.m.Remove_Element(L.m.GetWall(Coord.getX(),i));
+				if(i!=Coord.getY()-1)
+					L.lib.Flag_For_Change(ret.get(ret.size()-1),UpEnd);
 				break;
+			}
 		}
 		
-		//L.lib.Flag_For_Change(this,UpEnd);
+		if(i==L.m.Get_TopBound()-1 && Coord.getY()!=L.m.Get_TopBound())
+			L.lib.Flag_For_Change(ret.get(ret.size()-1),UpEnd);
 		
-		for(int i=Coord.getY()+1;i<L.m.Get_BotBound();i++) {
+		for(i=Coord.getY()+1;i<L.m.Get_BotBound();i++) {
 			if(L.m.Has_Destroyable_Element(Coord.getX(),i)==false)
 				ret.add(new Explosion(Coord.getX(),i,L,2,null));
-			else
+			else {
+				L.m.Remove_Element(L.m.GetWall(Coord.getX(),i));
+				if(i!=Coord.getY()+1)
+					L.lib.Flag_For_Change(ret.get(ret.size()-1),DownEnd);
 				break;
+			}
 		}
 		
-		//L.lib.Flag_For_Change(this,DownEnd);
+		if(i==L.m.Get_BotBound() && Coord.getY()!=L.m.Get_BotBound())
+			L.lib.Flag_For_Change(ret.get(ret.size()-1),DownEnd);
 		
 		Timer tt = new Timer();
 		tt.schedule(new Remove_Explosion(ret), Explosion_time);

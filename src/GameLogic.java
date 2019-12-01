@@ -2,13 +2,13 @@ import java.util.ArrayList;
 import org.newdawn.slick.SlickException;
 
 public class GameLogic {
-	Bomber Character;
-	Map m;
-	Image_Library lib;
+	protected Bomber Character;
+	protected Map m;
+	protected Image_Library lib;
+	protected Layout_Logic map_gen;
 	
 	GameLogic(Image_Library l){
-		ArrayList<Element> y = new ArrayList<Element>();
-		m = new Map(y);
+		map_gen = new Layout_Logic(this);
 		lib=l;
 	}
 
@@ -76,6 +76,10 @@ public class GameLogic {
 		if(Character.Death_Check()==true){
 			System.out.println("YOU DEAD MAN");
 		}
+	}
+	
+	public void Create_Map(int method) throws SlickException {
+		map_gen.Generate_Standard_Map();
 	}
 	
 	private boolean MoveLeftPermitted(){
