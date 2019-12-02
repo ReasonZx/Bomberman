@@ -8,7 +8,7 @@ public class Bomber extends Element{
 	protected boolean Walking_cd;
 	private int cooldown = 500; //milliseconds
 	protected int move_res = 5;
-	protected int progression_count=5;
+	protected int progression_count=move_res;
 	protected int direction;	//0-down 1-left 2-up 3-right
 	protected String StopDown = "sprites/Down.png";
 	protected String Down1 = 	"sprites/Down1.png";
@@ -154,21 +154,21 @@ public class Bomber extends Element{
 		if(direction==0)
 			return -16;
 		if(direction==1)
-			return (move_res-progression_count-1)*16;
+			return (move_res-progression_count)*GUI_Scale/(move_res+1)-16;
 		if(direction==2)
 			return -16;
 		if(direction==3)
-			return -(move_res-progression_count+1)*16;
+			return -(move_res-progression_count)*GUI_Scale/(move_res+1)-16;
 		return -16;
 	}
 	
 	public int Get_OffsetY() {
 		if(direction==0)
-			return -(move_res-progression_count+1)*16;
+			return -(move_res-progression_count)*GUI_Scale/(move_res+1)-16;
 		if(direction==1)
 			return -16;
 		if(direction==2)
-			return (move_res-progression_count-1)*16;
+			return (move_res-progression_count)*GUI_Scale/(move_res+1)-16;
 		if(direction==3)
 			return -16;
 		return -16;
