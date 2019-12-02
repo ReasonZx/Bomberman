@@ -16,6 +16,9 @@ public class Gamestate extends BasicGameState{
 	 private ArrayList<Element> elements;
 	 private Image_Library lib;
 	 KeyPresses Input;
+	 protected int Last_key=0;
+	 protected char Last_c=0;
+	 protected int counter=0;
 	
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		 
@@ -35,8 +38,23 @@ public class Gamestate extends BasicGameState{
 	}
 
 	public void update(GameContainer container, StateBasedGame sbg, int arg2) throws SlickException {
+		if (container.getInput().isKeyDown(Last_key)==true) {
+			counter++;
+			if(counter>20)
+				Input.keyPressed(Last_key, Last_c);
+		}
+		else {
+			counter=0;
+			Input.inputStarted();
+		}
+		Input.inputEnded();
+		
 		lib.Run_Changes();
-		L.Death_Check();
+		int dead=L.Death_Check();
+		
+		if(dead!=0) {
+							//Go to Game Over
+		}
 	}
 	
 
@@ -66,23 +84,23 @@ public class Gamestate extends BasicGameState{
 	}
 	
 	public class KeyPresses implements KeyListener{
-
+		boolean used=false;
 		@Override
 		public void inputEnded() {
 			// TODO Auto-generated method stub
-			
+			used=false;
 		}
 
 		@Override
 		public void inputStarted() {
 			// TODO Auto-generated method stub
-			
+			used = true;
 		}
 
 		@Override
 		public boolean isAcceptingInput() {
 			// TODO Auto-generated method stub
-			return true;
+			return used;
 		}
 
 		@Override
@@ -94,10 +112,10 @@ public class Gamestate extends BasicGameState{
 		@Override
 		public void keyPressed(int key, char c) {
 			// TODO Auto-generated method stub
+			
 			String tmp = new String();
 			tmp="" + c;
 			tmp=tmp.toUpperCase();
-			System.out.println((int)c);
 			
 			try {
 				if((int)tmp.charAt(0)!=0)
@@ -108,12 +126,17 @@ public class Gamestate extends BasicGameState{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			Last_key=key;
+			Last_c=c;
+			counter=0;
 		}
 
 		@Override
-		public void keyReleased(int arg0, char arg1) {
+		public void keyReleased(int key, char c) {
 			// TODO Auto-generated method stub
-			
+			Last_key=0;
+			Last_c=0;
 		}
 		
 	}

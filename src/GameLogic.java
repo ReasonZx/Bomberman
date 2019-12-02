@@ -76,11 +76,12 @@ public class GameLogic {
 		return true;
 	}
 	
-	public void Death_Check(){
+	public int Death_Check(){
 		for(int i=0;i<Character.size();i++)
 			if(Character.get(i).Death_Check()==true){
-				System.out.println("YOU DEAD PLAYER " + i);
+				return i;
 			}
+		return 0;
 	}
 	
 	public void Create_Map(int method) throws SlickException {
