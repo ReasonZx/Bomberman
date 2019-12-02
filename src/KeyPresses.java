@@ -13,6 +13,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import org.newdawn.slick.SlickException;
+
 public class KeyPresses extends JFrame implements KeyListener,ActionListener{
 	JTextArea displayArea;
     JTextField typingArea;
@@ -32,7 +34,12 @@ public class KeyPresses extends JFrame implements KeyListener,ActionListener{
     
     /** Handle the key pressed event from the text field. */
     public void keyPressed(KeyEvent e) {
-    	L.Action(e.getKeyCode());
+    	try {
+			L.Action(e.getKeyCode());
+		} catch (SlickException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
     	displayArea.append(L.Character.getCoord());
     }
     
