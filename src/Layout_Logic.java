@@ -18,6 +18,12 @@ public class Layout_Logic {
 					continue;
 				if(i==2 && j==1)
 					continue;
+				if(i==11 && j==8)
+					continue;
+				if(i==10 && j==8)
+					continue;
+				if(i==11 && j==7)
+					continue;
 				L.m.Add_Element(new Wall(i,j,L));
 			}
 	}
