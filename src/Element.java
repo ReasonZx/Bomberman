@@ -65,4 +65,8 @@ public abstract class Element{
 	public void Set_GameLogic(GameLogic x) {
 		L=x;
 	}
+
+	protected void Destroy() {
+		
+	}
 }

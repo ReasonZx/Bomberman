@@ -16,8 +16,8 @@ public class Bomb extends Element{
 		GL.lib.Flag_For_Change(this,Bomb_Black);
 		L=GL;
 		GUI_Scale=64;
-		GUI_OffsetX=16;
-		GUI_OffsetY=16;
+		GUI_OffsetX=0;
+		GUI_OffsetY=0;
 	}
 	
 	public void Start_Countdown(){

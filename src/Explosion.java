@@ -37,12 +37,14 @@ public class Explosion extends Element{
 		int i;
 		
 		for(i=Coord.getX()-1;i>=L.m.Get_LeftBound();i--) {
-			if(L.m.Has_Destroyable_Element(i,Coord.getY())==false)
+			if(L.m.Has_Blocking_Element(i,Coord.getY())==false)
 				ret.add(new Explosion(i,Coord.getY(),L,1,null));
 			else{
-				L.m.Remove_Element(L.m.GetWall(i,Coord.getY()));
-				if(i!=Coord.getX()-1)
-					L.lib.Flag_For_Change(ret.get(ret.size()-1),LeftEnd);
+				if(L.m.Has_Destroyable_Element(i,Coord.getY())==true){
+				L.m.GetWall(i,Coord.getY()).Destroy();
+					if(i!=Coord.getX()-1)
+						L.lib.Flag_For_Change(ret.get(ret.size()-1),LeftEnd);
+				}
 				break;
 			}
 		}
@@ -51,26 +53,30 @@ public class Explosion extends Element{
 			L.lib.Flag_For_Change(ret.get(ret.size()-1),LeftEnd);
 		
 		for(i=Coord.getX()+1;i<L.m.Get_RightBound();i++) {
-			if(L.m.Has_Destroyable_Element(i,Coord.getY())==false)
+			if(L.m.Has_Blocking_Element(i,Coord.getY())==false)
 				ret.add(new Explosion(i,Coord.getY(),L,1,null));
 			else{
-				L.m.Remove_Element(L.m.GetWall(i,Coord.getY()));
-				if(i!=Coord.getX()+1)
-					L.lib.Flag_For_Change(ret.get(ret.size()-1),RightEnd);
+				if(L.m.Has_Destroyable_Element(i,Coord.getY())==true){
+				L.m.GetWall(i,Coord.getY()).Destroy();
+					if(i!=Coord.getX()+1)
+						L.lib.Flag_For_Change(ret.get(ret.size()-1),RightEnd);
+				}
 				break;
 			}
 		}
 		
-		if(i==L.m.Get_RightBound() && Coord.getX()!=L.m.Get_RightBound())
+		if(i==L.m.Get_RightBound() && Coord.getX()!=L.m.Get_RightBound()-1)
 			L.lib.Flag_For_Change(ret.get(ret.size()-1),RightEnd);
 		
 		for(i=Coord.getY()-1;i>=L.m.Get_TopBound();i--) {
-			if(L.m.Has_Destroyable_Element(Coord.getX(),i)==false)
+			if(L.m.Has_Blocking_Element(Coord.getX(),i)==false)
 				ret.add(new Explosion(Coord.getX(),i,L,2,null));
 			else{
-				L.m.Remove_Element(L.m.GetWall(Coord.getX(),i));
-				if(i!=Coord.getY()-1)
-					L.lib.Flag_For_Change(ret.get(ret.size()-1),UpEnd);
+				if(L.m.Has_Destroyable_Element(Coord.getX(),i)==true){
+					L.m.GetWall(Coord.getX(),i).Destroy();
+					if(i!=Coord.getY()-1)
+						L.lib.Flag_For_Change(ret.get(ret.size()-1),UpEnd);
+				}
 				break;
 			}
 		}
@@ -79,17 +85,19 @@ public class Explosion extends Element{
 			L.lib.Flag_For_Change(ret.get(ret.size()-1),UpEnd);
 		
 		for(i=Coord.getY()+1;i<L.m.Get_BotBound();i++) {
-			if(L.m.Has_Destroyable_Element(Coord.getX(),i)==false)
+			if(L.m.Has_Blocking_Element(Coord.getX(),i)==false)
 				ret.add(new Explosion(Coord.getX(),i,L,2,null));
 			else {
-				L.m.Remove_Element(L.m.GetWall(Coord.getX(),i));
-				if(i!=Coord.getY()+1)
-					L.lib.Flag_For_Change(ret.get(ret.size()-1),DownEnd);
+				if(L.m.Has_Destroyable_Element(Coord.getX(),i)==true){
+					L.m.GetWall(Coord.getX(),i).Destroy();
+					if(i!=Coord.getY()+1)
+						L.lib.Flag_For_Change(ret.get(ret.size()-1),DownEnd);
+				}
 				break;
 			}
 		}
 		
-		if(i==L.m.Get_BotBound() && Coord.getY()!=L.m.Get_BotBound())
+		if(i==L.m.Get_BotBound() && Coord.getY()!=L.m.Get_BotBound()-1)
 			L.lib.Flag_For_Change(ret.get(ret.size()-1),DownEnd);
 		
 		Timer tt = new Timer();

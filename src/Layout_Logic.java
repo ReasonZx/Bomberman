@@ -7,7 +7,7 @@ public class Layout_Logic {
 		L=GL;
 	}
 	
-	public void Generate_Standard_Map() throws SlickException{
+	public void Generate_Test_Map() throws SlickException{
 		L.m = new Map(0,12,0,9);
 		
 		for(int i=L.m.Get_LeftBound();i<L.m.Get_RightBound();i++)
@@ -24,7 +24,29 @@ public class Layout_Logic {
 					continue;
 				if(i==11 && j==7)
 					continue;
-				L.m.Add_Element(new Wall(i,j,L));
+				L.m.Add_Element(new Wall(i,j,L,2));
+			}
+	}
+	
+	public void Generate_Standard_Map() throws SlickException {
+		L.m = new Map(0,12,0,9);
+		for(int i=L.m.Get_LeftBound();i<L.m.Get_RightBound();i++)
+			for(int j=L.m.Get_TopBound();j<L.m.Get_BotBound();j++) {
+				if(i==1 && j==1)
+					continue;
+				if(i==1 && j==2)
+					continue;
+				if(i==2 && j==1)
+					continue;
+				if(i==11 && j==8)
+					continue;
+				if(i==10 && j==8)
+					continue;
+				if(i==11 && j==7)
+					continue;
+				if((i*j)%4==0) if((i+j)%2==0) L.m.Add_Element(new Wall(i,j,L,1));
+					else L.m.Add_Element(new Wall(i,j,L,2));
+				else L.m.Add_Element(new Wall(i,j,L,2));
 			}
 	}
 }

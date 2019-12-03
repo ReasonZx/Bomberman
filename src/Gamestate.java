@@ -30,8 +30,8 @@ public class Gamestate extends BasicGameState{
 											  org.newdawn.slick.Input.KEY_DOWN,
 											  org.newdawn.slick.Input.KEY_LEFT,
 											  org.newdawn.slick.Input.KEY_RIGHT,
-											  13));
-	     L.Create_Map(1);
+											  org.newdawn.slick.Input.KEY_RSHIFT));
+	     L.Create_Map(2);
 	     L.Place_Characters(players);
 	     Input = new KeyPresses();
 	     arg0.getInput().addKeyListener(Input);

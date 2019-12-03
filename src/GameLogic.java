@@ -85,7 +85,8 @@ public class GameLogic {
 	}
 	
 	public void Create_Map(int method) throws SlickException {
-		map_gen.Generate_Standard_Map();
+		if(method==1) map_gen.Generate_Test_Map();
+		if(method==2) map_gen.Generate_Standard_Map();
 	}
 	
 	private boolean MoveLeftPermitted(int i){

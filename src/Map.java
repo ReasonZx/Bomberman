@@ -96,6 +96,16 @@ public class Map {
 		return false;
 	}
 	
+	public boolean Has_Blocking_Element(int x,int y) {
+		ArrayList<Element> tmplist;
+		tmplist=Get_List_Elements(x, y);
+		for(int i=0;i<tmplist.size();i++){
+			if(tmplist.get(i) instanceof Wall && tmplist.get(i).Is_Solid())
+				return true;
+		}
+		return false;
+	}
+	
 	private void Initialize_Space() {
 		elements = new ArrayList<ArrayList<ArrayList<Element>>>(RightBound-1);
 		
