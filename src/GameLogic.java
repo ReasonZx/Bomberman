@@ -1,139 +1,121 @@
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
+import org.newdawn.slick.SlickException;
 
 import org.newdawn.slick.SlickException;
 
 public class GameLogic {
-	Bomber Character;
-	Map m;
+	protected ArrayList<Bomber> Character = new ArrayList<Bomber>();
+	protected Map m;
+	protected Image_Library lib;
+	protected Layout_Logic map_gen;
 	
-	GameLogic(Bomber x){
-		Character=x;
-		ArrayList<Element> y = new ArrayList<Element>();
-		y.add(Character);
-		m = new Map(y);
-		Character.Set_GameLogic(this);
+	GameLogic(Image_Library l){
+		map_gen = new Layout_Logic(this);
+		lib=l;
 	}
 
 	public void Action(int key) throws SlickException {
-		
-		if(key==65 && MoveLeftPermitted()) { //A
-			m.Remove_Element(Character);
-			Character.MoveLeft();
-			m.Add_Element(Character);
-		}	
-		
-		if(key==68 && MoveRightPermitted()) { //D
-			m.Remove_Element(Character);
-			Character.MoveRight();
-			m.Add_Element(Character);
-		}	
-		
-		if(key==83 && MoveDownPermitted()) { //S
-			m.Remove_Element(Character);
-			Character.MoveDown();
-			m.Add_Element(Character);
-		}	
-		
-		if(key==87 && MoveUpPermitted()) { //W
-			m.Remove_Element(Character);
-			Character.MoveUp();
-			m.Add_Element(Character);
-		}
-		
-		if(key==32 && Can_Place_Bomb()==true) {	//Space
-			Bomb b = new Bomb(Character.getX(),Character.getY(),this);
-			b.Start_Countdown(new Explode(b));
-			m.Add_Element(b);
-			//System.out.println("created new bomb");
-		}
-		
-		Death_Check();
-	
-	}
-
-	
-	private class Remove_Explosion extends TimerTask{
-		private ArrayList<Element> array;
-		
-		Remove_Explosion(ArrayList<Element> x){
-			this.array=x;
-		}
-		
-		public void run() {
-			for(int i=0;i<array.size();i++) {
-				m.Remove_Element(array.get(i));
+		for(int i=0;i<Character.size();i++) {
+			if(key==Character.get(i).Get_MoveLeft_Key() && MoveLeftPermitted(i)) { //A
+				m.Remove_Element(Character.get(i));
+				Character.get(i).MoveLeft();
+				m.Add_Element(Character.get(i));
+			}	
+			
+			if(key==Character.get(i).Get_MoveRight_Key() && MoveRightPermitted(i)) { //D
+				m.Remove_Element(Character.get(i));
+				Character.get(i).MoveRight();
+				m.Add_Element(Character.get(i));
+			}	
+			
+			if(key==Character.get(i).Get_MoveDown_Key() && MoveDownPermitted(i)) { //S
+				m.Remove_Element(Character.get(i));
+				Character.get(i).MoveDown();
+				m.Add_Element(Character.get(i));
+			}	
+			
+			if(key==Character.get(i).Get_MoveUp_Key() && MoveUpPermitted(i)) { //W
+				m.Remove_Element(Character.get(i));
+				Character.get(i).MoveUp();
+				m.Add_Element(Character.get(i));
+			}
+			
+			if(key==Character.get(i).Get_Action_Key() && Can_Place_Bomb(i)==true) {	//Space
+				Bomb b = new Bomb(Character.get(i).getX(),Character.get(i).getY(),this);
+				b.Start_Countdown();
+				m.Add_Element(b);
+				//System.out.println("created new bomb");
 			}
 		}
 	}
-	
 
-	private class Explode extends TimerTask{
-		private Bomb b;
-		
-		Explode (Bomb x){
-			this.b=x;
-		}
-		
-		public void run() {
-			m.Remove_Element(this.b);
-			Propagate_Explosion(b.getX(),b.getY());
-		}
+	public void Place_Characters(ArrayList<Bomber> b) {
+		for(int i=0;i<b.size();i++)
+			if(m.Has_Solid_Element(b.get(i).getX(), b.get(i).getY())==false) {
+				Character.add(b.get(i));
+				m.Add_Element(b.get(i));
+			}
 		
 	}
 	
+	public void Explode(Bomb b) throws SlickException{
+		m.Remove_Element(b);
+		Propagate_Explosion(b.getX(),b.getY(),b);
+	}
 	
-	private void Propagate_Explosion(int x,int y) {
-		Explosion Exp = new Explosion(x,y,this);
+	private void Propagate_Explosion(int x,int y,Bomb b) throws SlickException {
+		Explosion Exp = new Explosion(x,y,this,0,b);
 		ArrayList<Element> tmp = Exp.Propagate();
 		m.Add_Element_Array(tmp);
-		Timer tt = new Timer();
-		tt.schedule(new Remove_Explosion(tmp), 100);
-		Death_Check();
-
 	}
 	
-	private boolean Can_Place_Bomb() {
-			if(Character.Can_Use_Bomb()==false || m.Has_Bomb(Character.getX(),Character.getY())==true)
-				return false;
+	private boolean Can_Place_Bomb(int i) {
+		if(Character.get(i).Can_Use_Bomb()==false || m.Has_Bomb(Character.get(i).getX(),Character.get(i).getY())==true)
+			return false;
 		
-		Character.Used_Bomb();
+		Character.get(i).Used_Bomb();
 		
 		return true;
 	}
 	
-	private void Death_Check(){
-		if(Character.Death_Check()==true){
-			System.out.println("YOU DEAD MAN");
-		}
+	public int Death_Check(){
+		for(int i=0;i<Character.size();i++)
+			if(Character.get(i).Death_Check()==true){
+				return i;
+			}
+		return 0;
 	}
 	
-	private boolean MoveLeftPermitted(){
-		if(m.Out_Of_Bounds(Character.getX()-1,Character.getY())==true)
-			return false;
-		
-		return !m.Has_Solid_Element(Character.getX()-1,Character.getY());
+	public void Create_Map(int method) throws SlickException {
+		if(method==1) map_gen.Generate_Test_Map();
+		if(method==2) map_gen.Generate_Standard_Map();
 	}
 	
-	private boolean MoveRightPermitted(){
-		if(m.Out_Of_Bounds(Character.getX()+1,Character.getY())==true)
+	private boolean MoveLeftPermitted(int i){
+		if(m.Out_Of_Bounds(Character.get(i).getX()-1,Character.get(i).getY())==true || Character.get(i).Can_Walk()==false)
 			return false;
 		
-		return !m.Has_Solid_Element(Character.getX()+1,Character.getY());
+		return !m.Has_Solid_Element(Character.get(i).getX()-1,Character.get(i).getY());
 	}
 	
-	private boolean MoveDownPermitted(){
-		if(m.Out_Of_Bounds(Character.getX(),Character.getY()+1)==true)
+	private boolean MoveRightPermitted(int i){
+		if(m.Out_Of_Bounds(Character.get(i).getX()+1,Character.get(i).getY())==true || Character.get(i).Can_Walk()==false)
 			return false;
 		
-		return !m.Has_Solid_Element(Character.getX(),Character.getY()+1);
+		return !m.Has_Solid_Element(Character.get(i).getX()+1,Character.get(i).getY());
 	}
 	
-	private boolean MoveUpPermitted(){
-		if(m.Out_Of_Bounds(Character.getX(),Character.getY()-1)==true)
+	private boolean MoveDownPermitted(int i){
+		if(m.Out_Of_Bounds(Character.get(i).getX(),Character.get(i).getY()+1)==true || Character.get(i).Can_Walk()==false)
 			return false;
 		
-		return !m.Has_Solid_Element(Character.getX(),Character.getY()-1);
+		return !m.Has_Solid_Element(Character.get(i).getX(),Character.get(i).getY()+1);
+	}
+	
+	private boolean MoveUpPermitted(int i){
+		if(m.Out_Of_Bounds(Character.get(i).getX(),Character.get(i).getY()-1)==true || Character.get(i).Can_Walk()==false)
+			return false;
+		
+		return !m.Has_Solid_Element(Character.get(i).getX(),Character.get(i).getY()-1);
 	}
 }
