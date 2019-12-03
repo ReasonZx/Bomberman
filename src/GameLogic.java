@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import org.newdawn.slick.SlickException;
 
+import org.newdawn.slick.SlickException;
+
 public class GameLogic {
 	protected ArrayList<Bomber> Character = new ArrayList<Bomber>();
 	protected Map m;

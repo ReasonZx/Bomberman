@@ -1,3 +1,4 @@
+import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -39,6 +40,7 @@ public class Bomber extends Element{
 		rightkey=k4;
 		actionkey=k5;
 
+		img = new Image("sprites/parado.png");
 		bomb_cd=false;
 		Walking_cd=false;
 		//direction=0;

@@ -12,7 +12,6 @@ public class Gamestate extends BasicGameState{
 	 static GameLogic L;
 	 private ArrayList<Bomber> players = new ArrayList<Bomber>();
 	 static Wall walls;
-	 static Bomb bombs;
 	 private ArrayList<Element> elements;
 	 private Image_Library lib;
 	 KeyPresses Input;

@@ -20,7 +20,7 @@ public class GameOverState extends BasicGameState{
 	}
 
 	public int getID() {
-		return 3;
+		return 4;
 	}
 
 }

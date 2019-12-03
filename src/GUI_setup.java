@@ -16,7 +16,8 @@ public class GUI_setup extends StateBasedGame{
 	}
 
 	public void initStatesList(GameContainer container) throws SlickException {
-		this.addState(new StartGameState());
+		this.addState(new Menu());
+		this.addState(new LogIn());
 		this.addState(new Gamestate());
 		this.addState(new GameOverState());
 		}

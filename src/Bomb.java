@@ -1,6 +1,7 @@
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 public class Bomb extends Element{
@@ -15,6 +16,8 @@ public class Bomb extends Element{
 		Solid=true;
 		GL.lib.Flag_For_Change(this,Bomb_Black);
 		L=GL;
+		img = new Image("sprites/normal_bomb.png");
+
 		GUI_Scale=64;
 		GUI_OffsetX=0;
 		GUI_OffsetY=0;
