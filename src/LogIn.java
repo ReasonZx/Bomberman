@@ -123,8 +123,8 @@ public class LogIn extends BasicGameState{
 			float back_scale = (float) 0.1;
 			float login_scale = (float) 0.5;
 			
-			g.drawString(this.User, 500, 10);
-			g.drawString(this.Pass, 500, 30);
+			//g.drawString(this.User, 500, 10);
+			//g.drawString(this.Pass, 500, 30);
 			g.drawString("Username", 120, 200);
 			this.Username.render(gc, g);
 			g.drawString("Password", 120, 300);
