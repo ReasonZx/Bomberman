@@ -79,7 +79,7 @@ public class Gamestate extends BasicGameState{
 	}
 
 	public int getID() {
-		return 2;
+		return 3;
 	}
 	
 	public class KeyPresses implements KeyListener{
