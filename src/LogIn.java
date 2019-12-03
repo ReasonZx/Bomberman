@@ -4,10 +4,6 @@ import org.newdawn.slick.gui.*;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import java.awt.Font;
-import java.awt.FontFormatException;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import javax.swing.*;
 
 
 public class LogIn extends BasicGameState{

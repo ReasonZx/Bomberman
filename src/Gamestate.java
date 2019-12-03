@@ -10,21 +10,23 @@ import org.newdawn.slick.state.StateBasedGame;
 public class Gamestate extends BasicGameState{
 
 	 static GameLogic L;
-	 private ArrayList<Bomber> players = new ArrayList<Bomber>();
-	 static Wall walls;
-	 private ArrayList<Element> elements;
+	 private ArrayList<Bomber> players;
 	 private Image_Library lib;
 	 KeyPresses Input;
 	 protected int Last_key=0;
 	 protected char Last_c=0;
 	 protected int counter=0;
+	 private int dead;
 	
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-		 
+		Input = new KeyPresses();
+	}
+	
+	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		 lib = new Image_Library();
 	     L=new GameLogic(lib);
+	     players = new ArrayList<Bomber>();
 	     players.add(new Bomber(1,1,L,0,1,2,3,87,83,65,68,32));
-	     arg0.getInput();
 	     players.add(new Bomber(11,8,L,4,2,5,6,org.newdawn.slick.Input.KEY_UP,
 											  org.newdawn.slick.Input.KEY_DOWN,
 											  org.newdawn.slick.Input.KEY_LEFT,
@@ -32,14 +34,14 @@ public class Gamestate extends BasicGameState{
 											  org.newdawn.slick.Input.KEY_RSHIFT));
 	     L.Create_Map(2);
 	     L.Place_Characters(players);
-	     Input = new KeyPresses();
+	     
 	     arg0.getInput().addKeyListener(Input);
 	}
 
 	public void update(GameContainer container, StateBasedGame sbg, int arg2) throws SlickException {
 		if (container.getInput().isKeyDown(Last_key)==true) {
 			counter++;
-			if(counter>20)
+			if(counter>200)
 				Input.keyPressed(Last_key, Last_c);
 		}
 		else {
@@ -49,18 +51,21 @@ public class Gamestate extends BasicGameState{
 		Input.inputEnded();
 		
 		lib.Run_Changes();
-		int dead=L.Death_Check();
+		dead=L.Death_Check();
 		
 		if(dead!=0) {
-							//Go to Game Over
+			sbg.enterState(4);		//Go to Game Over
 		}
 	}
 	
+	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+		arg0.getInput().removeKeyListener(Input);
+	}
 
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics g) throws SlickException {
 		//g.drawString("Game state", 50, 50);
 		//g.drawString(player1.toString(),100,100);
-		
+		ArrayList<Element> elements;
 		
 		for(int x = 0 ; x < L.m.Get_RightBound() ; x++) {
 			for(int y = 0 ; y < L.m.Get_BotBound() ; y++) {
@@ -79,7 +84,11 @@ public class Gamestate extends BasicGameState{
 	}
 
 	public int getID() {
-		return 2;
+		return 3;
+	}
+	
+	public int getDeath() {
+		return dead;
 	}
 	
 	public class KeyPresses implements KeyListener{
@@ -111,7 +120,7 @@ public class Gamestate extends BasicGameState{
 		@Override
 		public void keyPressed(int key, char c) {
 			// TODO Auto-generated method stub
-			
+			System.out.println("KEYPRESSED");
 			String tmp = new String();
 			tmp="" + c;
 			tmp=tmp.toUpperCase();
