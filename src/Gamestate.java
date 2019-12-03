@@ -17,9 +17,12 @@ public class Gamestate extends BasicGameState{
 	 protected char Last_c=0;
 	 protected int counter=0;
 	 private int dead;
+	 private GUI_setup sbg;
 	
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		Input = new KeyPresses();
+		sbg=(GUI_setup) arg1;
+		sbg.Set_Game_State(getID());
 	}
 	
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -38,7 +41,7 @@ public class Gamestate extends BasicGameState{
 	     arg0.getInput().addKeyListener(Input);
 	}
 
-	public void update(GameContainer container, StateBasedGame sbg, int arg2) throws SlickException {
+	public void update(GameContainer container, StateBasedGame arg1, int arg2) throws SlickException {
 		if (container.getInput().isKeyDown(Last_key)==true) {
 			counter++;
 			if(counter>200)
@@ -54,7 +57,7 @@ public class Gamestate extends BasicGameState{
 		dead=L.Death_Check();
 		
 		if(dead!=0) {
-			sbg.enterState(4);		//Go to Game Over
+			sbg.enterState(sbg.Get_GameOver_State());		//Go to Game Over
 		}
 	}
 	

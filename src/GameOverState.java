@@ -9,11 +9,12 @@ public class GameOverState extends BasicGameState{
 	private int Winner;
 	private Gamestate Game;
 	private KeyPressAny Input;
-	protected StateBasedGame sbg;
+	protected GUI_setup sbg;
 	
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		Input = new KeyPressAny();
-		sbg=arg1;
+		sbg=(GUI_setup) arg1;
+		sbg.Set_GameOver_State(getID());
 	}
 	
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -71,7 +72,7 @@ public class GameOverState extends BasicGameState{
 
 		@Override
 		public void keyPressed(int arg0, char arg1) {
-			sbg.enterState(1);
+			sbg.enterState(sbg.Get_Menu_State());
 		}
 
 		@Override
