@@ -79,7 +79,7 @@ public class GameLogic {
 	public int Death_Check(){
 		for(int i=0;i<Character.size();i++)
 			if(Character.get(i).Death_Check()==true){
-				return i;
+				return i+1;
 			}
 		return 0;
 	}
