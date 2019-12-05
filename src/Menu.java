@@ -11,12 +11,14 @@ public class Menu extends BasicGameState{
 	
 	Image exitGame;
 	Image logIn;
+	Image Guest;
 	private GUI_setup sbg;
 	
 
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		logIn = new Image("sprites/logIn.png");
 		exitGame = new Image("sprites/exitGame.png");
+		Guest = new Image("sprites/play.png");
 		sbg=(GUI_setup) arg1;
 		sbg.Set_Menu_State(getID());
 	}
@@ -36,11 +38,18 @@ public class Menu extends BasicGameState{
 				System.exit(0);
 			}
 		}
+		
+		if((posX>340 && posX<400) && (posY > 120 && posY < 150)) {	// ver tamanhos certos dos botões
+			if(Mouse.isButtonDown(0)) {
+				sbg.enterState(sbg.Get_Game_State());
+			}
+		}
 	}
 	
 
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics g) throws SlickException {
-		g.drawString("BOMBERMAN", 350, 100);
+		g.drawString("BOMBERMAN", 350, 50);
+		Guest.draw(340, 120);
 		logIn.draw(225,200);
 		exitGame.draw(240,400);
 	}
