@@ -90,11 +90,11 @@ public class LogIn extends BasicGameState{
 				if(Mouse.isButtonDown(0)) {
 					if(this.Pass.equals("1234") && this.User.equals("root")) {
 						error_login=false;
-						sbg.enterState(sbg.Get_Game_State());
+						sbg.enterState(sbg.Get_MainMenu_State());
 					}
 					else {
-						Font font = new Font("Verdana", Font.BOLD, 20);
-						TrueTypeFont trueTypeFont = new TrueTypeFont(font, true);
+						//Font font = new Font("Verdana", Font.BOLD, 20);
+						//TrueTypeFont trueTypeFont = new TrueTypeFont(font, true);
 						error_login=true;
 					}
 				}

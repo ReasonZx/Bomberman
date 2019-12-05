@@ -22,7 +22,6 @@ public class Menu extends BasicGameState{
 	}
 
 	public void update(GameContainer container, StateBasedGame arg1, int delta) throws SlickException {
-		delta = 60;
 		int posX = Mouse.getX();
 		int posY = 600 - Mouse.getY();
 		if((posX>125 && posX<400) && (posY > 200 && posY < 300)) {		// ver tamanhos certos dos botões

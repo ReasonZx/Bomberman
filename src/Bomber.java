@@ -8,6 +8,7 @@ public class Bomber extends Element{
 	protected boolean bomb_cd;
 	protected boolean Walking_cd;
 	private int cooldown = 500; //milliseconds
+	private int bomb_cooldown=1000;
 	protected int move_res = 5;
 	protected int progression_count=move_res;
 	protected int direction;	//0-down 1-left 2-up 3-right
@@ -83,7 +84,7 @@ public class Bomber extends Element{
 	public void Used_Bomb(){
 		bomb_cd=true;
 		Timer tt = new Timer();
-		tt.schedule(new Bomb_Cd(), 1000);
+		tt.schedule(new Bomb_Cd(), bomb_cooldown);
 	}
 	
 	public boolean Can_Use_Bomb(){
@@ -201,6 +202,19 @@ public class Bomber extends Element{
 	
 	public int Get_Action_Key() {
 		return actionkey;
+	}
+	
+	public void Set_Walking_Speed(int x) {
+		cooldown=x;
+	}
+	
+	public void Set_Moving_Resolution(int x) {
+		move_res=x;
+		progression_count=move_res;
+	}
+	
+	public void Set_Bomb_Cooldown(int x) {
+		bomb_cooldown=x;
 	}
 	
 	private void initialize_images(int c1,int c2,int c3,int c4) {

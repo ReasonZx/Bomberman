@@ -123,7 +123,7 @@ public class Gamestate extends BasicGameState{
 		@Override
 		public void keyPressed(int key, char c) {
 			// TODO Auto-generated method stub
-			System.out.println("KEYPRESSED");
+			//System.out.println("KEYPRESSED");
 			String tmp = new String();
 			tmp="" + c;
 			tmp=tmp.toUpperCase();
