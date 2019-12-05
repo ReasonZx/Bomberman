@@ -93,12 +93,31 @@ public class LogIn extends BasicGameState{
 						sbg.enterState(sbg.Get_Game_State());
 					}
 					else {
-						Font font = new Font("Verdana", Font.BOLD, 20);
-						TrueTypeFont trueTypeFont = new TrueTypeFont(font, true);
 						error_login=true;
 					}
 				}
 			}
+			
+			if(this.Password.hasFocus() && gc.getInput().isKeyPressed(15)) {
+				this.Username.setFocus(true);
+			}
+			
+			
+			if(this.Username.hasFocus() && gc.getInput().isKeyPressed(15)) {
+				this.Password.setFocus(true);
+			}
+			
+			if(this.Password.hasFocus() && gc.getInput().isKeyPressed(28)) {
+				if(this.Pass.equals("1234") && this.User.equals("root")) {
+					error_login=false;
+					this.Password.setFocus(false);
+					sbg.enterState(sbg.Get_Game_State());
+				}
+				else {
+					error_login=true;
+				}
+			}
+			
 			String temp = new String();
 			
 			if(this.Password.hasFocus()) {

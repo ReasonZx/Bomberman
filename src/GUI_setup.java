@@ -5,6 +5,8 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class GUI_setup extends StateBasedGame{
 	private int Menu_ID,Login_ID,Game_ID,GameOver_ID;
+	private static int display_x;
+	private static int display_y;
 
 	public GUI_setup(String title) {
 		super(title);
@@ -12,7 +14,10 @@ public class GUI_setup extends StateBasedGame{
 	
 	public static void main(String args[]) throws SlickException {
 		AppGameContainer app = new AppGameContainer(new GUI_setup("Setup"));
-		app.setDisplayMode(800, 600, false);
+		display_x = 1280;
+		display_y = 720;
+		app.setDisplayMode(display_x, display_y, false);
+		app.setShowFPS(false);
 		app.start();
 	}
 
@@ -54,4 +59,13 @@ public class GUI_setup extends StateBasedGame{
 	public void Set_GameOver_State(int x) {
 		GameOver_ID=x;
 	}
+	
+	public int Get_Display_height() {
+		return display_y;
+	}
+	
+	public int Get_Display_width() {
+		return display_x;
+	}
+	
 }
