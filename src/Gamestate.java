@@ -29,16 +29,31 @@ public class Gamestate extends BasicGameState{
 		 lib = new Image_Library();
 	     L=new GameLogic(lib);
 	     players = new ArrayList<Bomber>();
-	     players.add(new Bomber(1,1,L,0,1,2,3,87,83,65,68,32));
-	     players.add(new Bomber(11,8,L,4,2,5,6,org.newdawn.slick.Input.KEY_UP,
-											  org.newdawn.slick.Input.KEY_DOWN,
-											  org.newdawn.slick.Input.KEY_LEFT,
-											  org.newdawn.slick.Input.KEY_RIGHT,
-											  org.newdawn.slick.Input.KEY_RSHIFT));
+	     int [][] Settings=sbg.Get_Settings();
+	     players.add(new Bomber(1,1,L,	Settings[0][0],
+	    		 						Settings[0][1],
+	    		 						Settings[0][2],
+	    		 						Settings[0][3],
+	    		 						Settings[0][4],
+	    		 						Settings[0][5],
+	    		 						Settings[0][6],
+	    		 						Settings[0][7],
+	    		 						Settings[0][8]));
+	     
+	     players.add(new Bomber(11,8,L,	Settings[1][0],
+										Settings[1][1],
+										Settings[1][2],
+										Settings[1][3],
+										Settings[1][4],
+										Settings[1][5],
+										Settings[1][6],
+										Settings[1][7],
+										Settings[1][8]));
 	     L.Create_Map(2);
 	     L.Place_Characters(players);
 	     
 	     arg0.getInput().addKeyListener(Input);
+	     arg0.getInput().clearMousePressedRecord();
 	}
 
 	public void update(GameContainer container, StateBasedGame arg1, int arg2) throws SlickException {
@@ -124,15 +139,9 @@ public class Gamestate extends BasicGameState{
 		public void keyPressed(int key, char c) {
 			// TODO Auto-generated method stub
 			//System.out.println("KEYPRESSED");
-			String tmp = new String();
-			tmp="" + c;
-			tmp=tmp.toUpperCase();
 			
 			try {
-				if((int)tmp.charAt(0)!=0)
-					L.Action((int)tmp.charAt(0));
-				else
-					L.Action(key);
+				L.Action(key);
 			} catch (SlickException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

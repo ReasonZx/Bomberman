@@ -31,6 +31,7 @@ public class GameOverState extends BasicGameState{
 		block=true;
 		Timer tt = new Timer();
 		tt.schedule(new Blocker(), block_time);
+		arg0.getInput().clearMousePressedRecord();
 	}
 
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException { 

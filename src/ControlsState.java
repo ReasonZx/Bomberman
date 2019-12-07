@@ -1,6 +1,8 @@
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Rectangle;
+import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -18,12 +20,16 @@ public class ControlsState extends BasicGameState{
 	@Override
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		// TODO Auto-generated method stub
-		
+		arg0.getInput().clearMousePressedRecord();	
 	}
 
 	@Override
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
 		// TODO Auto-generated method stub
+		Shape R1 = new Rectangle(50, 50, 300, 450);
+		Shape R2 = new Rectangle(450, 50, 300, 450);
+		arg2.draw(R1);
+		arg2.draw(R2);
 		
 	}
 
@@ -44,5 +50,4 @@ public class ControlsState extends BasicGameState{
 		// TODO Auto-generated method stub
 		return 6;
 	}
-
 }

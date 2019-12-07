@@ -218,16 +218,16 @@ public class Bomber extends Element{
 	}
 	
 	private void initialize_images(int c1,int c2,int c3,int c4) {
-		StopDown = "sprites/D_"   + c1 + c2 + c3 + c4 + ".png";
+		StopDown = 	"sprites/D_"   + c1 + c2 + c3 + c4 + ".png";
 		Down1 = 	"sprites/D1_" + c1 + c2 + c3 + c4 + ".png";
 		Down2 = 	"sprites/D2_" + c1 + c2 + c3 + c4 + ".png";
 		StopUp =	"sprites/U_"  + c1 + c2 + c3 + c4 + ".png";
 		Up1 = 		"sprites/U1_" + c1 + c2 + c3 + c4 + ".png";
 		Up2 = 		"sprites/U2_" + c1 + c2 + c3 + c4 + ".png";
-		StopLeft = "sprites/L_"   + c1 + c2 + c3 + c4 + ".png";
+		StopLeft = 	"sprites/L_"   + c1 + c2 + c3 + c4 + ".png";
 		Left1 = 	"sprites/L1_" + c1 + c2 + c3 + c4 + ".png";
 		Left2 = 	"sprites/L2_" + c1 + c2 + c3 + c4 + ".png";
-		StopRight ="sprites/R_"   + c1 + c2 + c3 + c4 + ".png";
+		StopRight =	"sprites/R_"   + c1 + c2 + c3 + c4 + ".png";
 		Right1 =	"sprites/R1_" + c1 + c2 + c3 + c4 + ".png";
 		Right2 = 	"sprites/R2_" + c1 + c2 + c3 + c4 + ".png";
 	}

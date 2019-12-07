@@ -5,6 +5,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class GUI_setup extends StateBasedGame{
 	private int Menu_ID,Login_ID,Game_ID,GameOver_ID,MainMenu_ID,Controls_ID;
+	private Settings Player_Settings;
 
 	public GUI_setup(String title) {
 		super(title);
@@ -23,6 +24,8 @@ public class GUI_setup extends StateBasedGame{
 		this.addState(new GameOverState());
 		this.addState(new MainMenuState());
 		this.addState(new ControlsState());
+		Player_Settings= new Settings();
+		Player_Settings.init_Settings();
 		}
 	
 	public int Get_Menu_State() {
@@ -71,5 +74,13 @@ public class GUI_setup extends StateBasedGame{
 	
 	public void Set_Controls_State(int x) {
 		Controls_ID=x;
+	}
+	
+	public int[][] Get_Settings() {
+		return Player_Settings.Get_Settings();
+	}
+	
+	public void Set_Settings(int[][] x) {
+		Player_Settings.Set_Settings(x);
 	}
 }
