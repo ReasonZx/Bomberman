@@ -39,6 +39,7 @@ public class MainMenuState extends BasicGameState{
 		// TODO Auto-generated method stub
 		int posX = arg0.getInput().getMouseX();
 		int posY = arg0.getInput().getMouseY();
+		
 		if((posX>125 && posX<400) && (posY > 200 && posY < 300)) {		// ver tamanhos certos dos botões
 			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				sbg.enterState(sbg.Get_Game_State());

@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
@@ -82,5 +84,18 @@ public class GUI_setup extends StateBasedGame{
 	
 	public void Set_Settings(int[][] x) {
 		Player_Settings.Set_Settings(x);
+	}
+	
+	public void Change_Settings_Key(int key,int player,int pos) {
+		Player_Settings.Add_New_Key(key, player, pos);
+	}
+	
+	public void Reset_Settings() {
+		try {
+			Player_Settings.Write_Default_Settings();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

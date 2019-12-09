@@ -63,7 +63,7 @@ public class GameOverState extends BasicGameState{
 	}
 
 	private class KeyPressAny implements KeyListener{
-		boolean used=false;
+		protected boolean used=false;
 		@Override
 		public void inputEnded() {
 			// TODO Auto-generated method stub

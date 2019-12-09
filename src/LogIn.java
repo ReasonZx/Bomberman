@@ -52,8 +52,15 @@ public class LogIn extends BasicGameState{
 	      this.User = new String();
 	      
 	      this.Back = new Image("sprites/back.png");
-	      this.Login = new Image("sprites/logIn.png");
-	      
+	      this.Login = new Image("sprites/logIn.png");	      
+	}
+	
+	@Override
+	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+		// TODO Auto-generated method stub
+		arg0.getInput().clearMousePressedRecord();
+		Username.setAcceptingInput(true);
+		Password.setAcceptingInput(true);
 	}
 
 	public void update(GameContainer gc, StateBasedGame arg1, int delta) throws SlickException {
@@ -135,6 +142,13 @@ public class LogIn extends BasicGameState{
 				trueTypeFont.drawString(300, 150, "Incorrect Username or Password", Color.red);
 			}
 			
+	}
+	
+	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+		// TODO Auto-generated method stub
+		arg0.getInput().clearMousePressedRecord();
+		Username.setAcceptingInput(false);
+		Password.setAcceptingInput(false);
 	}
 
 	public int getID() {
