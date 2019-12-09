@@ -8,6 +8,8 @@ import org.newdawn.slick.state.StateBasedGame;
 public class GUI_setup extends StateBasedGame{
 	private int Menu_ID,Login_ID,Game_ID,GameOver_ID,MainMenu_ID,Controls_ID;
 	private Settings Player_Settings;
+	private static int display_x;
+	private static int display_y;
 
 	public GUI_setup(String title) {
 		super(title);
