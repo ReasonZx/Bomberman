@@ -81,6 +81,9 @@ public class Settings {
 										Integer.toString(Input.KEY_RIGHT),
 										Integer.toString(Input.KEY_RSHIFT));
 		Files.write(Setting,s,StandardCharsets.UTF_8);
+		for(int i=0;i<2;i++)
+			for(int j=0;j<9;j++)
+				Settings_List[i][j]=Integer.parseInt(s.get(j+i*9));
 	}
 	
 	private void Write_Settings() throws IOException {

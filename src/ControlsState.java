@@ -26,6 +26,7 @@ public class ControlsState extends BasicGameState{
 	private int ControlsBoxHeight=500;
 	private Font myFont;
 	private int ResetX=650,ResetY=560;
+	private int[][] Settings;
 	
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -46,6 +47,8 @@ public class ControlsState extends BasicGameState{
 		arg0.getInput().clearMousePressedRecord();
 		arg0.getInput().addKeyListener(KeyInput);
 		KeyInput.setAcceptingInput(false);
+		Settings=sbg.Get_Settings();
+		
 	}
 
 	@Override
@@ -57,11 +60,15 @@ public class ControlsState extends BasicGameState{
 		arg2.setColor(Color.white);
 		arg2.fill(R1);
 		arg2.fill(R2);
-		for(int i=0;i<5;i++)
+		for(int i=0;i<5;i++) {
+			myFont.drawString(50f + ControlsBoxLenght/2f - myFont.getWidth(Input.getKeyName(Settings[0][i+4]))/2f, ConfigY+myFont.getHeight(Input.getKeyName(Settings[0][i+4]))/2f+(i*((ControlsBoxHeight-200)/4)), Input.getKeyName(Settings[0][i+4]),Color.black);
 			arg2.drawImage(Configuration,ConfigX1,ConfigY+(i*((ControlsBoxHeight-200)/4)));
+		}
 		
-		for(int i=0;i<5;i++)
+		for(int i=0;i<5;i++) {
+			myFont.drawString(450f + ControlsBoxLenght/2f - myFont.getWidth(Input.getKeyName(Settings[1][i+4]))/2f, ConfigY+myFont.getHeight(Input.getKeyName(Settings[1][i+4]))/2f+(i*((ControlsBoxHeight-200)/4)), Input.getKeyName(Settings[1][i+4]),Color.black);
 			arg2.drawImage(Configuration,ConfigX2,ConfigY+(i*((ControlsBoxHeight-200)/4)));
+		}
 		
 		arg2.drawImage(Reset_Button,ResetX,ResetY);
 		
@@ -88,8 +95,10 @@ public class ControlsState extends BasicGameState{
 			butt=Configuration_Button_Pressed(posX,posY,arg0);
 			if(butt!=0) 
 				Configurating=true;
-			if(Reset_Button_Pressed(posX,posY,arg0))
+			if(Reset_Button_Pressed(posX,posY,arg0)) {
+				System.out.println("RESETTING");
 				sbg.Reset_Settings();
+			}
 				
 		}
 		else
@@ -136,10 +145,10 @@ public class ControlsState extends BasicGameState{
 	}
 	
 	private boolean Reset_Button_Pressed(int posX,int posY,GameContainer arg0) {
-		if((posX>ResetX && posX < Reset_Button.getWidth()) && (posY > ResetY  && posY < Reset_Button.getHeight() )) 	
+		if((posX>ResetX && posX < ResetX+Reset_Button.getWidth()) && (posY > ResetY  && posY < ResetY+Reset_Button.getHeight())) 	
 			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) 
 				return true;
-			
+		
 			
 		return false;
 	}
