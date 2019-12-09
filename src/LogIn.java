@@ -52,12 +52,19 @@ public class LogIn extends BasicGameState{
 	      Back = new Image("sprites/back.png");
 	      Login = new Image("sprites/logIn.png");
 	      
-	      login_x = 300;
-	      login_y = 400;
-	      
 	      backX = 50;
 	      backY = 50;
 	      
+	      login_x = 300;
+	      login_y = 400;
+	}
+	
+	@Override
+	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+		// TODO Auto-generated method stub
+		arg0.getInput().clearMousePressedRecord();
+		Username.setAcceptingInput(true);
+		Password.setAcceptingInput(true);
 	}
 
 	public void update(GameContainer gc, StateBasedGame arg1, int delta) throws SlickException {
@@ -67,29 +74,29 @@ public class LogIn extends BasicGameState{
 			
 			int posX = Mouse.getX();
 			int posY = sbg.Get_Display_height() - Mouse.getY();
-			if((posX > backX && posX < backX + Back.getWidth()) && (posY > backY && posY < backY + Back.getHeight())) {		// ver tamanhos certos dos botões	//go back
+			if((posX > backX && posX < backX + Back.getWidth()) && (posY > backY && posY < backY + Back.getHeight())) {		// ver tamanhos certos dos botï¿½es	//go back
 				if(Mouse.isButtonDown(0)) {
 					sbg.enterState(sbg.Get_Menu_State());
 				}
 			}
 			
-			if((posX > UserTextX && posX < (UserTextX + Username.getWidth())) && (posY > UserTextY && posY < (UserTextY + Username.getHeight()))) {		// ver tamanhos certos dos botões
+			if((posX > UserTextX && posX < (UserTextX + Username.getWidth())) && (posY > UserTextY && posY < (UserTextY + Username.getHeight()))) {		// ver tamanhos certos dos botï¿½es
 				if(Mouse.isButtonDown(0)) {
 					this.Username.setFocus(true);
 				}
 			}
 			
-			if((posX > PassTextX && posX < (PassTextX + Password.getWidth())) && (posY > PassTextY && posY < (PassTextY + Password.getHeight()))) {		// ver tamanhos certos dos botões
+			if((posX > PassTextX && posX < (PassTextX + Password.getWidth())) && (posY > PassTextY && posY < (PassTextY + Password.getHeight()))) {		// ver tamanhos certos dos botï¿½es
 				if(Mouse.isButtonDown(0)) {
 					this.Password.setFocus(true);
 				}
 			}
 			
-			if((posX > login_x && posX < login_x + Login.getWidth()) && (posY > login_y && posY < login_y + Login.getHeight())) {		// ver tamanhos certos dos botões
+			if((posX > login_x && posX < login_x + Login.getWidth()) && (posY > login_y && posY < login_y + Login.getHeight())) {		// ver tamanhos certos dos botï¿½es
 				if(Mouse.isButtonDown(0)) {
 					if(Pass.equals("1234") && User.equals("root")) {
 						error_login=false;
-						sbg.enterState(sbg.Get_Game_State());
+						sbg.enterState(sbg.Get_MainMenu_State());
 					}
 					else {
 						error_login=true;
@@ -150,6 +157,13 @@ public class LogIn extends BasicGameState{
 				trueTypeFont.drawString(300, 150, "Incorrect Username or Password", Color.red);
 			}
 			
+	}
+	
+	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+		// TODO Auto-generated method stub
+		arg0.getInput().clearMousePressedRecord();
+		Username.setAcceptingInput(false);
+		Password.setAcceptingInput(false);
 	}
 
 	public int getID() {

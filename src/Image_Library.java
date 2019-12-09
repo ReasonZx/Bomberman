@@ -13,7 +13,7 @@ public class Image_Library {
 	}
 	
 	public void Run_Changes() throws SlickException {
-		while(Flagged.size()!=0) {
+		while(Flagged.size()!=0 && Flagged_images.size()!=0) {
 			Flagged.get(0).Set_Image(new Image(Flagged_images.get(0)));
 			Flagged.remove(0);
 			Flagged_images.remove(0);

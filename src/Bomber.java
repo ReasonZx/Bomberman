@@ -8,6 +8,7 @@ public class Bomber extends Element{
 	protected boolean bomb_cd;
 	protected boolean Walking_cd;
 	private int cooldown = 500; //milliseconds
+	private int bomb_cooldown=1000;
 	protected int move_res = 5;
 	protected int progression_count=move_res;
 	protected int direction;	//0-down 1-left 2-up 3-right
@@ -83,7 +84,7 @@ public class Bomber extends Element{
 	public void Used_Bomb(){
 		bomb_cd=true;
 		Timer tt = new Timer();
-		tt.schedule(new Bomb_Cd(), 1000);
+		tt.schedule(new Bomb_Cd(), bomb_cooldown);
 	}
 	
 	public boolean Can_Use_Bomb(){
@@ -203,17 +204,30 @@ public class Bomber extends Element{
 		return actionkey;
 	}
 	
+	public void Set_Walking_Speed(int x) {
+		cooldown=x;
+	}
+	
+	public void Set_Moving_Resolution(int x) {
+		move_res=x;
+		progression_count=move_res;
+	}
+	
+	public void Set_Bomb_Cooldown(int x) {
+		bomb_cooldown=x;
+	}
+	
 	private void initialize_images(int c1,int c2,int c3,int c4) {
-		StopDown = "sprites/D_"   + c1 + c2 + c3 + c4 + ".png";
+		StopDown = 	"sprites/D_"   + c1 + c2 + c3 + c4 + ".png";
 		Down1 = 	"sprites/D1_" + c1 + c2 + c3 + c4 + ".png";
 		Down2 = 	"sprites/D2_" + c1 + c2 + c3 + c4 + ".png";
 		StopUp =	"sprites/U_"  + c1 + c2 + c3 + c4 + ".png";
 		Up1 = 		"sprites/U1_" + c1 + c2 + c3 + c4 + ".png";
 		Up2 = 		"sprites/U2_" + c1 + c2 + c3 + c4 + ".png";
-		StopLeft = "sprites/L_"   + c1 + c2 + c3 + c4 + ".png";
+		StopLeft = 	"sprites/L_"   + c1 + c2 + c3 + c4 + ".png";
 		Left1 = 	"sprites/L1_" + c1 + c2 + c3 + c4 + ".png";
 		Left2 = 	"sprites/L2_" + c1 + c2 + c3 + c4 + ".png";
-		StopRight ="sprites/R_"   + c1 + c2 + c3 + c4 + ".png";
+		StopRight =	"sprites/R_"   + c1 + c2 + c3 + c4 + ".png";
 		Right1 =	"sprites/R1_" + c1 + c2 + c3 + c4 + ".png";
 		Right2 = 	"sprites/R2_" + c1 + c2 + c3 + c4 + ".png";
 	}

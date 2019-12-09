@@ -1,3 +1,6 @@
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.KeyListener;
@@ -10,6 +13,8 @@ public class GameOverState extends BasicGameState{
 	private Gamestate Game;
 	private KeyPressAny Input;
 	protected GUI_setup sbg;
+	protected boolean block;
+	private int block_time=1000;
 	
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		Input = new KeyPressAny();
@@ -23,12 +28,16 @@ public class GameOverState extends BasicGameState{
 			Winner=2;
 		else
 			Winner=1;
-		arg0.getInput().addKeyListener(Input);
+		block=true;
+		Timer tt = new Timer();
+		tt.schedule(new Blocker(), block_time);
+		arg0.getInput().clearMousePressedRecord();
 	}
 
-	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
-		Input.inputStarted();	
-		Input.inputEnded();
+	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException { 
+		if(block==false) {
+			arg0.getInput().addKeyListener(Input);
+		}
 	}
 	
 
@@ -43,9 +52,18 @@ public class GameOverState extends BasicGameState{
 	public int getID() {
 		return 4;
 	}
+	
+	private class Blocker extends TimerTask{
 
-	public class KeyPressAny implements KeyListener{
-		boolean used=false;
+		@Override
+		public void run() {
+			block=false;
+		}
+		
+	}
+
+	private class KeyPressAny implements KeyListener{
+		protected boolean used=false;
 		@Override
 		public void inputEnded() {
 			// TODO Auto-generated method stub
@@ -72,6 +90,7 @@ public class GameOverState extends BasicGameState{
 
 		@Override
 		public void keyPressed(int arg0, char arg1) {
+			
 			sbg.enterState(sbg.Get_Menu_State());
 		}
 

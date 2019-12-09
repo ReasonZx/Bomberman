@@ -1,12 +1,13 @@
+import java.io.IOException;
+
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class GUI_setup extends StateBasedGame{
-	private int Menu_ID,Login_ID,Game_ID,GameOver_ID;
-	private static int display_x;
-	private static int display_y;
+	private int Menu_ID,Login_ID,Game_ID,GameOver_ID,MainMenu_ID,Controls_ID;
+	private Settings Player_Settings;
 
 	public GUI_setup(String title) {
 		super(title);
@@ -26,6 +27,10 @@ public class GUI_setup extends StateBasedGame{
 		this.addState(new LogIn());
 		this.addState(new Gamestate());
 		this.addState(new GameOverState());
+		this.addState(new MainMenuState());
+		this.addState(new ControlsState());
+		Player_Settings= new Settings();
+		Player_Settings.init_Settings();
 		}
 	
 	public int Get_Menu_State() {
@@ -42,6 +47,14 @@ public class GUI_setup extends StateBasedGame{
 	
 	public int Get_GameOver_State() {
 		return GameOver_ID;
+	}
+	
+	public int Get_MainMenu_State() {
+		return MainMenu_ID;
+	}
+	
+	public int Get_Controls_State() {
+		return Controls_ID;
 	}
 	
 	public void Set_Menu_State(int x) {
@@ -68,4 +81,33 @@ public class GUI_setup extends StateBasedGame{
 		return display_x;
 	}
 	
+	
+	public void Set_MainMenu_State(int x) {
+		MainMenu_ID=x;
+	}
+	
+	public void Set_Controls_State(int x) {
+		Controls_ID=x;
+	}
+	
+	public int[][] Get_Settings() {
+		return Player_Settings.Get_Settings();
+	}
+	
+	public void Set_Settings(int[][] x) {
+		Player_Settings.Set_Settings(x);
+	}
+	
+	public void Change_Settings_Key(int key,int player,int pos) {
+		Player_Settings.Add_New_Key(key, player, pos);
+	}
+	
+	public void Reset_Settings() {
+		try {
+			Player_Settings.Write_Default_Settings();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
