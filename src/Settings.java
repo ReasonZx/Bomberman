@@ -74,7 +74,7 @@ public class Settings {
 										Integer.toString(Input.KEY_A),
 										Integer.toString(Input.KEY_D),
 										Integer.toString(Input.KEY_SPACE),
-										"4","2","5","6",
+										"4","2","1","3",
 										Integer.toString(Input.KEY_UP),
 										Integer.toString(Input.KEY_DOWN),
 										Integer.toString(Input.KEY_LEFT),
