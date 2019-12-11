@@ -59,14 +59,12 @@ public class Gamestate extends BasicGameState{
 	public void update(GameContainer container, StateBasedGame arg1, int arg2) throws SlickException {
 		if (container.getInput().isKeyDown(Last_key)==true) {
 			counter++;
-			if(counter>200)
+			if(counter>100)
 				Input.keyPressed(Last_key, Last_c);
 		}
 		else {
 			counter=0;
-			Input.inputStarted();
 		}
-		Input.inputEnded();
 		
 		lib.Run_Changes();
 		dead=L.Death_Check();
@@ -93,8 +91,8 @@ public class Gamestate extends BasicGameState{
 						
 						if(tmp.Has_Image()) {
 							g.drawImage(tmp.Get_Image(),
-										tmp.Get_Scale()*tmp.getX() + tmp.Get_OffsetX(), 
-										tmp.Get_Scale()*tmp.getY() + tmp.Get_OffsetY());
+										tmp.Get_Scale()*(tmp.getX()) + tmp.Get_OffsetX(), 
+										tmp.Get_Scale()*(tmp.getY()) + tmp.Get_OffsetY());
 						}
 					}
 				}
@@ -110,23 +108,28 @@ public class Gamestate extends BasicGameState{
 	}
 	
 	public class KeyPresses implements KeyListener{
-		boolean used=false;
+		boolean usable=true;
 		@Override
 		public void inputEnded() {
 			// TODO Auto-generated method stub
-			used=false;
+			usable=false;
 		}
 
 		@Override
 		public void inputStarted() {
 			// TODO Auto-generated method stub
-			used = true;
+			usable = true;
 		}
 
 		@Override
 		public boolean isAcceptingInput() {
 			// TODO Auto-generated method stub
-			return used;
+			return usable;
+		}
+		
+		public void setAcceptingInput(boolean x) {
+			// TODO Auto-generated method stub
+			usable=x;
 		}
 
 		@Override

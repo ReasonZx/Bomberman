@@ -16,6 +16,8 @@ public class ControlsState extends BasicGameState{
 	protected GUI_setup sbg;
 	private Image Configuration;
 	private Image Reset_Button;
+	private Image Back_Button;
+	private Image Player1,Player2;
 	private int ConfigX1=300;
 	private int ConfigX2=700;
 	private int ConfigY=200;
@@ -26,6 +28,8 @@ public class ControlsState extends BasicGameState{
 	private int ControlsBoxHeight=500;
 	private Font myFont;
 	private int ResetX=650,ResetY=560;
+	private int BackX=30,BackY=560;
+	private int[][] Settings;
 	
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -38,6 +42,8 @@ public class ControlsState extends BasicGameState{
 		Configuration=Configuration.getScaledCopy((float)0.05);
 		Reset_Button= new Image("sprites/Reset_Button.png");
 		Reset_Button=Reset_Button.getScaledCopy(0.2f);
+		Back_Button= new Image("sprites/back.png");
+		Back_Button=Back_Button.getScaledCopy(0.1f);
 	}
 	
 	@Override
@@ -46,6 +52,11 @@ public class ControlsState extends BasicGameState{
 		arg0.getInput().clearMousePressedRecord();
 		arg0.getInput().addKeyListener(KeyInput);
 		KeyInput.setAcceptingInput(false);
+		Settings=sbg.Get_Settings();
+		Player1 = new Image("sprites/D_"   + Settings[0][0] + Settings[0][1] + Settings[0][2] + Settings[0][3] + ".png");
+		Player1=Player1.getScaledCopy(3);
+		Player2 = new Image("sprites/D_"   + Settings[1][0] + Settings[1][1] + Settings[1][2] + Settings[1][3] + ".png");
+		Player2=Player2.getScaledCopy(3);
 	}
 
 	@Override
@@ -57,13 +68,20 @@ public class ControlsState extends BasicGameState{
 		arg2.setColor(Color.white);
 		arg2.fill(R1);
 		arg2.fill(R2);
-		for(int i=0;i<5;i++)
+		for(int i=0;i<5;i++) {
+			myFont.drawString(50f + ControlsBoxLenght/2f - myFont.getWidth(Input.getKeyName(Settings[0][i+4]))/2f, ConfigY+myFont.getHeight(Input.getKeyName(Settings[0][i+4]))/2f+(i*((ControlsBoxHeight-200)/4)), Input.getKeyName(Settings[0][i+4]),Color.black);
 			arg2.drawImage(Configuration,ConfigX1,ConfigY+(i*((ControlsBoxHeight-200)/4)));
+		}
 		
-		for(int i=0;i<5;i++)
+		for(int i=0;i<5;i++) {
+			myFont.drawString(450f + ControlsBoxLenght/2f - myFont.getWidth(Input.getKeyName(Settings[1][i+4]))/2f, ConfigY+myFont.getHeight(Input.getKeyName(Settings[1][i+4]))/2f+(i*((ControlsBoxHeight-200)/4)), Input.getKeyName(Settings[1][i+4]),Color.black);
 			arg2.drawImage(Configuration,ConfigX2,ConfigY+(i*((ControlsBoxHeight-200)/4)));
+		}
 		
 		arg2.drawImage(Reset_Button,ResetX,ResetY);
+		arg2.drawImage(Back_Button,BackX,BackY);
+		arg2.drawImage(Player1,50 + ControlsBoxLenght/2f - Player1.getWidth()/2f,50 + Player1.getHeight()/2f);
+		arg2.drawImage(Player2,450 + ControlsBoxLenght/2f - Player2.getWidth()/2f,50 + Player2.getHeight()/2f);
 		
 		if(Configurating()) {
 			arg2.setColor(Color.black);
@@ -73,8 +91,12 @@ public class ControlsState extends BasicGameState{
 	                    250, "Press a new key");
 			myFont.drawString(arg0.getWidth()/2f - myFont.getWidth("Currently:")/2f,
                     300, "Currently:");
-			myFont.drawString(arg0.getWidth()/2f - myFont.getWidth("< "+ "W" +" >")/2f,
-                    350, "< "+ "W" +" >");
+			if(butt<6)
+				myFont.drawString(arg0.getWidth()/2f - myFont.getWidth("< "+ "W" +" >")/2f,
+	                    350, "< "+ Input.getKeyName(Settings[0][butt+3]) +" >");
+			else
+				myFont.drawString(arg0.getWidth()/2f - myFont.getWidth("< "+ "W" +" >")/2f,
+                    350, "< "+ Input.getKeyName(Settings[1][butt-6+4]) +" >");
 		}
 	}
 
@@ -88,9 +110,11 @@ public class ControlsState extends BasicGameState{
 			butt=Configuration_Button_Pressed(posX,posY,arg0);
 			if(butt!=0) 
 				Configurating=true;
-			if(Reset_Button_Pressed(posX,posY,arg0))
+			if(Reset_Button_Pressed(posX,posY,arg0)) {
 				sbg.Reset_Settings();
-				
+			}
+			if(Back_Button_Pressed(posX,posY,arg0))
+				sbg.enterState(sbg.Get_MainMenu_State());
 		}
 		else
 		{
@@ -136,10 +160,19 @@ public class ControlsState extends BasicGameState{
 	}
 	
 	private boolean Reset_Button_Pressed(int posX,int posY,GameContainer arg0) {
-		if((posX>ResetX && posX < Reset_Button.getWidth()) && (posY > ResetY  && posY < Reset_Button.getHeight() )) 	
+		if((posX>ResetX && posX < ResetX+Reset_Button.getWidth()) && (posY > ResetY  && posY < ResetY+Reset_Button.getHeight())) 	
 			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) 
 				return true;
+		
 			
+		return false;
+	}
+	
+	private boolean Back_Button_Pressed(int posX,int posY,GameContainer arg0) {
+		if((posX>BackX && posX < BackX+Back_Button.getWidth()) && (posY > BackY  && posY < BackY+Back_Button.getHeight())) 	
+			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) 
+				return true;
+		
 			
 		return false;
 	}

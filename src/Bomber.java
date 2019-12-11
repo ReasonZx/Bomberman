@@ -41,13 +41,13 @@ public class Bomber extends Element{
 		rightkey=k4;
 		actionkey=k5;
 
-		img = new Image("sprites/parado.png");
+		img = new Image(StopDown);
 		bomb_cd=false;
 		Walking_cd=false;
 		//direction=0;
 		GUI_Scale=64;
-		GUI_OffsetX=-16;
-		GUI_OffsetY=-16;
+		GUI_OffsetX=img.getWidth()/2;
+		GUI_OffsetY=img.getHeight()/2;
 	}
 	
 	public void MoveUp() {
@@ -162,26 +162,26 @@ public class Bomber extends Element{
 	
 	public int Get_OffsetX() {
 		if(direction==0)
-			return -16;
+			return GUI_OffsetX;
 		if(direction==1)
-			return (move_res-progression_count)*GUI_Scale/(move_res+1)-16;
+			return (move_res-progression_count)*GUI_Scale/(move_res+1)+GUI_OffsetX;
 		if(direction==2)
-			return -16;
+			return GUI_OffsetX;
 		if(direction==3)
-			return -(move_res-progression_count)*GUI_Scale/(move_res+1)-16;
-		return -16;
+			return -(move_res-progression_count)*GUI_Scale/(move_res+1)+GUI_OffsetX;
+		return GUI_OffsetX;
 	}
 	
 	public int Get_OffsetY() {
 		if(direction==0)
-			return -(move_res-progression_count)*GUI_Scale/(move_res+1)-16;
+			return -(move_res-progression_count)*GUI_Scale/(move_res+1)+GUI_OffsetY;
 		if(direction==1)
-			return -16;
+			return GUI_OffsetY;
 		if(direction==2)
-			return (move_res-progression_count)*GUI_Scale/(move_res+1)-16;
+			return (move_res-progression_count)*GUI_Scale/(move_res+1)+GUI_OffsetY;
 		if(direction==3)
-			return -16;
-		return -16;
+			return GUI_OffsetY;
+		return GUI_OffsetY;
 	}
 	
 	public int Get_MoveUp_Key() {
