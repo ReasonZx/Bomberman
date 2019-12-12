@@ -53,9 +53,9 @@ public class ControlsState extends BasicGameState{
 		arg0.getInput().addKeyListener(KeyInput);
 		KeyInput.setAcceptingInput(false);
 		Settings=sbg.Get_Settings();
-		Player1 = new Image("sprites/D_"   + Settings[0][0] + Settings[0][1] + Settings[0][2] + Settings[0][3] + ".png");
+		Player1 = new Image("sprites/D_"   + Settings[0][0] + Settings[0][1] + ".png");
 		Player1=Player1.getScaledCopy(3);
-		Player2 = new Image("sprites/D_"   + Settings[1][0] + Settings[1][1] + Settings[1][2] + Settings[1][3] + ".png");
+		Player2 = new Image("sprites/D_"   + Settings[1][0] + Settings[1][1] + ".png");
 		Player2=Player2.getScaledCopy(3);
 	}
 
@@ -69,12 +69,12 @@ public class ControlsState extends BasicGameState{
 		arg2.fill(R1);
 		arg2.fill(R2);
 		for(int i=0;i<5;i++) {
-			myFont.drawString(50f + ControlsBoxLenght/2f - myFont.getWidth(Input.getKeyName(Settings[0][i+4]))/2f, ConfigY+myFont.getHeight(Input.getKeyName(Settings[0][i+4]))/2f+(i*((ControlsBoxHeight-200)/4)), Input.getKeyName(Settings[0][i+4]),Color.black);
+			myFont.drawString(50f + ControlsBoxLenght/2f - myFont.getWidth(Input.getKeyName(Settings[0][i+2]))/2f, ConfigY+myFont.getHeight(Input.getKeyName(Settings[0][i+2]))/2f+(i*((ControlsBoxHeight-200)/4)), Input.getKeyName(Settings[0][i+2]),Color.black);
 			arg2.drawImage(Configuration,ConfigX1,ConfigY+(i*((ControlsBoxHeight-200)/4)));
 		}
 		
 		for(int i=0;i<5;i++) {
-			myFont.drawString(450f + ControlsBoxLenght/2f - myFont.getWidth(Input.getKeyName(Settings[1][i+4]))/2f, ConfigY+myFont.getHeight(Input.getKeyName(Settings[1][i+4]))/2f+(i*((ControlsBoxHeight-200)/4)), Input.getKeyName(Settings[1][i+4]),Color.black);
+			myFont.drawString(450f + ControlsBoxLenght/2f - myFont.getWidth(Input.getKeyName(Settings[1][i+2]))/2f, ConfigY+myFont.getHeight(Input.getKeyName(Settings[1][i+2]))/2f+(i*((ControlsBoxHeight-200)/4)), Input.getKeyName(Settings[1][i+2]),Color.black);
 			arg2.drawImage(Configuration,ConfigX2,ConfigY+(i*((ControlsBoxHeight-200)/4)));
 		}
 		
@@ -92,11 +92,11 @@ public class ControlsState extends BasicGameState{
 			myFont.drawString(arg0.getWidth()/2f - myFont.getWidth("Currently:")/2f,
                     300, "Currently:");
 			if(butt<6)
-				myFont.drawString(arg0.getWidth()/2f - myFont.getWidth("< "+ "W" +" >")/2f,
-	                    350, "< "+ Input.getKeyName(Settings[0][butt+3]) +" >");
+				myFont.drawString(arg0.getWidth()/2f - myFont.getWidth("< "+ Input.getKeyName(Settings[0][butt+1]) +" >")/2f,
+	                    350, "< "+ Input.getKeyName(Settings[0][butt+1]) +" >");
 			else
-				myFont.drawString(arg0.getWidth()/2f - myFont.getWidth("< "+ "W" +" >")/2f,
-                    350, "< "+ Input.getKeyName(Settings[1][butt-6+4]) +" >");
+				myFont.drawString(arg0.getWidth()/2f - myFont.getWidth("< "+ Input.getKeyName(Settings[1][butt-6+2]) +" >")/2f,
+                    350, "< "+ Input.getKeyName(Settings[1][butt-6+2]) +" >");
 		}
 	}
 

@@ -13,6 +13,7 @@ public class Settings {
 	private Path Setting;
 	int[][] Settings_List;
 	
+	
 	public void init_Settings() {
 		Setting = Paths.get("Settings.txt");
 		try {
@@ -39,14 +40,14 @@ public class Settings {
 			return true;
 		
 		for(int i=0;i<2;i++)
-			for(int j=0;j<4;j++)
-				if(Settings_List[i][j]>6 || Settings_List[i][j]<0)
+			for(int j=0;j<2;j++)
+				if(Settings_List[i][j]>5 || Settings_List[i][j]<0)
 					return true;
 		//System.out.println("COLORS OKAY");
 		for(int i=0;i<2;i++)
-			for(int j=4;j<9;j++)
+			for(int j=2;j<7;j++)
 				for(int k=i;k<2;k++)
-					for(int l=j+1;l<9;l++)
+					for(int l=j+1;l<7;l++)
 						if(Settings_List[i][j]==Settings_List[k][l])
 							return true;
 		//System.out.println("CONTROLS OKAY");
@@ -55,26 +56,26 @@ public class Settings {
 
 	private int[][] Read_File() throws IOException {
 		List<String> s = Files.readAllLines(Setting);
-		int[][] tmp = new int[2][9];
+		int[][] tmp = new int[2][7];
 		
-		if(s.size()!=18)
+		if(s.size()!=14)
 			return null;
 		
 		for(int i=0;i<2;i++)
-			for(int j=0;j<9;j++)
-				tmp[i][j]=Integer.parseInt(s.get(j+i*9));	
+			for(int j=0;j<7;j++)
+				tmp[i][j]=Integer.parseInt(s.get(j+i*7));	
 		
 		return tmp;
 	}
 	
 	public void Write_Default_Settings() throws IOException {
-		List<String> s = Arrays.asList("0","1","2","3",
+		List<String> s = Arrays.asList("0","1",
 										Integer.toString(Input.KEY_W),
 										Integer.toString(Input.KEY_S),
 										Integer.toString(Input.KEY_A),
 										Integer.toString(Input.KEY_D),
 										Integer.toString(Input.KEY_SPACE),
-										"4","2","1","3",
+										"4","2",
 										Integer.toString(Input.KEY_UP),
 										Integer.toString(Input.KEY_DOWN),
 										Integer.toString(Input.KEY_LEFT),
@@ -82,15 +83,15 @@ public class Settings {
 										Integer.toString(Input.KEY_RSHIFT));
 		Files.write(Setting,s,StandardCharsets.UTF_8);
 		for(int i=0;i<2;i++)
-			for(int j=0;j<9;j++)
-				Settings_List[i][j]=Integer.parseInt(s.get(j+i*9));
+			for(int j=0;j<7;j++)
+				Settings_List[i][j]=Integer.parseInt(s.get(j+i*7));
 	}
 	
 	private void Write_Settings() throws IOException {
 		List<String> s = new ArrayList<String>();
 		
 		for(int i=0;i<2;i++)
-			for(int j=0;j<9;j++)
+			for(int j=0;j<7;j++)
 				s.add(Integer.toString(Settings_List[i][j]));
 		
 		Files.write(Setting,s,StandardCharsets.UTF_8);
@@ -107,11 +108,11 @@ public class Settings {
 	public void Add_New_Key(int key,int player,int pos) {
 		
 		for(int i=0;i<2;i++)
-			for(int j=4;j<9;j++)
+			for(int j=2;j<7;j++)
 				if(key==Settings_List[i][j]) 
-					Settings_List[i][j]=Settings_List[player-1][pos+4];
+					Settings_List[i][j]=Settings_List[player-1][pos+2];
 				
-		Settings_List[player-1][pos+4]=key;			
+		Settings_List[player-1][pos+2]=key;			
 		
 		try {
 			Write_Settings();
