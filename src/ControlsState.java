@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
@@ -6,8 +8,10 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
+import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -18,6 +22,9 @@ public class ControlsState extends BasicGameState{
 	private Image Reset_Button;
 	private Image Back_Button;
 	private Image Player1,Player2;
+	private Shape R1,R2,R3;
+	private ArrayList <Shape> T;
+	
 	private int ConfigX1=300;
 	private int ConfigX2=700;
 	private int ConfigY=200;
@@ -44,6 +51,9 @@ public class ControlsState extends BasicGameState{
 		Reset_Button=Reset_Button.getScaledCopy(0.2f);
 		Back_Button= new Image("sprites/back.png");
 		Back_Button=Back_Button.getScaledCopy(0.1f);
+		R1 = new Rectangle(50, 50, ControlsBoxLenght, ControlsBoxHeight); 
+		R2 = new Rectangle(450, 50, ControlsBoxLenght, ControlsBoxHeight);
+		R3 = new Rectangle(200, 200, 400, 200);
 	}
 	
 	@Override
@@ -57,17 +67,22 @@ public class ControlsState extends BasicGameState{
 		Player1=Player1.getScaledCopy(3);
 		Player2 = new Image("sprites/D_"   + Settings[1][0] + Settings[1][1] + ".png");
 		Player2=Player2.getScaledCopy(3);
+		T= new ArrayList<Shape>();
+		Set_Triangles();
 	}
 
 	@Override
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
 		// TODO Auto-generated method stub
-		Shape R1 = new Rectangle(50, 50, ControlsBoxLenght, ControlsBoxHeight);
-		Shape R2 = new Rectangle(450, 50, ControlsBoxLenght, ControlsBoxHeight);
-		Shape R3 = new Rectangle(200, 200, 400, 200);
 		arg2.setColor(Color.white);
 		arg2.fill(R1);
 		arg2.fill(R2);
+		arg2.setColor(Color.black);
+	
+		for(int i=0;i<T.size();i++) {
+			arg2.fill(T.get(i));
+		}
+		
 		for(int i=0;i<5;i++) {
 			myFont.drawString(50f + ControlsBoxLenght/2f - myFont.getWidth(Input.getKeyName(Settings[0][i+2]))/2f, ConfigY+myFont.getHeight(Input.getKeyName(Settings[0][i+2]))/2f+(i*((ControlsBoxHeight-200)/4)), Input.getKeyName(Settings[0][i+2]),Color.black);
 			arg2.drawImage(Configuration,ConfigX1,ConfigY+(i*((ControlsBoxHeight-200)/4)));
@@ -110,11 +125,30 @@ public class ControlsState extends BasicGameState{
 			butt=Configuration_Button_Pressed(posX,posY,arg0);
 			if(butt!=0) 
 				Configurating=true;
-			if(Reset_Button_Pressed(posX,posY,arg0)) {
+			
+			if(Reset_Button_Pressed(posX,posY,arg0)) 
 				sbg.Reset_Settings();
-			}
+			
 			if(Back_Button_Pressed(posX,posY,arg0))
 				sbg.enterState(sbg.Get_MainMenu_State());
+			
+			int arrow=Arrow_Button_Pressed(posX,posY,arg0);
+			if(arrow!=0) {
+				if(arrow%2==1)
+					if(arrow==1 || arrow==5)
+						sbg.Change_Settings_Color(arrow, 1, 0);
+					else
+						sbg.Change_Settings_Color(arrow, 1, 1);
+				else
+					if(arrow==2 || arrow==6)
+						sbg.Change_Settings_Color(arrow, 2, 0);
+					else
+						sbg.Change_Settings_Color(arrow, 2, 1);
+			}
+			Player1 = new Image("sprites/D_"   + Settings[0][0] + Settings[0][1] + ".png");
+			Player1=Player1.getScaledCopy(3);
+			Player2 = new Image("sprites/D_"   + Settings[1][0] + Settings[1][1] + ".png");
+			Player2=Player2.getScaledCopy(3);
 		}
 		else
 		{
@@ -126,7 +160,7 @@ public class ControlsState extends BasicGameState{
 	@Override
 	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		// TODO Auto-generated method stub
-		System.out.println("LEAVING");
+		//System.out.println("LEAVING");
 		arg0.getInput().removeKeyListener(KeyInput);
 	}
 
@@ -175,6 +209,15 @@ public class ControlsState extends BasicGameState{
 		
 			
 		return false;
+	}
+	
+	private int Arrow_Button_Pressed(int posX,int posY,GameContainer arg0) {
+		for(int i=0;i<T.size();i++)
+		if((posX>T.get(i).getX() && posX < T.get(i).getX()+ T.get(i).getWidth()) && (posY > T.get(i).getY()  && posY < T.get(i).getY()+ T.get(i).getHeight())) 	
+			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) 
+				return i+1;
+		
+		return 0;
 	}
 	
 	private class KeyPressChange implements KeyListener{
@@ -226,5 +269,52 @@ public class ControlsState extends BasicGameState{
 			
 		}
 		
+	}
+	
+	private float[] GetTrianglePoints(int direction){
+		float tmp[] = new float[6];
+		
+		if(direction==0) {
+			tmp[0]=50 + ControlsBoxLenght/2f + Player1.getWidth()/2f + 30;
+			tmp[1]=50 + Player1.getHeight()/2f+10;
+			tmp[2]=50 + ControlsBoxLenght/2f + Player1.getWidth()/2f + 30;
+			tmp[3]=50 + Player1.getHeight()/2f-10;
+			tmp[4]=50 + ControlsBoxLenght/2f + Player1.getWidth()/2f + 50;
+			tmp[5]=50 + Player1.getHeight()/2f;
+		}
+		else {
+			tmp[0]=50 + ControlsBoxLenght/2f - Player1.getWidth()/2f - 30;
+			tmp[1]=50 + Player1.getHeight()/2f+10;
+			tmp[2]=50 + ControlsBoxLenght/2f - Player1.getWidth()/2f - 30;
+			tmp[3]=50 + Player1.getHeight()/2f-10;
+			tmp[4]=50 + ControlsBoxLenght/2f - Player1.getWidth()/2f - 50;
+			tmp[5]=50 + Player1.getHeight()/2f;
+		}
+		
+		return tmp;
+	}
+	
+	private void Set_Triangles() {
+		float points[];
+		points = GetTrianglePoints(0);
+		T.add(new Polygon(points));
+		T.add(((Polygon) T.get(0)).copy());
+		T.add(((Polygon) T.get(0)).copy());
+		T.add(((Polygon) T.get(0)).copy());
+		Vector2f tmp = new Vector2f();
+		tmp.set(50 + ControlsBoxLenght/2f + Player1.getWidth()/2f + 30,50 + Player1.getHeight()/2f+60);
+		T.get(2).setLocation(tmp);
+		T.get(1).setLocation(tmp.set(450 + ControlsBoxLenght/2f + Player2.getWidth()/2f + 30,50 + Player2.getHeight()/2f-10));
+		T.get(3).setLocation(tmp.set(450 + ControlsBoxLenght/2f + Player2.getWidth()/2f + 30,50 + Player2.getHeight()/2f+60));
+		
+		points = GetTrianglePoints(1);
+		T.add(new Polygon(points));
+		T.add(((Polygon) T.get(4)).copy());
+		T.add(((Polygon) T.get(4)).copy());
+		T.add(((Polygon) T.get(4)).copy());
+		tmp.set(50 + ControlsBoxLenght/2f - Player1.getWidth()/2f - 50,50 + Player1.getHeight()/2f+60);
+		T.get(6).setLocation(tmp);
+		T.get(5).setLocation(tmp.set(450 + ControlsBoxLenght/2f - Player2.getWidth()/2f - 50,50 + Player2.getHeight()/2f-10));
+		T.get(7).setLocation(tmp.set(450 + ControlsBoxLenght/2f - Player2.getWidth()/2f - 50,50 + Player2.getHeight()/2f+60));
 	}
 }

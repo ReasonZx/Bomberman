@@ -121,4 +121,24 @@ public class Settings {
 			e.printStackTrace();
 		}
 	}
+	
+	public void Add_New_Color(int arrow,int player,int pos) {
+		if(arrow>=5) {
+			Settings_List[player-1][pos]++;
+			if(Settings_List[player-1][pos]>4)
+				Settings_List[player-1][pos]=0;
+		}
+		else {
+			Settings_List[player-1][pos]--;
+			if(Settings_List[player-1][pos]<0)
+				Settings_List[player-1][pos]=4;
+		}
+		
+		try {
+			Write_Settings();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

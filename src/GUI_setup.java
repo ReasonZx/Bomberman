@@ -90,6 +90,10 @@ public class GUI_setup extends StateBasedGame{
 		Player_Settings.Add_New_Key(key, player, pos);
 	}
 	
+	public void Change_Settings_Color(int arrow,int player,int pos) {
+		Player_Settings.Add_New_Color(arrow, player, pos);
+	}
+	
 	public void Reset_Settings() {
 		try {
 			Player_Settings.Write_Default_Settings();

@@ -27,6 +27,7 @@ public class Gamestate extends BasicGameState{
 	
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		 lib = new Image_Library();
+		 arg0.getInput().clearMousePressedRecord();
 	     L=new GameLogic(lib);
 	     players = new ArrayList<Bomber>();
 	     int [][] Settings=sbg.Get_Settings();
