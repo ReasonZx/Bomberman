@@ -117,7 +117,7 @@ public class LogIn extends BasicGameState{
 				if(this.Pass.equals("1234") && this.User.equals("root")) {
 					error_login=false;
 					this.Password.setFocus(false);
-					sbg.enterState(sbg.Get_Game_State());
+					sbg.enterState(sbg.Get_MainMenu_State());
 				}
 				else {
 					error_login=true;

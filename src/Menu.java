@@ -14,20 +14,30 @@ public class Menu extends BasicGameState{
 	Image logIn;
 	int login_x, login_y;
 	Image Guest;
+	private Image menu;
+	private Image bomberman_title;
 	int guest_x, guest_y;
 	private GUI_setup sbg;
 	
 
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+		sbg = (GUI_setup) arg1;
+		
 		logIn = new Image("sprites/logIn.png");
-		login_x = 225;
-		login_y = 200;
-		exitGame = new Image("sprites/exitGame.png");
-		exit_x = 240;
-		exit_y = 400;
+		logIn = logIn.getScaledCopy(0.6f);
+		login_x = (int) ((float) sbg.Get_Display_width() * 0.40);
+		login_y = (int) ((float) sbg.Get_Display_height() * 0.35);
 		Guest = new Image("sprites/play.png");
-		guest_x = 240;
-		guest_y = 120;
+		Guest = Guest.getScaledCopy(0.6f);
+		guest_x = (int) ((float) sbg.Get_Display_width() * 0.40);
+		guest_y = (int) ((float) sbg.Get_Display_height() * 0.55);
+		exitGame = new Image("sprites/exitGame.png");
+		exitGame = exitGame.getScaledCopy(0.6f);
+		exit_x = (int) ((float) sbg.Get_Display_width() * 0.40);
+		exit_y = (int) ((float) sbg.Get_Display_height() * 0.75);
+		menu = new Image("sprites/menu.png");
+		bomberman_title = new Image("sprites/bomberman_title.png");
+		
 		sbg=(GUI_setup) arg1;
 		sbg.Set_Menu_State(getID());
 	}
@@ -57,6 +67,8 @@ public class Menu extends BasicGameState{
 
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics g) throws SlickException {
 		g.drawString("BOMBERMAN", 350, 50);
+		menu.draw(0,0);
+		bomberman_title.draw(100,50);
 		Guest.draw(guest_x, guest_y);
 		logIn.draw(login_x,login_y);
 		exitGame.draw(exit_x,exit_y);
