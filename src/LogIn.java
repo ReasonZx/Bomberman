@@ -4,6 +4,7 @@ import org.newdawn.slick.gui.*;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import java.awt.Font;
+import java.io.IOException;
 
 
 public class LogIn extends BasicGameState{
@@ -95,14 +96,19 @@ public class LogIn extends BasicGameState{
 			
 			if((posX > 300 && posX < 400) && (posY > 400 && posY < 450)) {		// ver tamanhos certos dos botões
 				if(Mouse.isButtonDown(0)) {
-					if(this.Pass.equals("1234") && this.User.equals("root")) {
-						error_login=false;
-						sbg.enterState(sbg.Get_MainMenu_State());
-					}
-					else {
-						//Font font = new Font("Verdana", Font.BOLD, 20);
-						//TrueTypeFont trueTypeFont = new TrueTypeFont(font, true);
-						error_login=true;
+					try {
+						if(sbg.server.request("login_root_1234") == "ok") {
+							error_login=false;
+							sbg.enterState(sbg.Get_MainMenu_State());
+						}
+						else {
+							//Font font = new Font("Verdana", Font.BOLD, 20);
+							//TrueTypeFont trueTypeFont = new TrueTypeFont(font, true);
+							error_login=true;
+						}
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
 			}
