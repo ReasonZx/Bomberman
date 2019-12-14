@@ -10,57 +10,78 @@ import org.newdawn.slick.state.StateBasedGame;
 public class Gamestate extends BasicGameState{
 
 	 static GameLogic L;
-	 private ArrayList<Bomber> players = new ArrayList<Bomber>();
-	 static Wall walls;
-	 private ArrayList<Element> elements;
+	 private ArrayList<Bomber> players;
 	 private Image_Library lib;
 	 KeyPresses Input;
 	 protected int Last_key=0;
 	 protected char Last_c=0;
 	 protected int counter=0;
+	 private int dead;
+	 private GUI_setup sbg;
 	
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-		 
+		Input = new KeyPresses();
+		sbg=(GUI_setup) arg1;
+		sbg.Set_Game_State(getID());
+	}
+	
+	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		 lib = new Image_Library();
 	     L=new GameLogic(lib);
-	     players.add(new Bomber(1,1,L,0,1,2,3,87,83,65,68,32));
-	     arg0.getInput();
-	     players.add(new Bomber(11,8,L,4,2,5,6,org.newdawn.slick.Input.KEY_UP,
-											  org.newdawn.slick.Input.KEY_DOWN,
-											  org.newdawn.slick.Input.KEY_LEFT,
-											  org.newdawn.slick.Input.KEY_RIGHT,
-											  org.newdawn.slick.Input.KEY_RSHIFT));
+	     players = new ArrayList<Bomber>();
+	     int [][] Settings=sbg.Get_Settings();
+	     players.add(new Bomber(1,1,L,	Settings[0][0],
+	    		 						Settings[0][1],
+	    		 						Settings[0][2],
+	    		 						Settings[0][3],
+	    		 						Settings[0][4],
+	    		 						Settings[0][5],
+	    		 						Settings[0][6],
+	    		 						Settings[0][7],
+	    		 						Settings[0][8]));
+	     
+	     players.add(new Bomber(11,8,L,	Settings[1][0],
+										Settings[1][1],
+										Settings[1][2],
+										Settings[1][3],
+										Settings[1][4],
+										Settings[1][5],
+										Settings[1][6],
+										Settings[1][7],
+										Settings[1][8]));
 	     L.Create_Map(2);
 	     L.Place_Characters(players);
-	     Input = new KeyPresses();
+	     
 	     arg0.getInput().addKeyListener(Input);
+	     arg0.getInput().clearMousePressedRecord();
 	}
 
-	public void update(GameContainer container, StateBasedGame sbg, int arg2) throws SlickException {
+	public void update(GameContainer container, StateBasedGame arg1, int arg2) throws SlickException {
 		if (container.getInput().isKeyDown(Last_key)==true) {
 			counter++;
-			if(counter>20)
+			if(counter>100)
 				Input.keyPressed(Last_key, Last_c);
 		}
 		else {
 			counter=0;
-			Input.inputStarted();
 		}
-		Input.inputEnded();
 		
 		lib.Run_Changes();
-		int dead=L.Death_Check();
+		dead=L.Death_Check();
 		
 		if(dead!=0) {
-							//Go to Game Over
+			sbg.enterState(sbg.Get_GameOver_State());		//Go to Game Over
 		}
 	}
 	
+	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+		arg0.getInput().removeKeyListener(Input);
+	}
 
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics g) throws SlickException {
 		//g.drawString("Game state", 50, 50);
 		//g.drawString(player1.toString(),100,100);
-		
+		ArrayList<Element> elements;
 		
 		for(int x = 0 ; x < L.m.Get_RightBound() ; x++) {
 			for(int y = 0 ; y < L.m.Get_BotBound() ; y++) {
@@ -70,8 +91,8 @@ public class Gamestate extends BasicGameState{
 						
 						if(tmp.Has_Image()) {
 							g.drawImage(tmp.Get_Image(),
-										tmp.Get_Scale()*tmp.getX() + tmp.Get_OffsetX(), 
-										tmp.Get_Scale()*tmp.getY() + tmp.Get_OffsetY());
+										tmp.Get_Scale()*(tmp.getX()) + tmp.Get_OffsetX(), 
+										tmp.Get_Scale()*(tmp.getY()) + tmp.Get_OffsetY());
 						}
 					}
 				}
@@ -82,24 +103,33 @@ public class Gamestate extends BasicGameState{
 		return 3;
 	}
 	
+	public int getDeath() {
+		return dead;
+	}
+	
 	public class KeyPresses implements KeyListener{
-		boolean used=false;
+		boolean usable=true;
 		@Override
 		public void inputEnded() {
 			// TODO Auto-generated method stub
-			used=false;
+			usable=false;
 		}
 
 		@Override
 		public void inputStarted() {
 			// TODO Auto-generated method stub
-			used = true;
+			usable = true;
 		}
 
 		@Override
 		public boolean isAcceptingInput() {
 			// TODO Auto-generated method stub
-			return used;
+			return usable;
+		}
+		
+		public void setAcceptingInput(boolean x) {
+			// TODO Auto-generated method stub
+			usable=x;
 		}
 
 		@Override
@@ -111,16 +141,10 @@ public class Gamestate extends BasicGameState{
 		@Override
 		public void keyPressed(int key, char c) {
 			// TODO Auto-generated method stub
-			
-			String tmp = new String();
-			tmp="" + c;
-			tmp=tmp.toUpperCase();
+			//System.out.println("KEYPRESSED");
 			
 			try {
-				if((int)tmp.charAt(0)!=0)
-					L.Action((int)tmp.charAt(0));
-				else
-					L.Action(key);
+				L.Action(key);
 			} catch (SlickException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
