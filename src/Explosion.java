@@ -106,6 +106,10 @@ public class Explosion extends Element{
 		return ret;
 	}
 	
+	public void Set_Explosion_time(int x) {
+		Explosion_time=x;
+	}
+	
 	private class Remove_Explosion extends TimerTask{
 		private ArrayList<Element> array;
 		

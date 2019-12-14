@@ -4,10 +4,6 @@ import org.newdawn.slick.gui.*;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import java.awt.Font;
-import java.awt.FontFormatException;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import javax.swing.*;
 
 
 public class LogIn extends BasicGameState{
@@ -24,9 +20,12 @@ public class LogIn extends BasicGameState{
 	private int backX, backY, backWidth, backLength;
 	private Image Login;
 	private boolean error_login = false;
+	private GUI_setup sbg;
 
 
-	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+	public void init(GameContainer gc, StateBasedGame arg1) throws SlickException {
+		  sbg=(GUI_setup) arg1;
+		  sbg.Set_Login_State(getID());
 		  Font font = new Font("Calibri", Font.PLAIN, 15);
 		  trueTypeFont = new TrueTypeFont(font, true);
 		  
@@ -53,11 +52,18 @@ public class LogIn extends BasicGameState{
 	      this.User = new String();
 	      
 	      this.Back = new Image("sprites/back.png");
-	      this.Login = new Image("sprites/logIn.png");
-	      
+	      this.Login = new Image("sprites/logIn.png");	      
+	}
+	
+	@Override
+	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+		// TODO Auto-generated method stub
+		arg0.getInput().clearMousePressedRecord();
+		Username.setAcceptingInput(true);
+		Password.setAcceptingInput(true);
 	}
 
-	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
+	public void update(GameContainer gc, StateBasedGame arg1, int delta) throws SlickException {
 			//delta = 60;
 			//this.Pass = this.Password.getText();
 			this.User = this.Username.getText();
@@ -71,7 +77,7 @@ public class LogIn extends BasicGameState{
 			int posY = 600 - Mouse.getY();
 			if((posX > this.backX && posX < (this.backX + this.backWidth)) && (posY > this.backY && posY < (this.backY + this.backLength))) {		// ver tamanhos certos dos botões	//go back
 				if(Mouse.isButtonDown(0)) {
-					sbg.enterState(1);
+					sbg.enterState(sbg.Get_Menu_State());
 				}
 			}
 			
@@ -91,11 +97,11 @@ public class LogIn extends BasicGameState{
 				if(Mouse.isButtonDown(0)) {
 					if(this.Pass.equals("1234") && this.User.equals("root")) {
 						error_login=false;
-						sbg.enterState(3);
+						sbg.enterState(sbg.Get_MainMenu_State());
 					}
 					else {
-						Font font = new Font("Verdana", Font.BOLD, 20);
-						TrueTypeFont trueTypeFont = new TrueTypeFont(font, true);
+						//Font font = new Font("Verdana", Font.BOLD, 20);
+						//TrueTypeFont trueTypeFont = new TrueTypeFont(font, true);
 						error_login=true;
 					}
 				}
@@ -119,7 +125,7 @@ public class LogIn extends BasicGameState{
 	}
 	
 
-	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+	public void render(GameContainer gc, StateBasedGame arg1, Graphics g) throws SlickException {
 			float back_scale = (float) 0.1;
 			float login_scale = (float) 0.5;
 			
@@ -136,6 +142,13 @@ public class LogIn extends BasicGameState{
 				trueTypeFont.drawString(300, 150, "Incorrect Username or Password", Color.red);
 			}
 			
+	}
+	
+	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+		// TODO Auto-generated method stub
+		arg0.getInput().clearMousePressedRecord();
+		Username.setAcceptingInput(false);
+		Password.setAcceptingInput(false);
 	}
 
 	public int getID() {

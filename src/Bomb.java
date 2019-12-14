@@ -8,8 +8,8 @@ public class Bomb extends Element{
 	protected Timer tt = new Timer();
 	protected String Bomb_Black = 	"sprites/normal_bomb.png";
 	protected String Bomb_Red = 	"sprites/bomb_explode.png";
-	protected int blink_count;
-
+	protected int blink_count=6,counter;
+	
 	Bomb(int x,int y, GameLogic GL) throws SlickException{
 		Coordinate tmp = new Coordinate(x,y);
 		Coord=tmp;
@@ -21,6 +21,10 @@ public class Bomb extends Element{
 		GUI_Scale=64;
 		GUI_OffsetX=0;
 		GUI_OffsetY=0;
+	}
+	
+	public void Set_Blink_Counts(int x) {
+		blink_count=x;
 	}
 	
 	public void Start_Countdown(){
@@ -38,7 +42,7 @@ public class Bomb extends Element{
 		public void run() {
 			Timer tt = new Timer();
 			tt.schedule(new Blink(b),0,200);
-			blink_count=0;
+			counter=0;
 		}
 	}
 	private class Blink extends TimerTask{
@@ -50,7 +54,7 @@ public class Bomb extends Element{
 		}
 
 		public void run() {
-			blink_count++;
+			counter++;
 			if(state) {
 				state=!state;
 				L.lib.Flag_For_Change(b,Bomb_Red);
@@ -60,7 +64,7 @@ public class Bomb extends Element{
 				L.lib.Flag_For_Change(b,Bomb_Black);
 			}
 			
-			if(blink_count==7){
+			if(blink_count==counter){
 				this.cancel();
 				try {
 					L.Explode(b);
