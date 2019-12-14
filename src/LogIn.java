@@ -30,16 +30,16 @@ public class LogIn extends BasicGameState{
 		  trueTypeFont = new TrueTypeFont(font, true);
 		 
 		  
-		  UserTextX = 200;
-		  UserTextY = 200;
+		  UserTextX = (int) (0.35* (float)sbg.Get_Display_width());
+		  UserTextY = (int) (0.35* (float)sbg.Get_Display_height());
 	      
 	      Username = new TextField(gc, this.trueTypeFont, UserTextX, UserTextY, 400 , 20);
 	      Username.setBackgroundColor(Color.white);
 	      Username.setBorderColor(Color.white);
 	      Username.setTextColor(Color.black);
 	      
-	      PassTextX = 200;
-	      PassTextY = 300;
+	      PassTextX = (int) (0.35* (float)sbg.Get_Display_width());
+	      PassTextY = (int) (0.55* (float)sbg.Get_Display_height());
 	      
 	      Password = new TextField(gc, trueTypeFont, PassTextX, PassTextY, 400 , 20);
 	      Password.setBackgroundColor(Color.white);
@@ -50,13 +50,15 @@ public class LogIn extends BasicGameState{
 	      User = new String();
 	      
 	      Back = new Image("sprites/back.png");
+	      Back = Back.getScaledCopy(0.2f);
 	      Login = new Image("sprites/logIn.png");
+	      Login = Login.getScaledCopy(0.5f);
 	      
 	      backX = 50;
 	      backY = 50;
 	      
-	      login_x = 300;
-	      login_y = 400;
+	      login_x = (int) (0.43* (float)sbg.Get_Display_width());
+	      login_y = (int) (0.7* (float)sbg.Get_Display_height());
 	}
 	
 	@Override
@@ -65,7 +67,12 @@ public class LogIn extends BasicGameState{
 		arg0.getInput().clearMousePressedRecord();
 		Username.setAcceptingInput(true);
 		Password.setAcceptingInput(true);
+		Username.setText("");
+		Password.setText("");
+		Pass = "";
+		User = "";
 	}
+
 
 	public void update(GameContainer gc, StateBasedGame arg1, int delta) throws SlickException {
 			//delta = 60;
@@ -146,19 +153,20 @@ public class LogIn extends BasicGameState{
 	public void render(GameContainer gc, StateBasedGame arg1, Graphics g) throws SlickException {
 			//g.drawString(this.User, 500, 10);
 			//g.drawString(this.Pass, 500, 30);
-			g.drawString("Username", UserTextX, UserTextY);
+			g.drawString("Username:", UserTextX - 100, UserTextY);
 			Username.render(gc, g);
-			g.drawString("Password", PassTextX, PassTextY);
+			g.drawString("Password:", PassTextX - 100, PassTextY);
 			Password.render(gc, g);
 			Back.draw(backX,backY);
 			Login.draw(login_x,login_y);
 			
 			if(error_login) {
-				trueTypeFont.drawString(300, 150, "Incorrect Username or Password", Color.red);
+				trueTypeFont.drawString((int) (0.4* (float)sbg.Get_Display_width()), (int) (0.25* (float)sbg.Get_Display_height()), "Incorrect Username or Password", Color.red);
 			}
 			
 	}
 	
+	@Override
 	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		// TODO Auto-generated method stub
 		arg0.getInput().clearMousePressedRecord();
