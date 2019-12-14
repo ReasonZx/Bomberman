@@ -83,6 +83,8 @@ public class ControlsState extends BasicGameState{
 			arg2.fill(T.get(i));
 		}
 		
+		arg2.setColor(Color.white);
+		
 		for(int i=0;i<5;i++) {
 			myFont.drawString(50f + ControlsBoxLenght/2f - myFont.getWidth(Input.getKeyName(Settings[0][i+2]))/2f, ConfigY+myFont.getHeight(Input.getKeyName(Settings[0][i+2]))/2f+(i*((ControlsBoxHeight-200)/4)), Input.getKeyName(Settings[0][i+2]),Color.black);
 			arg2.drawImage(Configuration,ConfigX1,ConfigY+(i*((ControlsBoxHeight-200)/4)));

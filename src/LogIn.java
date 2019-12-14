@@ -3,14 +3,13 @@ import org.newdawn.slick.*;
 import org.newdawn.slick.gui.*;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-import java.awt.Font;
 
 
 public class LogIn extends BasicGameState{
 	
     private TextField Username;
     private TextField Password;
-	private org.newdawn.slick.Font trueTypeFont;
+    private Font myFont;
 	private String User;								//For hardcoded login
 	private String Pass;								//For hardcoded login
 	private Image Back;
@@ -26,8 +25,7 @@ public class LogIn extends BasicGameState{
 	public void init(GameContainer gc, StateBasedGame arg1) throws SlickException {
 		  sbg=(GUI_setup) arg1;
 		  sbg.Set_Login_State(getID());
-		  Font font = new Font("Calibri", Font.PLAIN, 15);
-		  trueTypeFont = new TrueTypeFont(font, true);
+		  myFont=gc.getDefaultFont();
 		  
 		  this.textWidth = 400;
 		  this.textLenght = 20;
@@ -35,7 +33,7 @@ public class LogIn extends BasicGameState{
 		  this.UserTextX = 200;
 		  this.UserTextY = 200;
 	      
-	      this.Username = new TextField(gc, this.trueTypeFont, this.UserTextX, this.UserTextY, this.textWidth , this.textLenght);
+	      this.Username = new TextField(gc, myFont, this.UserTextX, this.UserTextY, this.textWidth , this.textLenght);
 	      this.Username.setBackgroundColor(Color.white);
 	      this.Username.setBorderColor(Color.white);
 	      this.Username.setTextColor(Color.black);
@@ -43,7 +41,7 @@ public class LogIn extends BasicGameState{
 	      this.PassTextX = 200;
 	      this.PassTextY = 300;
 	      
-	      this.Password = new TextField(gc, this.trueTypeFont, this.PassTextX, this.PassTextY, this.textWidth , this.textLenght);
+	      this.Password = new TextField(gc, myFont, this.PassTextX, this.PassTextY, this.textWidth , this.textLenght);
 	      this.Password.setBackgroundColor(Color.white);
 	      this.Password.setBorderColor(Color.white);
 	      this.Password.setTextColor(Color.black);
@@ -100,8 +98,6 @@ public class LogIn extends BasicGameState{
 						sbg.enterState(sbg.Get_MainMenu_State());
 					}
 					else {
-						//Font font = new Font("Verdana", Font.BOLD, 20);
-						//TrueTypeFont trueTypeFont = new TrueTypeFont(font, true);
 						error_login=true;
 					}
 				}
@@ -131,15 +127,16 @@ public class LogIn extends BasicGameState{
 			
 			//g.drawString(this.User, 500, 10);
 			//g.drawString(this.Pass, 500, 30);
-			g.drawString("Username", 120, 200);
+			Username.render(gc, g);
+			myFont.drawString(120,200, "Username");
 			this.Username.render(gc, g);
-			g.drawString("Password", 120, 300);
+			myFont.drawString(120,300, "Password");
 			this.Password.render(gc, g);
 			this.Back.draw(50,50,back_scale);
 			this.Login.draw(300,400,login_scale);
 			
 			if(error_login) {
-				trueTypeFont.drawString(300, 150, "Incorrect Username or Password", Color.red);
+				myFont.drawString(300, 150, "Incorrect Username or Password", Color.red);
 			}
 			
 	}

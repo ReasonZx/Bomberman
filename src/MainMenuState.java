@@ -10,6 +10,7 @@ public class MainMenuState extends BasicGameState{
 
 	Image Play;
 	Image Controls;
+	Image Back;
 	private GUI_setup sbg;
 	
 	@Override
@@ -17,6 +18,8 @@ public class MainMenuState extends BasicGameState{
 		// TODO Auto-generated method stub
 		Controls = new Image("sprites/Button_Controls.png");
 		Play = new Image("sprites/exitGame.png");
+		Back = new Image("sprites/back.png");
+		Back = Back.getScaledCopy(0.2f);
 		sbg=(GUI_setup) arg1;
 		sbg.Set_MainMenu_State(getID());
 	}
@@ -32,6 +35,7 @@ public class MainMenuState extends BasicGameState{
 		arg2.drawString("BOMBERMAN", 350, 100);
 		Play.draw(225,200);
 		Controls.draw(200,300);
+		Back.draw(20,500);
 	}
 
 	@Override
@@ -40,15 +44,21 @@ public class MainMenuState extends BasicGameState{
 		int posX = arg0.getInput().getMouseX();
 		int posY = arg0.getInput().getMouseY();
 		
-		if((posX>125 && posX<400) && (posY > 200 && posY < 300)) {		// ver tamanhos certos dos botões
+		if((posX>125 && posX<400) && (posY > 200 && posY < 300)) {		
 			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				sbg.enterState(sbg.Get_Game_State());
 			}
 		}
 		
-		if((posX>125 && posX<400) && (posY > 400 && posY < 500)) {	// ver tamanhos certos dos botões
+		if((posX>125 && posX<400) && (posY > 400 && posY < 500)) {	
 			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				sbg.enterState(sbg.Get_Controls_State());
+			}
+		}
+		
+		if((posX>20 && posX<20+Back.getWidth()) && (posY > 500 && posY < 500+Back.getHeight())) {	
+			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+				sbg.enterState(sbg.Get_Login_State());
 			}
 		}
 	}
