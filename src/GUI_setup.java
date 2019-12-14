@@ -6,7 +6,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class GUI_setup extends StateBasedGame{
-	private int Menu_ID,Login_ID,Game_ID,GameOver_ID,MainMenu_ID,Controls_ID;
+	private int Menu_ID,Login_ID,Game_ID,GameOver_ID,MainMenu_ID,Controls_ID,Friends_ID;
 	private Settings Player_Settings;
 
 	public GUI_setup(String title) {
@@ -26,9 +26,10 @@ public class GUI_setup extends StateBasedGame{
 		this.addState(new GameOverState());
 		this.addState(new MainMenuState());
 		this.addState(new ControlsState());
+		this.addState(new FriendsState());
 		Player_Settings= new Settings();
 		Player_Settings.init_Settings();
-		}
+	}
 	
 	public int Get_Menu_State() {
 		return Menu_ID;
@@ -52,6 +53,10 @@ public class GUI_setup extends StateBasedGame{
 	
 	public int Get_Controls_State() {
 		return Controls_ID;
+	}
+	
+	public int Get_Friends_State() {
+		return Friends_ID;
 	}
 	
 	public void Set_Menu_State(int x) {
@@ -78,6 +83,10 @@ public class GUI_setup extends StateBasedGame{
 		Controls_ID=x;
 	}
 	
+	public void Set_Friends_State(int x) {
+		Friends_ID=x;
+	}
+	
 	public int[][] Get_Settings() {
 		return Player_Settings.Get_Settings();
 	}
@@ -93,6 +102,8 @@ public class GUI_setup extends StateBasedGame{
 	public void Change_Settings_Color(int arrow,int player,int pos) {
 		Player_Settings.Add_New_Color(arrow, player, pos);
 	}
+	
+	
 	
 	public void Reset_Settings() {
 		try {

@@ -52,7 +52,7 @@ public class MainMenuState extends BasicGameState{
 		
 		if((posX>125 && posX<400) && (posY > 400 && posY < 500)) {	
 			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-				sbg.enterState(sbg.Get_Controls_State());
+				sbg.enterState(sbg.Get_Friends_State());
 			}
 		}
 		
