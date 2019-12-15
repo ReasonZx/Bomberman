@@ -20,6 +20,9 @@ public class Menu extends BasicGameState{
 	private GUI_setup sbg;
 	
 
+	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+		arg0.getInput().clearMousePressedRecord();
+	}
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		sbg = (GUI_setup) arg1;
 		
@@ -72,6 +75,11 @@ public class Menu extends BasicGameState{
 		Guest.draw(guest_x, guest_y);
 		logIn.draw(login_x,login_y);
 		exitGame.draw(exit_x,exit_y);
+	}
+	
+	@Override
+	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+		arg0.getInput().clearMousePressedRecord();
 	}
 
 	public int getID() {

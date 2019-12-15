@@ -10,57 +10,78 @@ public class MainMenuState extends BasicGameState{
 
 	Image Play;
 	Image Controls;
+	Image Logout;
 	private GUI_setup sbg;
+	private int play_x;
+	private int play_y;
+	private int controls_x;
+	private int controls_y;
+	private int logout_x;
+	private int logout_y;
 	
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-		// TODO Auto-generated method stub
-		Controls = new Image("sprites/Button_Controls.png");
-		Play = new Image("sprites/exitGame.png");
 		sbg=(GUI_setup) arg1;
 		sbg.Set_MainMenu_State(getID());
+		
+		Controls = new Image("sprites/Button_Controls.png");
+		Controls = Controls.getScaledCopy(0.4f);
+		Play = new Image("sprites/play.png");
+		Play = Play.getScaledCopy(0.4f);
+		
+		Logout = new Image("sprites/logout.png");
+		Logout = Logout.getScaledCopy(0.4f);
+
+		play_x = (int) (0.43* (float)sbg.Get_Display_width());
+		play_y = (int) (0.35* (float)sbg.Get_Display_height());
+		controls_x = (int) (0.43* (float)sbg.Get_Display_width());
+		controls_y = (int) (0.50* (float)sbg.Get_Display_height());
+		logout_x = (int) (0.43* (float)sbg.Get_Display_width());
+		logout_y = (int) (0.65* (float)sbg.Get_Display_height());
+		
 	}
 	
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-		// TODO Auto-generated method stub
 		arg0.getInput().clearMousePressedRecord();
 	}
 
 	@Override
-	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
-		// TODO Auto-generated method stub
-		arg2.drawString("BOMBERMAN", 350, 100);
-		Play.draw(225,200);
-		Controls.draw(200,300);
-	}
-
-	@Override
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
-		// TODO Auto-generated method stub
 		int posX = arg0.getInput().getMouseX();
 		int posY = arg0.getInput().getMouseY();
 		
-		if((posX>125 && posX<400) && (posY > 200 && posY < 300)) {		// ver tamanhos certos dos botões
+		if((posX > play_x && posX < play_x + Play.getWidth()) && (posY > play_y && posY < play_y + Play.getHeight())) {		// ver tamanhos certos dos botões
 			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				sbg.enterState(sbg.Get_Game_State());
 			}
 		}
 		
-		if((posX>125 && posX<400) && (posY > 400 && posY < 500)) {	// ver tamanhos certos dos botões
+		if((posX > controls_x && posX < controls_x + Controls.getWidth()) && (posY > controls_y && posY < controls_y + Controls.getHeight())) {	// ver tamanhos certos dos botões
 			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				sbg.enterState(sbg.Get_Controls_State());
 			}
 		}
+		
+		if((posX > logout_x && posX < logout_x + Logout.getWidth()) && (posY > logout_y && posY < logout_y + Logout.getHeight())) {	// ver tamanhos certos dos botões
+			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+				sbg.enterState(sbg.Get_Menu_State());
+			}
+		}
+	}
+	
+	@Override
+	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
+		Play.draw(play_x,play_y);
+		Controls.draw(controls_x,controls_y);
+		Logout.draw(logout_x,logout_y);
 	}
 	
 	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-		// TODO Auto-generated method stub
-		
+		arg0.getInput().clearMousePressedRecord();
 	}
 
 	@Override
 	public int getID() {
-		// TODO Auto-generated method stub
 		return 5;
 	}
 	

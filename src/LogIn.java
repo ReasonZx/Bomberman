@@ -168,7 +168,6 @@ public class LogIn extends BasicGameState{
 	
 	@Override
 	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-		// TODO Auto-generated method stub
 		arg0.getInput().clearMousePressedRecord();
 		Username.setAcceptingInput(false);
 		Password.setAcceptingInput(false);
