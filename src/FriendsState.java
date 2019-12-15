@@ -10,30 +10,33 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
+import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class FriendsState extends BasicGameState{
 	
 	private GUI_setup sbg;
+	private TextField NewFriend;
 	private ArrayList<String> FriendList;
 	private Shape T1,T2;
 	private Shape R1,R2;
 	private int MaxPage,CurrentPage;
 	private Font myFont;
-	private Image Accept_Button;
-	private Image Reject_Button;
-	private Image Remove_Button;
-	private Image Invite_Button;
+	private String Accept_Button;
+	private String Reject_Button;
+	private String Remove_Button;
+	private String Invite_Button;
 	private Image Add_New_Button;
 	private Image Back_Button;
 	private int Back_ButtonX,Back_ButtonY;
 	private int Add_New_ButtonX,Add_New_ButtonY;
 	private ArrayList<Image> Buttons;
 	private boolean Adding=false;
+	private String Error_Message=" ";
+	
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-		// TODO Auto-generated method stub
 		sbg=(GUI_setup) arg1;
 		sbg.Set_Friends_State(getID());
 		myFont=arg0.getDefaultFont();
@@ -41,41 +44,63 @@ public class FriendsState extends BasicGameState{
 		T2 = new Polygon(GetTrianglePoints(arg0,1));
 		R1 = new Rectangle(20,20,arg0.getWidth()-40,arg0.getHeight()-40);
 		R2 = new Rectangle(0, arg0.getHeight()/3f, arg0.getWidth(), arg0.getHeight()/3f);
+		
 		Add_New_Button=new Image("sprites/Reset_Button.png");
 		Add_New_Button=Add_New_Button.getScaledCopy(0.3f);
 		Add_New_ButtonX=(int) (arg0.getWidth()/3f*2-Add_New_Button.getWidth()/2f);
 		Add_New_ButtonY=arg0.getHeight()-Add_New_Button.getHeight();
+		
 		Back_Button = new Image("sprites/back.png");
 		Back_Button = Back_Button.getScaledCopy(0.3f);
 		Back_ButtonX=(int) (arg0.getWidth()/3f-Add_New_Button.getWidth()/2f);
 		Back_ButtonY=arg0.getHeight()-Add_New_Button.getHeight();
+		
+		Accept_Button="sprites/Reset_Button.png";
+		
+		Reject_Button= "sprites/Reset_Button.png";
+
+		Remove_Button= "sprites/Reset_Button.png";
+		
+		Invite_Button= "sprites/Reset_Button.png";
+		
+		NewFriend = new TextField(arg0, myFont,(int)(arg0.getWidth()/4f),(int)(arg0.getHeight()/2f),(int)(arg0.getWidth()/4f)*2,20);
+		NewFriend.setBackgroundColor(Color.white);
+		NewFriend.setBorderColor(Color.white);
+		NewFriend.setTextColor(Color.black);
+		NewFriend.setAcceptingInput(false);
 	}
 
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-		// TODO Auto-generated method stub
 		FriendList = new ArrayList<String>();
+		
 		Hardcode_Friends();
 		Server_Request_FriendList();
+		Generate_Buttons();
+		
 		arg0.getInput().clearMousePressedRecord();
 		MaxPage=(int) Math.ceil((double)FriendList.size()/10);
 		CurrentPage=1;
+		
+		NewFriend.setAcceptingInput(false);
 	}
 	
 	@Override
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
-		// TODO Auto-generated method stub
 		arg2.setColor(Color.white);
 		arg2.fill(R1);
 		arg2.setColor(Color.black);
 		arg2.fill(T1);
 		arg2.fill(T2);
 		arg2.setColor(Color.white);
+		
 		myFont.drawString(20+R1.getWidth()/2f - myFont.getWidth(Integer.toString(CurrentPage) + " / " + Integer.toString(MaxPage))/2f, arg0.getHeight()-80,
 				"" + Integer.toString(CurrentPage) + " / " + Integer.toString(MaxPage) + "",Color.black);
 		myFont.drawString(20+R1.getWidth()/7f - myFont.getWidth("Username")/2f, 20+20,
 				"Username",Color.black);
+		
 		RenderFriendList();
 		RenderButtons();
+		
 		Add_New_Button.draw(Add_New_ButtonX, Add_New_ButtonY);
 		Back_Button.draw(Back_ButtonX,Back_ButtonY);
 		
@@ -85,15 +110,17 @@ public class FriendsState extends BasicGameState{
 			arg2.setColor(Color.white);
 			myFont.drawString(arg0.getWidth()/2f - myFont.getWidth("Type the name of the player you wish to add and press the button!")/2f,
 	                    R2.getY()+20, "Type the name of the player you wish to add and press the button!");
-			//TODO
-			//TEXTFIELD
+			NewFriend.setAcceptingInput(true);
+			NewFriend.render(arg0, arg2);
+			myFont.drawString(arg0.getWidth()/2f - myFont.getWidth(Error_Message)/2f, 
+					(arg0.getHeight()/2f+NewFriend.getHeight()+R2.getY()+R2.getHeight()-Add_New_Button.getHeight())/2f-myFont.getHeight(Error_Message)/2f, 
+					Error_Message,Color.red);
 			Add_New_Button.draw(arg0.getWidth()/2f-Add_New_Button.getWidth()/2f,R2.getY()+R2.getHeight()-Add_New_Button.getHeight());
 		}
 	}
 
 	@Override
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
-		// TODO Auto-generated method stub
 		int posX = arg0.getInput().getMouseX();
 		int posY = arg0.getInput().getMouseY();
 		
@@ -116,13 +143,11 @@ public class FriendsState extends BasicGameState{
 	}
 	
 	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-		// TODO Auto-generated method stub
-		
+		NewFriend.setAcceptingInput(false);
 	}
 
 	@Override
 	public int getID() {
-		// TODO Auto-generated method stub
 		return 7;
 	}
 	
@@ -166,7 +191,7 @@ public class FriendsState extends BasicGameState{
 	private void RenderFriendList() {
 		if(CurrentPage==MaxPage) {
 			for(int i=(CurrentPage-1)*10;i<(CurrentPage-1)*10+FriendList.size()%10;i++) {
-				myFont.drawString(20+R1.getWidth()/7f - myFont.getWidth(FriendList.get(i))/2f, 80+(R1.getHeight()-T2.getHeight()-40)/10f*(i-(CurrentPage-1)*10),
+				myFont.drawString(20+R1.getWidth()/7f - myFont.getWidth(FriendList.get(i))/2f, 80+(R1.getHeight()-T2.getHeight()-60)/10f*(i-(CurrentPage-1)*10),
 						FriendList.get(i),Color.black);
 			}
 		}
@@ -193,55 +218,57 @@ public class FriendsState extends BasicGameState{
 	private void RenderButtons() {
 		if(CurrentPage==MaxPage) {
 			for(int i=(CurrentPage-1)*10;i<(CurrentPage-1)*10+FriendList.size()%10;i++) {
-				if(IsFriend(FriendList.get(i))){
-					//RENDER INVITE AND REMOVE BUTTON
-					//TODO
-					}
-				else {
-					//RENDER ACCEPT AND REJECT BUTTON
-					//TODO
-				}
-					
+				Buttons.get(i*2).draw(20+R1.getWidth()/3f, 80+(R1.getHeight()-T2.getHeight()-60)/10f*(i-(CurrentPage-1)*10)+myFont.getHeight("Users")/2f-Buttons.get(i*2).getHeight()/2f);	
+				Buttons.get(i*2+1).draw(20+R1.getWidth()/3f*2, 80+(R1.getHeight()-T2.getHeight()-60)/10f*(i-(CurrentPage-1)*10)+myFont.getHeight("Users")/2f-Buttons.get(i*2+1).getHeight()/2f);
 			}
 		}
 		else
 			for(int i=(CurrentPage-1)*10;i<(CurrentPage-1)*10+10;i++) {
-				
+				Buttons.get(i*2).draw(20+R1.getWidth()/3f, 80+(R1.getHeight()-T2.getHeight()-60)/10f*(i-(CurrentPage-1)*10)+myFont.getHeight("Users")/2f-Buttons.get(i*2).getHeight()/2f);
+				Buttons.get(i*2+1).draw(20+R1.getWidth()/3f*2, 80+(R1.getHeight()-T2.getHeight()-60)/10f*(i-(CurrentPage-1)*10)+myFont.getHeight("Users")/2f-Buttons.get(i*2+1).getHeight()/2f);
 			}
 	}
 	
 	private void Action_Button_Pressed(int posX,int posY,GameContainer arg0) {
+		int tpY,tpX,tpY2;
+		tpY=(int) (80+myFont.getHeight("Users")/2f-Buttons.get(0).getHeight()/2f);
+		tpY2=(int) ((R1.getHeight()-T2.getHeight()-60)/10f);
+		tpX=(int) (20+R1.getWidth()/3f);
 		if(CurrentPage==MaxPage) {
 			for(int i=(CurrentPage-1)*10;i<(CurrentPage-1)*10+FriendList.size()%10;i++) {
-				if((posX>T1.getX() && posX < T1.getX()+ T1.getWidth()) && (posY >T1.getY()  && posY < T1.getY()+ T1.getHeight())){ 	
-					if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) 
-						//TODO
-						//BUTTON 1 OF FRIEND i WAS PRESSED
-						return;
-					}
-				else if((posX>T2.getX() && posX < T2.getX()+ T2.getWidth()) && (posY >T2.getY()  && posY < T2.getY()+ T2.getHeight())) {	
-					if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) 
-						//TODO
-						//BUTTON 2 OF FRIEND i WAS PRESSED
-						return;
+				if((posX>tpX && posX < tpX+ Buttons.get(i*2).getWidth()) 
+					&& (posY >tpY+tpY2*(i-(CurrentPage-1)*10)  && posY < tpY +tpY2*(i-(CurrentPage-1)*10)+Buttons.get(i*2).getHeight())){ 	
+						if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) { 
+							Button_Was_Pressed(i,1);
+							return;
+						}
+				}
+				else if((posX>(tpX-20)*2+20 && posX < (tpX-20)*2+20+ Buttons.get(i*2+1).getWidth()) 
+					&& (posY >tpY+tpY2*(i-(CurrentPage-1)*10)  && posY < tpY +tpY2*(i-(CurrentPage-1)*10)+Buttons.get(i*2+1).getHeight())){	
+						if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+							Button_Was_Pressed(i,2);
+							return;
+						}
 				}
 			}
 		}
 		else
 			for(int i=(CurrentPage-1)*10;i<(CurrentPage-1)*10+10;i++) {
-				if((posX>T1.getX() && posX < T1.getX()+ T1.getWidth()) && (posY >T1.getY()  && posY < T1.getY()+ T1.getHeight())){ 	
-					if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) 
-						//TODO
-						//BUTTON 1 OF FRIEND i WAS PRESSED
-						return;
+				if((posX>tpX && posX < tpX+ Buttons.get(i*2).getWidth()) 
+						&& (posY >tpY+tpY2*(i-(CurrentPage-1)*10)  && posY < tpY +tpY2*(i-(CurrentPage-1)*10)+Buttons.get(i*2).getHeight())){ 	
+							if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) { 
+								Button_Was_Pressed(i,1);
+								return;
+							}
 					}
-				else if((posX>T2.getX() && posX < T2.getX()+ T2.getWidth()) && (posY >T2.getY()  && posY < T2.getY()+ T2.getHeight())) {	
-					if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) 
-						//TODO
-						//BUTTON 2 OF FRIEND i WAS PRESSED
-						return;
+					else if((posX>(tpX-20)*2+20 && posX < (tpX-20)*2 + 20 + Buttons.get(i*2).getWidth()) 
+						&& (posY >tpY+tpY2*(i-(CurrentPage-1)*10)  && posY < tpY +tpY2*(i-(CurrentPage-1)*10)+Buttons.get(i*2).getHeight())){	
+							if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+								Button_Was_Pressed(i,2);
+								return;
+							}
+					}
 				}
-			}
 	}
 	
 	private void Back_Button_Pressed(int posX,int posY,GameContainer arg0) {
@@ -263,12 +290,16 @@ public class FriendsState extends BasicGameState{
 				if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) { 
 					//TODO
 					//GET TEXT FIELD VALUE AND SEND TO SERVER
-					System.out.println("ADDING FRIEND");
-					if(Server_Send_New_Friend_Request("")==0) {
-						Adding=false;
+					//System.out.println("ADDING FRIEND: "+ NewFriend.getText());
+					int ret=Server_Send_New_Friend_Request(NewFriend.getText());
+					if(ret==0) {
+						Error_Message=new String(" ");
+						Adding=false; //SUCCESS
 					}
 					else{
 						//ERROR MESSAGES GO HERE
+						if(ret==-1)
+							Error_Message=new String("USER DOESN'T EXIST");
 					}
 				}
 			}
@@ -287,9 +318,56 @@ public class FriendsState extends BasicGameState{
 		//TODO
 	}
 	
+	private void Button_Was_Pressed(int Friend,int butt) {
+		if(butt==1) {
+			if(IsFriend(FriendList.get(Friend))){
+				//TODO
+				//INVITE BUTTON WAS CLICKED
+				return;
+			}
+			else {
+				//TODO
+				//ACCEPT BUTTON WAS CLICKED
+				return;
+			}
+		}
+		else{
+			if(IsFriend(FriendList.get(Friend))){
+				//TODO
+				//REMOVE BUTTON WAS CLICKED
+				return;
+			}
+			else{
+				//TODO
+				//REJECT BUTTON WAS CLICKED
+				return;
+			}
+		}
+	}
+	
+	private void Generate_Buttons() throws SlickException {
+		Buttons = new ArrayList<Image>();
+		Image tmp;
+		
+		for(int i=0;i<FriendList.size();i++) {
+			if(IsFriend(FriendList.get(i))) {
+				tmp = new Image(Invite_Button);
+				Buttons.add(tmp.getScaledCopy(0.18f));
+				tmp = new Image(Remove_Button);
+				Buttons.add(tmp.getScaledCopy(0.18f));
+			}
+			else {
+				tmp = new Image(Accept_Button);
+				Buttons.add(tmp.getScaledCopy(0.18f));
+				tmp = new Image(Reject_Button);
+				Buttons.add(tmp.getScaledCopy(0.18f));
+			}
+		}
+	}
+	
 	private int Server_Send_New_Friend_Request(String s){
 		//TODO
 		//REQUESTS SERVER TO SEND A NEW FRIEND REQUEST, RETURNS 0 IF SUCCESS, NEGATIVE IF ERROR
-		return 0;
+		return -1;
 	}
 }
