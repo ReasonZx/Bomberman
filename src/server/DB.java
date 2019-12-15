@@ -14,7 +14,6 @@ public class DB {
 				System.exit(1);
 			}
 			conn = DriverManager.getConnection("jdbc:postgresql://dbm.fe.up.pt:5432/sibd1807", "sibd1807", "diogo");
-			System.out.println("Access Granted");
 			conn.setSchema("Bomberman");
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -38,7 +37,7 @@ public class DB {
 		// Se query vazia = utilizador no existe na BD
 		if (!rs.next()) {
 			// Utilizador no registado na BD
-			System.out.println("User nao registado na BD");
+			System.out.println("User não registado na BD");
 			return "User not found";
 		}
 
@@ -52,7 +51,7 @@ public class DB {
 		data.close();
 		conn.close();
 
-		System.out.println("Login Efectuado");
+
 		return "Logged in";
 
 	}

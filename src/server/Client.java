@@ -31,6 +31,7 @@ public class Client {
 		
 		if (result == "Logged in") {
 			userlist.add(this);
+			this.dos.writeUTF(result);
 			return;
 		}
 		else {

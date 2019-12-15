@@ -29,8 +29,6 @@ public class ClientHandler extends Thread {
 				// receive the answer from client
 
 				rx_string = client.dis.readUTF();
-
-				System.out.println(rx_string);
 				String words[] = rx_string.split("_");
 
 				if (words[0].equals("Exit")) {
@@ -43,13 +41,14 @@ public class ClientHandler extends Thread {
 
 				// write on output stream based on the
 				// answer from the client
+
 				switch (words[0]) {
 
 				case "login":
-					if (words.length == 4) {
+					if (words.length == 3) {
 						client.login(words[1], words[2], userlist);
 					} else
-						client.dos.writeUTF("Para Login introduzir:login_username_password_isCompany(0-1).");
+						client.dos.writeUTF("Login and Password mandatory");
 					break;
 
 				default:
