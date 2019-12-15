@@ -4,6 +4,7 @@ import org.newdawn.slick.gui.*;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import java.awt.Font;
+import java.io.IOException;
 
 
 public class LogIn extends BasicGameState{
@@ -21,7 +22,7 @@ public class LogIn extends BasicGameState{
 	private Image Login;
 	private boolean error_login = false;
 	private GUI_setup sbg;
-
+	private String server_response;
 
 	public void init(GameContainer gc, StateBasedGame arg1) throws SlickException {
 		  sbg=(GUI_setup) arg1;
@@ -65,7 +66,6 @@ public class LogIn extends BasicGameState{
 
 	public void update(GameContainer gc, StateBasedGame arg1, int delta) throws SlickException {
 			//delta = 60;
-			//this.Pass = this.Password.getText();
 			this.User = this.Username.getText();
 			this.backX = 50;
 			this.backY = 50;
@@ -95,14 +95,22 @@ public class LogIn extends BasicGameState{
 			
 			if((posX > 300 && posX < 400) && (posY > 400 && posY < 450)) {		// ver tamanhos certos dos botões
 				if(Mouse.isButtonDown(0)) {
-					if(this.Pass.equals("1234") && this.User.equals("root")) {
-						error_login=false;
-						sbg.enterState(sbg.Get_MainMenu_State());
-					}
-					else {
-						//Font font = new Font("Verdana", Font.BOLD, 20);
-						//TrueTypeFont trueTypeFont = new TrueTypeFont(font, true);
-						error_login=true;
+					try {
+						String request = "login_" + this.User + "_" + this.Pass;
+						server_response = sbg.server.request(request);
+						System.out.println(server_response);
+						if(server_response.equals("Logged in")) {
+							error_login=false;
+							sbg.enterState(sbg.Get_MainMenu_State());
+						}
+						else {
+							//Font font = new Font("Verdana", Font.BOLD, 20);
+							//TrueTypeFont trueTypeFont = new TrueTypeFont(font, true);
+							error_login=true;
+						}
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
 			}
@@ -110,7 +118,6 @@ public class LogIn extends BasicGameState{
 			
 			if(this.Password.hasFocus()) {
 				if(this.Password.getText().length() > this.Pass.length()) {
-					System.out.println(this.Password.getText().length() + "  " + this.Pass.length());
 					this.Pass = this.Pass + this.Password.getText().substring(this.Password.getText().length()-1,this.Password.getText().length());
 				}
 				else if(this.Password.getText().length() < this.Pass.length()) {
@@ -139,7 +146,7 @@ public class LogIn extends BasicGameState{
 			this.Login.draw(300,400,login_scale);
 			
 			if(error_login) {
-				trueTypeFont.drawString(300, 150, "Incorrect Username or Password", Color.red);
+				trueTypeFont.drawString(300, 150, server_response, Color.red);
 			}
 			
 	}
