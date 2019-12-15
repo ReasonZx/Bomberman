@@ -50,19 +50,19 @@ public class MainMenuState extends BasicGameState{
 		int posX = arg0.getInput().getMouseX();
 		int posY = arg0.getInput().getMouseY();
 		
-		if((posX > play_x && posX < play_x + Play.getWidth()) && (posY > play_y && posY < play_y + Play.getHeight())) {		// ver tamanhos certos dos botões
+		if((posX > play_x && posX < play_x + Play.getWidth()) && (posY > play_y && posY < play_y + Play.getHeight())) {		// ver tamanhos certos dos botï¿½es
 			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				sbg.enterState(sbg.Get_Game_State());
 			}
 		}
 		
-		if((posX > controls_x && posX < controls_x + Controls.getWidth()) && (posY > controls_y && posY < controls_y + Controls.getHeight())) {	// ver tamanhos certos dos botões
+		if((posX > controls_x && posX < controls_x + Controls.getWidth()) && (posY > controls_y && posY < controls_y + Controls.getHeight())) {	// ver tamanhos certos dos botï¿½es
 			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				sbg.enterState(sbg.Get_Controls_State());
 			}
 		}
 		
-		if((posX > logout_x && posX < logout_x + Logout.getWidth()) && (posY > logout_y && posY < logout_y + Logout.getHeight())) {	// ver tamanhos certos dos botões
+		if((posX > logout_x && posX < logout_x + Logout.getWidth()) && (posY > logout_y && posY < logout_y + Logout.getHeight())) {	// ver tamanhos certos dos botï¿½es
 			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				sbg.enterState(sbg.Get_Menu_State());
 			}

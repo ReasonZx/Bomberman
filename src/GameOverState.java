@@ -1,6 +1,7 @@
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.KeyListener;
@@ -15,11 +16,13 @@ public class GameOverState extends BasicGameState{
 	protected GUI_setup sbg;
 	protected boolean block;
 	private int block_time=1000;
+	private Font myFont;
 	
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		Input = new KeyPressAny();
 		sbg=(GUI_setup) arg1;
 		sbg.Set_GameOver_State(getID());
+		myFont=arg0.getDefaultFont();
 	}
 	
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -42,7 +45,7 @@ public class GameOverState extends BasicGameState{
 	
 
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics g) throws SlickException {
-		g.drawString("YOU WIN PLAYER " + Winner, 300, 300);
+		myFont.drawString(300, 300, "YOU WIN PLAYER " + Winner);
 	}
 	
 	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {

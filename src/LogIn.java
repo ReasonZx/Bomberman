@@ -3,14 +3,13 @@ import org.newdawn.slick.*;
 import org.newdawn.slick.gui.*;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-import java.awt.Font;
 
 
 public class LogIn extends BasicGameState{
 	
     private TextField Username;
     private TextField Password;
-	private org.newdawn.slick.Font trueTypeFont;
+    private Font myFont;
 	private String User;								//For hardcoded login
 	private String Pass;								//For hardcoded login
 	private Image Back;
@@ -26,14 +25,12 @@ public class LogIn extends BasicGameState{
 	public void init(GameContainer gc, StateBasedGame arg1) throws SlickException {
 		  sbg=(GUI_setup) arg1;
 		  sbg.Set_Login_State(getID());
-		  Font font = new Font("Calibri", Font.PLAIN, 15);
-		  trueTypeFont = new TrueTypeFont(font, true);
-		 
+		  myFont=gc.getDefaultFont();
 		  
 		  UserTextX = (int) (0.35* (float)sbg.Get_Display_width());
 		  UserTextY = (int) (0.35* (float)sbg.Get_Display_height());
 	      
-	      Username = new TextField(gc, this.trueTypeFont, UserTextX, UserTextY, 400 , 20);
+	      Username = new TextField(gc, myFont, UserTextX, UserTextY, 400 , 20);
 	      Username.setBackgroundColor(Color.white);
 	      Username.setBorderColor(Color.white);
 	      Username.setTextColor(Color.black);
@@ -41,7 +38,7 @@ public class LogIn extends BasicGameState{
 	      PassTextX = (int) (0.35* (float)sbg.Get_Display_width());
 	      PassTextY = (int) (0.55* (float)sbg.Get_Display_height());
 	      
-	      Password = new TextField(gc, trueTypeFont, PassTextX, PassTextY, 400 , 20);
+	      Password = new TextField(gc, myFont, PassTextX, PassTextY, 400 , 20);
 	      Password.setBackgroundColor(Color.white);
 	      Password.setBorderColor(Color.white);
 	      Password.setTextColor(Color.black);
@@ -161,7 +158,7 @@ public class LogIn extends BasicGameState{
 			Login.draw(login_x,login_y);
 			
 			if(error_login) {
-				trueTypeFont.drawString((int) (0.4* (float)sbg.Get_Display_width()), (int) (0.25* (float)sbg.Get_Display_height()), "Incorrect Username or Password", Color.red);
+				myFont.drawString(300, 150, "Incorrect Username or Password", Color.red);
 			}
 			
 	}
