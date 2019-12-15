@@ -12,27 +12,28 @@ public class Bomber extends Element{
 	protected int move_res = 5;
 	protected int progression_count=move_res;
 	protected int direction;	//0-down 1-left 2-up 3-right
-	protected String StopDown ;
-	protected String Down1;
-	protected String Down2;
-	protected String StopUp;
-	protected String Up1;
-	protected String Up2;
-	protected String StopLeft;
-	protected String Left1;
-	protected String Left2;
-	protected String StopRight;
-	protected String Right1;
-	protected String Right2;
+	protected String StopDown="StopDown";
+	protected String Down1="Down1";
+	protected String Down2="Down2";
+	protected String StopUp="StopUp";
+	protected String Up1="Up1";
+	protected String Up2="Up2";
+	protected String StopLeft="StopLeft";
+	protected String Left1="Left1";
+	protected String Left2="Left2";
+	protected String StopRight="StopRight";
+	protected String Right1="Right1";
+	protected String Right2="Right2";
 	protected int upkey,downkey,rightkey,leftkey,actionkey;
+	private int player;
 	
 	
-	Bomber(int x,int y,GameLogic GL,int c1,int c2,int c3,int c4,int k1,int k2, int k3, int k4,int k5) throws SlickException{
+	Bomber(int x,int y,GameLogic GL,int c1,int c2,int k1,int k2, int k3, int k4,int k5,int player) throws SlickException{
 		Coordinate tmp = new Coordinate(x,y);
 		Coord=tmp;
 		Solid=true;
 		L=GL;
-		initialize_images(c1,c2,c3,c4);
+		initialize_images(c1,c2);
 		L.lib.Flag_For_Change(this,StopDown);
 		
 		upkey=k1;
@@ -40,8 +41,8 @@ public class Bomber extends Element{
 		leftkey=k3;
 		rightkey=k4;
 		actionkey=k5;
-
-		img = new Image(StopDown);
+		this.player=player;
+		img = new Image("sprites/D_"   + c1 + c2 + ".png");
 		bomb_cd=false;
 		Walking_cd=false;
 		//direction=0;
@@ -217,19 +218,11 @@ public class Bomber extends Element{
 		bomb_cooldown=x;
 	}
 	
-	private void initialize_images(int c1,int c2,int c3,int c4) {
-		StopDown = 	"sprites/D_"   + c1 + c2 + c3 + c4 + ".png";
-		Down1 = 	"sprites/D1_" + c1 + c2 + c3 + c4 + ".png";
-		Down2 = 	"sprites/D2_" + c1 + c2 + c3 + c4 + ".png";
-		StopUp =	"sprites/U_"  + c1 + c2 + c3 + c4 + ".png";
-		Up1 = 		"sprites/U1_" + c1 + c2 + c3 + c4 + ".png";
-		Up2 = 		"sprites/U2_" + c1 + c2 + c3 + c4 + ".png";
-		StopLeft = 	"sprites/L_"   + c1 + c2 + c3 + c4 + ".png";
-		Left1 = 	"sprites/L1_" + c1 + c2 + c3 + c4 + ".png";
-		Left2 = 	"sprites/L2_" + c1 + c2 + c3 + c4 + ".png";
-		StopRight =	"sprites/R_"   + c1 + c2 + c3 + c4 + ".png";
-		Right1 =	"sprites/R1_" + c1 + c2 + c3 + c4 + ".png";
-		Right2 = 	"sprites/R2_" + c1 + c2 + c3 + c4 + ".png";
+	private void initialize_images(int c1,int c2) {
+		L.lib.Player_Sprites_Initialize("sprites/D_"   + c1 + c2  + ".png","sprites/D1_" + c1 + c2 + ".png");
 	}
-
+	
+	public int Get_Player() {
+		return player;
+	}
 }

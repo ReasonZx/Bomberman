@@ -1,4 +1,4 @@
 For buttons font:
 FixedSys
-Size 60
+Size 72
 Bold
