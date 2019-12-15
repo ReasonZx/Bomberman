@@ -20,33 +20,32 @@ public class ServerHandler {
 	public String request(String req) throws IOException {
 		try {
 
-			// getting localhost ip
-
 			dos.writeUTF(req);
+			System.out.println("sent" + req);
 			// the following loop performs the exchange of
 			// information between client and client handler
-			while (true) {
-				String received = dis.readUTF();
-				System.out.println(received);
-				// System.out.println(dis.readUTF());
-				// printing date or time as requested by client
-				// String received = dis.readUTF();
-				// System.out.println(received);
-				if (received.equals("ok")) {
-
-					return "ok";
-				} else if (received.equals("logout")) {
-					dis.close();
-					dos.close();
-					return "ok";
-				}
-
-				else if (received.equals("not")) {
-					return "not";
-				} else {
-					return received;
-				}
-			}
+//			while (true) {
+//				String received = dis.readUTF();
+//				System.out.println(received);
+//				// System.out.println(dis.readUTF());
+//				// printing date or time as requested by client
+//				// String received = dis.readUTF();
+//				// System.out.println(received);
+//				if (received.equals("ok")) {
+//
+//					return "ok";
+//				} else if (received.equals("logout")) {
+//					dis.close();
+//					dos.close();
+//					return "ok";
+//				}
+//
+//				else if (received.equals("not")) {
+//					return "not";
+//				} else {
+//					return received;
+//				}
+//			}
 
 			// closing resources
 

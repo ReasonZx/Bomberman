@@ -66,7 +66,7 @@ public class LogIn extends BasicGameState{
 
 	public void update(GameContainer gc, StateBasedGame arg1, int delta) throws SlickException {
 			//delta = 60;
-			//this.Pass = this.Password.getText();
+			this.Pass = this.Password.getText();
 			this.User = this.Username.getText();
 			this.backX = 50;
 			this.backY = 50;
@@ -97,7 +97,8 @@ public class LogIn extends BasicGameState{
 			if((posX > 300 && posX < 400) && (posY > 400 && posY < 450)) {		// ver tamanhos certos dos botões
 				if(Mouse.isButtonDown(0)) {
 					try {
-						if(sbg.server.request("login_root_1234") == "ok") {
+						String request = "login_" + this.User + "_" + this.Pass;
+						if(sbg.server.request(request) == "ok") {
 							error_login=false;
 							sbg.enterState(sbg.Get_MainMenu_State());
 						}

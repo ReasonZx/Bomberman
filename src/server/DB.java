@@ -7,9 +7,15 @@ public class DB {
 	private static Connection connect() {
 		Connection conn = null;
 		try {
-			conn = DriverManager.getConnection("jdbc:postgresql://dbm.fe.up.pt:5432/sibd1807?currentSchema=Bomberman",
-					"sibd1807", "diogo");
+			try {
+				Class.forName("org.postgresql.Driver");
+			} catch (ClassNotFoundException ex) {
+				System.out.println("Error: unable to load driver class!");
+				System.exit(1);
+			}
+			conn = DriverManager.getConnection("jdbc:postgresql://dbm.fe.up.pt:5432/sibd1807", "sibd1807", "diogo");
 			System.out.println("Access Granted");
+			conn.setSchema("Bomberman");
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}

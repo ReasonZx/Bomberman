@@ -13,7 +13,6 @@ public class ClientHandler extends Thread {
 	private Client client;
 	private ArrayList<Client> userlist;
 
-
 	public ClientHandler(Client client, ArrayList<Client> userlist) {
 		this.client = client;
 		this.userlist = userlist;
@@ -23,14 +22,15 @@ public class ClientHandler extends Thread {
 	public void run() {
 		String rx_string;
 
-		while (true) {
-			try {
-
+		try {
+			while (true) {
 				rx_string = null;
 
 				// receive the answer from client
+
 				rx_string = client.dis.readUTF();
 
+				System.out.println(rx_string);
 				String words[] = rx_string.split("_");
 
 				if (words[0].equals("Exit")) {
@@ -40,8 +40,6 @@ public class ClientHandler extends Thread {
 					System.out.println("Connection closed");
 					break;
 				}
-
-				System.out.println("Palavra size :-> " + words.length);
 
 				// write on output stream based on the
 				// answer from the client
@@ -58,9 +56,9 @@ public class ClientHandler extends Thread {
 					client.dos.writeUTF("Invalid input");
 					break;
 				}
-			} catch (IOException |SQLException e) {
-				e.printStackTrace();
-			} 
+			}
+		} catch (IOException | SQLException e) {
+			e.printStackTrace();
 		}
 
 		try {
@@ -72,6 +70,5 @@ public class ClientHandler extends Thread {
 			e.printStackTrace();
 		}
 	}
-
 
 }
