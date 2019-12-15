@@ -1,30 +1,32 @@
-import org.newdawn.slick.GameContainer;
-
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.*;
 
+
 public class Menu extends BasicGameState{
 	
-	Image exitGame;
-	int exit_x, exit_y;
-	Image logIn;
-	int login_x, login_y;
-	Image Guest;
+	private Image exitGame;
+	private int exit_x, exit_y;
+	private Image logIn;
+	private int login_x, login_y;
+	private Image Guest;
+	private int guest_x, guest_y;
+	private int signup_x, signup_y;
 	private Image menu;
 	private Image bomberman_title;
-	int guest_x, guest_y;
 	private GUI_setup sbg;
+    private int highlighted = 0;
 	
-
-	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-		arg0.getInput().clearMousePressedRecord();
+    @Override
+	public void enter(GameContainer gc, StateBasedGame arg1) throws SlickException {
+		gc.getInput().clearMousePressedRecord();
+		//Mouse.setCursorPosition(0, 0);
 	}
+	
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-		sbg = (GUI_setup) arg1;
+		sbg=(GUI_setup) arg1;
+		sbg.Set_Menu_State(getID());
 		
 		logIn = new Image("sprites/logIn.png");
 		logIn = logIn.getScaledCopy(0.6f);
@@ -39,10 +41,10 @@ public class Menu extends BasicGameState{
 		exit_x = (int) ((float) sbg.Get_Display_width() * 0.40);
 		exit_y = (int) ((float) sbg.Get_Display_height() * 0.75);
 		menu = new Image("sprites/menu.png");
+		signup_x = (int) ((float) sbg.Get_Display_width() * 0.40);
+		signup_y = (int) ((float) sbg.Get_Display_height() * 0.49);
 		bomberman_title = new Image("sprites/bomberman_title.png");
-		
-		sbg=(GUI_setup) arg1;
-		sbg.Set_Menu_State(getID());
+
 	}
 
 	public void update(GameContainer container, StateBasedGame arg1, int delta) throws SlickException {
@@ -55,7 +57,7 @@ public class Menu extends BasicGameState{
 		}
 		
 		if((posX > exit_x && posX < exit_x + exitGame.getWidth()) && (posY > exit_y && posY < exit_y + exitGame.getHeight())) {	// ver tamanhos certos dos botões
-			if(Mouse.isButtonDown(0)) {
+			if(container.getInput().isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
 				System.exit(0);
 			}
 		}
@@ -65,16 +67,31 @@ public class Menu extends BasicGameState{
 				sbg.enterState(sbg.Get_Game_State());
 			}
 		}
+		
+		if((posX > signup_x && posX < signup_x + 280) && (posY > signup_y && posY < signup_y + 18)) {	// ver tamanhos certos dos botões
+			highlighted = 1;
+			if(Mouse.isButtonDown(0)) {
+				sbg.enterState(sbg.Get_Signup_State());
+			}
+		}
+		else {
+			highlighted = 0;
+		}
 	}
+	
 	
 
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics g) throws SlickException {
-		g.drawString("BOMBERMAN", 350, 50);
 		menu.draw(0,0);
 		bomberman_title.draw(100,50);
 		Guest.draw(guest_x, guest_y);
 		logIn.draw(login_x,login_y);
 		exitGame.draw(exit_x,exit_y);
+		g.setColor(Color.white);
+		g.drawString("Dont have an account? Signup here", signup_x, signup_y);
+		if(highlighted == 1) {
+			g.drawLine(signup_x, signup_y + 18, signup_x + 300, signup_y + 18);
+		}
 	}
 	
 	@Override

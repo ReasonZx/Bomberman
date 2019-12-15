@@ -2,8 +2,10 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.lwjgl.input.Mouse;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
@@ -18,11 +20,20 @@ public class Gamestate extends BasicGameState{
 	 protected int Last_key=0;
 	 private int dead;
 	 private GUI_setup sbg;
+	 private Image Back;
+	 private int backX, backY;
+
+
 	
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		Input = new KeyPresses();
 		sbg=(GUI_setup) arg1;
 		sbg.Set_Game_State(getID());
+		
+		Back = new Image("sprites/back.png");
+	    Back = Back.getScaledCopy(0.2f);
+	    backX = 50;
+	    backY = 20;
 	}
 	
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -57,13 +68,20 @@ public class Gamestate extends BasicGameState{
 	}
 
 	public void update(GameContainer container, StateBasedGame arg1, int arg2) throws SlickException {
-		
+		int posX = Mouse.getX();
+		int posY = sbg.Get_Display_height() - Mouse.getY();
 		
 		lib.Run_Changes();
 		dead=L.Death_Check();
 		
 		if(dead!=0) {
 			sbg.enterState(sbg.Get_GameOver_State());		//Go to Game Over
+		}
+		
+		if((posX > backX && posX < backX + Back.getWidth()) && (posY > backY && posY < backY + Back.getHeight())) {		// ver tamanhos certos dos bot�es	//go back
+			if(Mouse.isButtonDown(0)) {
+				sbg.enterState(sbg.Get_Menu_State());
+			}
 		}
 	}
 	
@@ -90,6 +108,7 @@ public class Gamestate extends BasicGameState{
 					}
 				}
 		}
+		Back.draw(backX,backY);
 	}
 
 	public int getID() {
