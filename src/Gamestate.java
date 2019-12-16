@@ -79,7 +79,7 @@ public class Gamestate extends BasicGameState{
 		}
 		
 		if((posX > backX && posX < backX + Back.getWidth()) && (posY > backY && posY < backY + Back.getHeight())) {		// ver tamanhos certos dos bot�es	//go back
-			if(Mouse.isButtonDown(0)) {
+			if(container.getInput().isMousePressed(container.getInput().MOUSE_LEFT_BUTTON)) {
 				sbg.enterState(sbg.Get_Menu_State());
 			}
 		}
