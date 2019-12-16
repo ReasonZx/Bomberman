@@ -12,10 +12,12 @@ public class ClientHandler extends Thread {
 
 	private Client client;
 	private ArrayList<Client> userlist;
+	private Server Server_Handler;
 
-	public ClientHandler(Client client, ArrayList<Client> userlist) {
+	public ClientHandler(Client client,Server x) {
 		this.client = client;
-		this.userlist = userlist;
+		Server_Handler = x;
+		userlist = Server_Handler.Get_UserList();
 	}
 
 	@Override
@@ -47,8 +49,28 @@ public class ClientHandler extends Thread {
 				case "login":
 					if (words.length == 3) {
 						client.login(words[1], words[2], userlist);
+						client.dos.writeUTF("");
 					} else
 						client.dos.writeUTF("Login and Password mandatory");
+					break;
+					
+				case "looking":
+					if(words.length==1) {
+						Server_Handler.Add_To_Queue(client);
+					} else
+						client.dos.writeUTF("Internal Error");
+					break;
+					
+				case "poll":
+					if(words.length==1) {
+						if(IsGameFound()) {
+							client.dos.writeUTF("Game Found");
+							}
+						else {
+							client.dos.writeUTF("");
+						}
+					} else
+						client.dos.writeUTF("Internal Error");
 					break;
 
 				default:
@@ -68,6 +90,10 @@ public class ClientHandler extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private boolean IsGameFound() {
+		return true;
 	}
 
 }

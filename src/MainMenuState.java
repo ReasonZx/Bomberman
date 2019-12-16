@@ -1,3 +1,7 @@
+import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -8,16 +12,18 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class MainMenuState extends BasicGameState{
 
-	Image Play;
-	Image Controls;
-	Image Logout;
-	private GUI_setup sbg;
+	private Image Play;
+	private Image Controls;
+	private Image Logout;
+	protected GUI_setup sbg;
 	private int play_x;
 	private int play_y;
 	private int controls_x;
 	private int controls_y;
 	private int logout_x;
 	private int logout_y;
+	protected String server_response;
+	private boolean looking=false;
 	
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -50,21 +56,39 @@ public class MainMenuState extends BasicGameState{
 		int posX = arg0.getInput().getMouseX();
 		int posY = arg0.getInput().getMouseY();
 		
-		if((posX > play_x && posX < play_x + Play.getWidth()) && (posY > play_y && posY < play_y + Play.getHeight())) {		// ver tamanhos certos dos bot�es
-			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+		if(!looking) {
+			if((posX > play_x && posX < play_x + Play.getWidth()) && (posY > play_y && posY < play_y + Play.getHeight())) {		// ver tamanhos certos dos bot�es
+				if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+					try {
+						server_response = sbg.server.request("looking");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					System.out.println(server_response);
+				
+				looking=true;
+				Timer tt = new Timer();
+				tt.schedule(new Looking_Poll(),100);
+				}
+			}
+			
+			if((posX > controls_x && posX < controls_x + Controls.getWidth()) && (posY > controls_y && posY < controls_y + Controls.getHeight())) {	// ver tamanhos certos dos bot�es
+				if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+					sbg.enterState(sbg.Get_Controls_State());
+				}
+			}
+			
+			if((posX > logout_x && posX < logout_x + Logout.getWidth()) && (posY > logout_y && posY < logout_y + Logout.getHeight())) {	// ver tamanhos certos dos bot�es
+				if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+					sbg.enterState(sbg.Get_Menu_State());
+				}
+			}
+		}
+		else {
+			if(server_response.equals("Game Found")) {
+				looking=false;
 				sbg.enterState(sbg.Get_Game_State());
-			}
-		}
-		
-		if((posX > controls_x && posX < controls_x + Controls.getWidth()) && (posY > controls_y && posY < controls_y + Controls.getHeight())) {	// ver tamanhos certos dos bot�es
-			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-				sbg.enterState(sbg.Get_Controls_State());
-			}
-		}
-		
-		if((posX > logout_x && posX < logout_x + Logout.getWidth()) && (posY > logout_y && posY < logout_y + Logout.getHeight())) {	// ver tamanhos certos dos bot�es
-			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-				sbg.enterState(sbg.Get_Menu_State());
 			}
 		}
 	}
@@ -74,6 +98,10 @@ public class MainMenuState extends BasicGameState{
 		Play.draw(play_x,play_y);
 		Controls.draw(controls_x,controls_y);
 		Logout.draw(logout_x,logout_y);
+		
+		if(looking) {
+			
+		}
 	}
 	
 	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -85,4 +113,18 @@ public class MainMenuState extends BasicGameState{
 		return 5;
 	}
 	
+	private class Looking_Poll extends TimerTask{
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			try {
+				server_response = sbg.server.request("poll");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}
 }

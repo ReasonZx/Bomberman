@@ -9,8 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Client {
-
-	public String username;
+	private String username;
 	public Socket socket;
 	public DataInputStream dis;
 	public DataOutputStream dos;
@@ -26,8 +25,15 @@ public class Client {
 	}
 	
 	public void login(String user, String pw, ArrayList<Client> userlist) throws SQLException, IOException {
-		String result;
-		result = server.DB.login(user, pw);
+		String result = new String();
+		//result = server.DB.login(user, pw);
+		
+		if(user.equals("root1") || user.equals("root2")) {
+			if(pw.equals("1234"))
+				result = "Logged in";
+		}
+		else
+			result = "ERROR";
 		
 		if (result == "Logged in") {
 			userlist.add(this);
