@@ -66,5 +66,37 @@ public class Query_test {
 		conn.close();
 
 	}
+	
+	@Test
+	public void register() throws SQLException {
+
+		Connection conn = connect();
+		ResultSet rs=null;
+		PreparedStatement data;
+		String username = "diogo";
+		String password = "ola123";
+		String email = "santosdiogo97@gmail.com";
+
+		String query = "INSERT INTO users (username,password,email) VALUES (?,?,?)";
+		data = conn.prepareStatement(query);
+		data.setString(1, username);
+		data.setString(2,password);
+		data.setString(3, email);
+
+		// Executar query
+		try{
+			rs = data.executeQuery();
+		}
+		catch (Exception e) {
+			System.out.println(e.getMessage());
+			data.close();
+			conn.close();
+			return;
+		}
+		rs.next();
+		data.close();
+		conn.close();
+
+	}
 
 }

@@ -41,6 +41,10 @@ public class ClientHandler extends Thread {
 
 				// write on output stream based on the
 				// answer from the client
+				for (String field : words) {
+					if (field.equals(""))
+						continue;
+				}
 
 				switch (words[0]) {
 
@@ -49,6 +53,13 @@ public class ClientHandler extends Thread {
 						client.login(words[1], words[2], userlist);
 					} else
 						client.dos.writeUTF("Login and Password mandatory");
+					break;
+				case "register":
+					if (words.length == 4) {
+						client.register(words[1], words[2], words[3]);
+					} else {
+						client.dos.writeUTF("Username, Password and Email mandatory");
+					}
 					break;
 
 				default:
