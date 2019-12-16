@@ -103,7 +103,6 @@ public class LogIn extends BasicGameState{
 					try {
 						String request = "login_" + this.User + "_" + this.Pass;
 						server_response = sbg.server.request(request);
-						System.out.println(server_response);
 						if(server_response.equals("Logged in")) {
 							error_login=false;
 							sbg.enterState(sbg.Get_MainMenu_State());

@@ -1,5 +1,7 @@
 import java.io.IOException;
 
+import javax.swing.JOptionPane;
+
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
@@ -41,7 +43,7 @@ public class GUI_setup extends StateBasedGame{
 			ServerHandler server = new ServerHandler();
 			this.server = server;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, "Cant' connect to server, restart the game and try again later.\nServer might be down.");
 			e.printStackTrace();
 		}
 
