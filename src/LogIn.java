@@ -169,7 +169,7 @@ public class LogIn extends BasicGameState{
 			Login.draw(login_x,login_y);
 			
 			if(error_login) {
-				myFont.drawString(300, 150, "Incorrect Username or Password", Color.red);
+				myFont.drawString(300, 150, server_response, Color.red);
 			}
 			
 	}
