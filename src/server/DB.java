@@ -24,7 +24,7 @@ public class DB {
 
 	public static String login(String username, String pw) throws SQLException {
 		Connection conn = connect();
-		if(conn == null)
+		if (conn == null)
 			return "Can't connect to database";
 		ResultSet rs;
 		PreparedStatement data;
@@ -38,24 +38,72 @@ public class DB {
 
 		// Se query vazia = utilizador no existe na BD
 		if (!rs.next()) {
-			// Utilizador no registado na BD
-			System.out.println("User não registado na BD");
+			// Utilizador não registado na BD
 			return "User not found";
 		}
 
 		// Se a password obtida diferente da encontrada na bd = PW errada
 		if (!rs.getString(1).equals(pw)) {
 			// Password errada
-			System.out.println("Pw errada");
 			return "Wrong Password";
 		}
 
 		data.close();
 		conn.close();
 
-
 		return "Logged in";
 
+	}
+
+	public static String register(String username, String pw, String email) throws SQLException {
+
+		Connection conn = connect();
+		if (conn == null)
+			return "Can't connect to database";
+
+		if (checkUser(conn, username)) {
+			return "User Already Registered";
+		}
+
+		PreparedStatement data;
+
+		String query = "INSERT INTO users (username,password,email) VALUES (?,?,?)";
+		data = conn.prepareStatement(query);
+		data.setString(1, username);
+		data.setString(2, pw);
+		data.setString(3, email);
+
+		try {
+			data.executeQuery();
+		} catch (Exception e) {
+
+		}
+
+		data.close();
+		conn.close();
+
+		return "Registered Successfully";
+
+	}
+
+	private static boolean checkUser(Connection conn, String username) throws SQLException {
+
+		PreparedStatement data;
+		ResultSet rs;
+		String query = "SELECT username FROM users WHERE username = ?";
+		data = conn.prepareStatement(query);
+		data.setString(1, username);
+
+		// Executar query
+		rs = data.executeQuery();
+
+		// Se query vazia = utilizador no existe na BD
+		if (!rs.next()) {
+			// Utilizador já registado na BD
+			return false;
+		}
+
+		return true;
 	}
 
 }

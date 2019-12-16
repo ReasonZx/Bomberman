@@ -40,6 +40,14 @@ public class Client {
 		}
 		
 	}
+	
+	public void register(String user, String pw, String email) throws SQLException, IOException {
+		String result;
+		result = server.DB.register(user, pw, email);
+		System.out.println(result);
+		this.dos.writeUTF(result);
+
+	}
 
 	
 	
