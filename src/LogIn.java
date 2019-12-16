@@ -75,31 +75,21 @@ public class LogIn extends BasicGameState{
 
 	public void update(GameContainer gc, StateBasedGame arg1, int delta) throws SlickException {
 			//delta = 60;
-			this.User = this.Username.getText();
-			this.backX = 50;
-			this.backY = 50;
-			int posX = Mouse.getX();
-			int posY = sbg.Get_Display_height() - Mouse.getY();
+			//this.Pass = this.Password.getText();
+			User = this.Username.getText();
+			
+			int posX = gc.getInput().getMouseX();
+			int posY = gc.getInput().getMouseY();
+			
 			if((posX > backX && posX < backX + Back.getWidth()) && (posY > backY && posY < backY + Back.getHeight())) {		// ver tamanhos certos dos bot�es	//go back
 				if(Mouse.isButtonDown(0)) {
 					sbg.enterState(sbg.Get_Menu_State());
 				}
 			}
 			
-			if((posX > UserTextX && posX < (UserTextX + Username.getWidth())) && (posY > UserTextY && posY < (UserTextY + Username.getHeight()))) {		// ver tamanhos certos dos bot�es
-				if(Mouse.isButtonDown(0)) {
-					this.Username.setFocus(true);
-				}
-			}
-			
-			if((posX > PassTextX && posX < (PassTextX + Password.getWidth())) && (posY > PassTextY && posY < (PassTextY + Password.getHeight()))) {		// ver tamanhos certos dos bot�es
-				if(Mouse.isButtonDown(0)) {
-					this.Password.setFocus(true);
-				}
-			}
 			
 			if((posX > login_x && posX < login_x + Login.getWidth()) && (posY > login_y && posY < login_y + Login.getHeight())) {		// ver tamanhos certos dos bot�es
-				if(Mouse.isButtonDown(0)) {
+				if(gc.getInput().isMousePressed(gc.getInput().MOUSE_LEFT_BUTTON)) {
 					try {
 						String request = "login_" + this.User + "_" + this.Pass;
 						server_response = sbg.server.request(request);
@@ -108,12 +98,9 @@ public class LogIn extends BasicGameState{
 							sbg.enterState(sbg.Get_MainMenu_State());
 						}
 						else {
-							//Font font = new Font("Verdana", Font.BOLD, 20);
-							//TrueTypeFont trueTypeFont = new TrueTypeFont(font, true);
 							error_login=true;
 						}
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
