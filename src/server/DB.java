@@ -24,6 +24,8 @@ public class DB {
 
 	public static String login(String username, String pw) throws SQLException {
 		Connection conn = connect();
+		if(conn == null)
+			return "Can't connect to database";
 		ResultSet rs;
 		PreparedStatement data;
 
