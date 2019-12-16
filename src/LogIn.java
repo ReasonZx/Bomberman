@@ -76,25 +76,15 @@ public class LogIn extends BasicGameState{
 			//this.Pass = this.Password.getText();
 			User = this.Username.getText();
 			
-			int posX = Mouse.getX();
-			int posY = sbg.Get_Display_height() - Mouse.getY();
+			int posX = gc.getInput().getMouseX();
+			int posY = gc.getInput().getMouseY();
+			
 			if((posX > backX && posX < backX + Back.getWidth()) && (posY > backY && posY < backY + Back.getHeight())) {		// ver tamanhos certos dos bot�es	//go back
 				if(Mouse.isButtonDown(0)) {
 					sbg.enterState(sbg.Get_Menu_State());
 				}
 			}
 			
-			if((posX > UserTextX && posX < (UserTextX + Username.getWidth())) && (posY > UserTextY && posY < (UserTextY + Username.getHeight()))) {		// ver tamanhos certos dos bot�es
-				if(Mouse.isButtonDown(0)) {
-					this.Username.setFocus(true);
-				}
-			}
-			
-			if((posX > PassTextX && posX < (PassTextX + Password.getWidth())) && (posY > PassTextY && posY < (PassTextY + Password.getHeight()))) {		// ver tamanhos certos dos bot�es
-				if(Mouse.isButtonDown(0)) {
-					this.Password.setFocus(true);
-				}
-			}
 			
 			if((posX > login_x && posX < login_x + Login.getWidth()) && (posY > login_y && posY < login_y + Login.getHeight())) {		// ver tamanhos certos dos bot�es
 				if(Mouse.isButtonDown(0)) {
@@ -132,7 +122,6 @@ public class LogIn extends BasicGameState{
 			
 			if(this.Password.hasFocus()) {
 				if(this.Password.getText().length() > this.Pass.length()) {
-					System.out.println(this.Password.getText().length() + "  " + this.Pass.length());
 					this.Pass = this.Pass + this.Password.getText().substring(this.Password.getText().length()-1,this.Password.getText().length());
 				}
 				else if(this.Password.getText().length() < this.Pass.length()) {

@@ -24,6 +24,11 @@ public class SignupState extends BasicGameState{
     private Image Back;
     private Image signup;
     private int signup_x,signup_y;
+    private String user;
+    private String mail;
+    private String pass;
+    private String pass_rpt;
+    private boolean pass_match = true;
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame arg1) throws SlickException {
@@ -32,7 +37,7 @@ public class SignupState extends BasicGameState{
 		myFont = gc.getDefaultFont();
 		signup = new Image("sprites/signup.png");
 		signup = signup.getScaledCopy(0.5f);
-		signup_x = (int) ((float) sbg.Get_Display_width() * 0.45);
+		signup_x = (int) ((float) sbg.Get_Display_width() * 0.5 - signup.getWidth()/2);
 		signup_y = (int) ((float) sbg.Get_Display_height() * 0.75);
 		
 		
@@ -41,12 +46,12 @@ public class SignupState extends BasicGameState{
 	    Username.setBorderColor(Color.white);
 	    Username.setTextColor(Color.black);
 	    
-		Password = new TextField(gc, myFont,(int) ((float) sbg.Get_Display_width() * 0.40), (int) ((float) sbg.Get_Display_height() * 0.40), 400, 20);
+		Password = new TextField(gc, myFont,(int) ((float) sbg.Get_Display_width() * 0.40), (int) ((float) sbg.Get_Display_height() * 0.50), 400, 20);
 		Password.setBackgroundColor(Color.white);
 		Password.setBorderColor(Color.white);
 		Password.setTextColor(Color.black);
 	    
-		Email = new TextField(gc, myFont,(int) ((float) sbg.Get_Display_width() * 0.40), (int) ((float) sbg.Get_Display_height() * 0.50), 400, 20);
+		Email = new TextField(gc, myFont,(int) ((float) sbg.Get_Display_width() * 0.40), (int) ((float) sbg.Get_Display_height() * 0.40), 400, 20);
 		Email.setBackgroundColor(Color.white);
 		Email.setBorderColor(Color.white);
 		Email.setTextColor(Color.black);
@@ -58,6 +63,11 @@ public class SignupState extends BasicGameState{
 		
 		Back = new Image("sprites/back.png");
 		Back = Back.getScaledCopy(0.2f);
+		
+		user = "";
+		pass = "";
+		pass_rpt = "";
+		mail = "";
 	}
 	
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -74,22 +84,77 @@ public class SignupState extends BasicGameState{
 	}
 
 	@Override
-	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
-		int posX = arg0.getInput().getMouseX();
-		int posY = arg0.getInput().getMouseY();
+	public void update(GameContainer gc, StateBasedGame arg1, int arg2) throws SlickException {
+		int posX = gc.getInput().getMouseX();
+		int posY = gc.getInput().getMouseY();
+		
+		user = Username.getText();
+		mail = Email.getText();
 				
 		if((posX > 50 && posX < 50 + Back.getWidth()) && (posY > 50 && posY < 50 + Back.getHeight())) {		// ver tamanhos certos dos bot�es	//go back
-			if(arg0.getInput().isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
-				//sbg.enterState(sbg.Get_Menu_State());
-				sbg.enterState(sbg.Get_Menu_State(), new FadeOutTransition() , new FadeInTransition());
+			if(gc.getInput().isMousePressed(gc.getInput().MOUSE_LEFT_BUTTON)) {
+				sbg.enterState(sbg.Get_Menu_State());
 			}
 		}
 		
-		if((posX > signup_x && posX < signup_x + signup.getWidth()) && (posY > signup_y && posY < signup_y + signup.getHeight())) {		// ver tamanhos certos dos bot�es	//go back
-			if(arg0.getInput().isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
-				sbg.enterState(sbg.Get_Menu_State(), new FadeOutTransition() , new FadeInTransition());
+		if(Username.hasFocus() && gc.getInput().isKeyPressed(15)) {
+			Email.setFocus(true);
+		}
+		
+		
+		if(Email.hasFocus() && gc.getInput().isKeyPressed(15)) {
+			Password.setFocus(true);
+		}
+		
+		if(Password.hasFocus() && gc.getInput().isKeyPressed(15)) {
+			Password_repeat.setFocus(true);
+		}
+		
+		if(Password_repeat.hasFocus() && gc.getInput().isKeyPressed(15)) {
+			Username.setFocus(true);
+		}
+		
+		if((Password_repeat.hasFocus() && gc.getInput().isKeyPressed(28)) || (((posX > signup_x && posX < signup_x + signup.getWidth()) && (posY > signup_y && posY < signup_y + signup.getHeight())) && gc.getInput().isMousePressed(gc.getInput().MOUSE_LEFT_BUTTON))) {									
+			if(!pass.equals(pass_rpt)) {
+				pass_match=false;
+			}
+			else {
+				sbg.enterState(sbg.Get_Menu_State());
+			}			
+		}
+		
+		String temp = new String();
+		String temp1 = new String();
+
+		
+		if(Password.hasFocus()) {
+			if(Password.getText().length() > pass.length()) {
+				pass = pass + Password.getText().substring(Password.getText().length()-1,Password.getText().length());
+			}
+			else if(Password.getText().length() < pass.length()) {
+				pass = pass.substring(0, pass.length()-1);
+			}
+			else {
+				for(int i=0 ; i < Password.getText().length() ; i++)
+					temp = temp + "*";
+				Password.setText(temp);
 			}
 		}
+		
+		if(Password_repeat.hasFocus()) {
+			if(Password_repeat.getText().length() > pass_rpt.length()) {
+				pass_rpt = pass_rpt + Password_repeat.getText().substring(Password_repeat.getText().length()-1,Password_repeat.getText().length());
+			}
+			else if(Password_repeat.getText().length() < pass_rpt.length()) {
+				pass_rpt = pass_rpt.substring(0, pass_rpt.length()-1);
+			}
+			else {
+				for(int i=0 ; i < Password_repeat.getText().length() ; i++)
+					temp1 = temp1 + "*";
+				Password_repeat.setText(temp1);
+			}
+		}			
+		
 	}
 	
 	@Override
@@ -104,6 +169,9 @@ public class SignupState extends BasicGameState{
 		Password_repeat.render(gc, g);
 		Back.draw(50,50);
 		signup.draw(signup_x , signup_y);
+		if(!pass_match) {
+			myFont.drawString((int) ((float) sbg.Get_Display_width() * 0.50) - myFont.getWidth("Passwords don't match")/2, (int) ((float) sbg.Get_Display_height() * 0.15), "Passwords don't match", Color.red);
+		}
 	}
 	
 	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
