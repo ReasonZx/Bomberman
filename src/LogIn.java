@@ -1,25 +1,25 @@
+import java.io.IOException;
+
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.*;
 import org.newdawn.slick.gui.*;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-import java.awt.Font;
-import java.io.IOException;
 
 
 public class LogIn extends BasicGameState{
 	
     private TextField Username;
     private TextField Password;
-	private org.newdawn.slick.Font trueTypeFont;
+    private Font myFont;
 	private String User;								//For hardcoded login
 	private String Pass;								//For hardcoded login
 	private Image Back;
-	private int textWidth, textLenght;
+	private Image Login;
+	private int login_x, login_y;
 	private int UserTextX, UserTextY;
 	private int PassTextX, PassTextY;
-	private int backX, backY, backWidth, backLength;
-	private Image Login;
+	private int backX, backY;
 	private boolean error_login = false;
 	private GUI_setup sbg;
 	private String server_response;
@@ -27,33 +27,37 @@ public class LogIn extends BasicGameState{
 	public void init(GameContainer gc, StateBasedGame arg1) throws SlickException {
 		  sbg=(GUI_setup) arg1;
 		  sbg.Set_Login_State(getID());
-		  Font font = new Font("Calibri", Font.PLAIN, 15);
-		  trueTypeFont = new TrueTypeFont(font, true);
+		  myFont=gc.getDefaultFont();
 		  
-		  this.textWidth = 400;
-		  this.textLenght = 20;
-		  
-		  this.UserTextX = 200;
-		  this.UserTextY = 200;
+		  UserTextX = (int) (0.35* (float)sbg.Get_Display_width());
+		  UserTextY = (int) (0.35* (float)sbg.Get_Display_height());
 	      
-	      this.Username = new TextField(gc, this.trueTypeFont, this.UserTextX, this.UserTextY, this.textWidth , this.textLenght);
-	      this.Username.setBackgroundColor(Color.white);
-	      this.Username.setBorderColor(Color.white);
-	      this.Username.setTextColor(Color.black);
+	      Username = new TextField(gc, myFont, UserTextX, UserTextY, 400 , 20);
+	      Username.setBackgroundColor(Color.white);
+	      Username.setBorderColor(Color.white);
+	      Username.setTextColor(Color.black);
 	      
-	      this.PassTextX = 200;
-	      this.PassTextY = 300;
+	      PassTextX = (int) (0.35* (float)sbg.Get_Display_width());
+	      PassTextY = (int) (0.55* (float)sbg.Get_Display_height());
 	      
-	      this.Password = new TextField(gc, this.trueTypeFont, this.PassTextX, this.PassTextY, this.textWidth , this.textLenght);
-	      this.Password.setBackgroundColor(Color.white);
-	      this.Password.setBorderColor(Color.white);
-	      this.Password.setTextColor(Color.black);
+	      Password = new TextField(gc, myFont, PassTextX, PassTextY, 400 , 20);
+	      Password.setBackgroundColor(Color.white);
+	      Password.setBorderColor(Color.white);
+	      Password.setTextColor(Color.black);
 	      
-	      this.Pass = new String();
-	      this.User = new String();
+	      Pass = new String();
+	      User = new String();
 	      
-	      this.Back = new Image("sprites/back.png");
-	      this.Login = new Image("sprites/logIn.png");	      
+	      Back = new Image("sprites/back.png");
+	      Back = Back.getScaledCopy(0.2f);
+	      Login = new Image("sprites/logIn.png");
+	      Login = Login.getScaledCopy(0.5f);
+	      
+	      backX = 50;
+	      backY = 50;
+	      
+	      login_x = (int) (0.43* (float)sbg.Get_Display_width());
+	      login_y = (int) (0.7* (float)sbg.Get_Display_height());
 	}
 	
 	@Override
@@ -62,38 +66,39 @@ public class LogIn extends BasicGameState{
 		arg0.getInput().clearMousePressedRecord();
 		Username.setAcceptingInput(true);
 		Password.setAcceptingInput(true);
+		Username.setText("");
+		Password.setText("");
+		Pass = "";
+		User = "";
 	}
+
 
 	public void update(GameContainer gc, StateBasedGame arg1, int delta) throws SlickException {
 			//delta = 60;
 			this.User = this.Username.getText();
 			this.backX = 50;
 			this.backY = 50;
-			this.backLength = 30;
-			this.backWidth = 50;
-			
-			
 			int posX = Mouse.getX();
-			int posY = 600 - Mouse.getY();
-			if((posX > this.backX && posX < (this.backX + this.backWidth)) && (posY > this.backY && posY < (this.backY + this.backLength))) {		// ver tamanhos certos dos botões	//go back
+			int posY = sbg.Get_Display_height() - Mouse.getY();
+			if((posX > backX && posX < backX + Back.getWidth()) && (posY > backY && posY < backY + Back.getHeight())) {		// ver tamanhos certos dos botï¿½es	//go back
 				if(Mouse.isButtonDown(0)) {
 					sbg.enterState(sbg.Get_Menu_State());
 				}
 			}
 			
-			if((posX > this.UserTextX && posX < (this.UserTextX + this.textWidth)) && (posY > this.UserTextY && posY < (this.UserTextY + this.textLenght))) {		// ver tamanhos certos dos botões
+			if((posX > UserTextX && posX < (UserTextX + Username.getWidth())) && (posY > UserTextY && posY < (UserTextY + Username.getHeight()))) {		// ver tamanhos certos dos botï¿½es
 				if(Mouse.isButtonDown(0)) {
 					this.Username.setFocus(true);
 				}
 			}
 			
-			if((posX > this.PassTextX && posX < (this.PassTextX + this.textWidth)) && (posY > this.PassTextY && posY < (this.PassTextY + this.textLenght))) {		// ver tamanhos certos dos botões
+			if((posX > PassTextX && posX < (PassTextX + Password.getWidth())) && (posY > PassTextY && posY < (PassTextY + Password.getHeight()))) {		// ver tamanhos certos dos botï¿½es
 				if(Mouse.isButtonDown(0)) {
 					this.Password.setFocus(true);
 				}
 			}
 			
-			if((posX > 300 && posX < 400) && (posY > 400 && posY < 450)) {		// ver tamanhos certos dos botões
+			if((posX > login_x && posX < login_x + Login.getWidth()) && (posY > login_y && posY < login_y + Login.getHeight())) {		// ver tamanhos certos dos botï¿½es
 				if(Mouse.isButtonDown(0)) {
 					try {
 						String request = "login_" + this.User + "_" + this.Pass;
@@ -114,6 +119,27 @@ public class LogIn extends BasicGameState{
 					}
 				}
 			}
+			
+			if(this.Password.hasFocus() && gc.getInput().isKeyPressed(15)) {
+				this.Username.setFocus(true);
+			}
+			
+			
+			if(this.Username.hasFocus() && gc.getInput().isKeyPressed(15)) {
+				this.Password.setFocus(true);
+			}
+			
+			if(this.Password.hasFocus() && gc.getInput().isKeyPressed(28)) {
+				if(this.Pass.equals("1234") && this.User.equals("root")) {
+					error_login=false;
+					this.Password.setFocus(false);
+					sbg.enterState(sbg.Get_MainMenu_State());
+				}
+				else {
+					error_login=true;
+				}
+			}
+			
 			String temp = new String();
 			
 			if(this.Password.hasFocus()) {
@@ -133,26 +159,23 @@ public class LogIn extends BasicGameState{
 	
 
 	public void render(GameContainer gc, StateBasedGame arg1, Graphics g) throws SlickException {
-			float back_scale = (float) 0.1;
-			float login_scale = (float) 0.5;
-			
 			//g.drawString(this.User, 500, 10);
 			//g.drawString(this.Pass, 500, 30);
-			g.drawString("Username", 120, 200);
-			this.Username.render(gc, g);
-			g.drawString("Password", 120, 300);
-			this.Password.render(gc, g);
-			this.Back.draw(50,50,back_scale);
-			this.Login.draw(300,400,login_scale);
+			g.drawString("Username:", UserTextX - 100, UserTextY);
+			Username.render(gc, g);
+			g.drawString("Password:", PassTextX - 100, PassTextY);
+			Password.render(gc, g);
+			Back.draw(backX,backY);
+			Login.draw(login_x,login_y);
 			
 			if(error_login) {
-				trueTypeFont.drawString(300, 150, server_response, Color.red);
+				myFont.drawString(300, 150, server_response, Color.red);
 			}
 			
 	}
 	
+	@Override
 	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-		// TODO Auto-generated method stub
 		arg0.getInput().clearMousePressedRecord();
 		Username.setAcceptingInput(false);
 		Password.setAcceptingInput(false);

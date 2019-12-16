@@ -44,7 +44,7 @@ public class Layout_Logic {
 					continue;
 				if(i==11 && j==7)
 					continue;
-				if((i*j)%4==0) if((i+j)%2==0) L.m.Add_Element(new Wall(i,j,L,1));
+				if((i*j)%3==0) if((i+j)%2==0) L.m.Add_Element(new Wall(i,j,L,1));
 					else L.m.Add_Element(new Wall(i,j,L,2));
 				else L.m.Add_Element(new Wall(i,j,L,2));
 			}
