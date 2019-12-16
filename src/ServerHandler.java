@@ -27,6 +27,7 @@ public class ServerHandler {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			return "error";
 		}
 		return received;
 	}
