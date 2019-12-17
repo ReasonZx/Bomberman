@@ -96,11 +96,7 @@ public class SignupState extends BasicGameState {
 		user = Username.getText();
 		mail = Email.getText();
 
-		if ((posX > 50 && posX < 50 + Back.getWidth()) && (posY > 50 && posY < 50 + Back.getHeight())) { // ver tamanhos
-																											// certos
-																											// dos
-																											// bot�es
-																											// //go back
+		if ((posX > 50 && posX < 50 + Back.getWidth()) && (posY > 50 && posY < 50 + Back.getHeight())) { 
 			if (gc.getInput().isMousePressed(gc.getInput().MOUSE_LEFT_BUTTON)) {
 				sbg.enterState(sbg.Get_Menu_State());
 			}
