@@ -45,7 +45,7 @@ public class FriendsState extends BasicGameState{
 		R1 = new Rectangle(20,20,arg0.getWidth()-40,arg0.getHeight()-40);
 		R2 = new Rectangle(0, arg0.getHeight()/3f, arg0.getWidth(), arg0.getHeight()/3f);
 		
-		Add_New_Button=new Image("sprites/Reset_Button.png");
+		Add_New_Button=new Image("sprites/add.png");
 		Add_New_Button=Add_New_Button.getScaledCopy(0.3f);
 		Add_New_ButtonX=(int) (arg0.getWidth()/3f*2-Add_New_Button.getWidth()/2f);
 		Add_New_ButtonY=arg0.getHeight()-Add_New_Button.getHeight();
@@ -55,13 +55,13 @@ public class FriendsState extends BasicGameState{
 		Back_ButtonX=(int) (arg0.getWidth()/3f-Add_New_Button.getWidth()/2f);
 		Back_ButtonY=arg0.getHeight()-Add_New_Button.getHeight();
 		
-		Accept_Button="sprites/Reset_Button.png";
+		Accept_Button="sprites/accept.png";
 		
-		Reject_Button= "sprites/Reset_Button.png";
+		Reject_Button= "sprites/decline.png";
 
-		Remove_Button= "sprites/Reset_Button.png";
+		Remove_Button= "sprites/remove.png";
 		
-		Invite_Button= "sprites/Reset_Button.png";
+		Invite_Button= "sprites/invite.png";
 		
 		NewFriend = new TextField(arg0, myFont,(int)(arg0.getWidth()/4f),(int)(arg0.getHeight()/2f),(int)(arg0.getWidth()/4f)*2,20);
 		NewFriend.setBackgroundColor(Color.white);
@@ -84,40 +84,6 @@ public class FriendsState extends BasicGameState{
 		NewFriend.setAcceptingInput(false);
 	}
 	
-	@Override
-	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
-		arg2.setColor(Color.white);
-		arg2.fill(R1);
-		arg2.setColor(Color.black);
-		arg2.fill(T1);
-		arg2.fill(T2);
-		arg2.setColor(Color.white);
-		
-		myFont.drawString(20+R1.getWidth()/2f - myFont.getWidth(Integer.toString(CurrentPage) + " / " + Integer.toString(MaxPage))/2f, arg0.getHeight()-80,
-				"" + Integer.toString(CurrentPage) + " / " + Integer.toString(MaxPage) + "",Color.black);
-		myFont.drawString(20+R1.getWidth()/7f - myFont.getWidth("Username")/2f, 20+20,
-				"Username",Color.black);
-		
-		RenderFriendList();
-		RenderButtons();
-		
-		Add_New_Button.draw(Add_New_ButtonX, Add_New_ButtonY);
-		Back_Button.draw(Back_ButtonX,Back_ButtonY);
-		
-		if(Adding) {
-			arg2.setColor(Color.black);
-			arg2.fill(R2);
-			arg2.setColor(Color.white);
-			myFont.drawString(arg0.getWidth()/2f - myFont.getWidth("Type the name of the player you wish to add and press the button!")/2f,
-	                    R2.getY()+20, "Type the name of the player you wish to add and press the button!");
-			NewFriend.setAcceptingInput(true);
-			NewFriend.render(arg0, arg2);
-			myFont.drawString(arg0.getWidth()/2f - myFont.getWidth(Error_Message)/2f, 
-					(arg0.getHeight()/2f+NewFriend.getHeight()+R2.getY()+R2.getHeight()-Add_New_Button.getHeight())/2f-myFont.getHeight(Error_Message)/2f, 
-					Error_Message,Color.red);
-			Add_New_Button.draw(arg0.getWidth()/2f-Add_New_Button.getWidth()/2f,R2.getY()+R2.getHeight()-Add_New_Button.getHeight());
-		}
-	}
 
 	@Override
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
@@ -142,13 +108,48 @@ public class FriendsState extends BasicGameState{
 		
 	}
 	
+	@Override
+	public void render(GameContainer gc, StateBasedGame arg1, Graphics arg2) throws SlickException {
+		arg2.setColor(Color.white);
+		arg2.fill(R1);
+		arg2.setColor(Color.black);
+		arg2.fill(T1);
+		arg2.fill(T2);
+		arg2.setColor(Color.white);
+		
+		myFont.drawString(20+R1.getWidth()/2f - myFont.getWidth(Integer.toString(CurrentPage) + " / " + Integer.toString(MaxPage))/2f, gc.getHeight()-80,
+				"" + Integer.toString(CurrentPage) + " / " + Integer.toString(MaxPage) + "",Color.black);
+		myFont.drawString(20+R1.getWidth()/7f - myFont.getWidth("Username")/2f, 20+20,
+				"Username",Color.black);
+		
+		RenderFriendList();
+		RenderButtons();
+		
+		Add_New_Button.draw(Add_New_ButtonX, Add_New_ButtonY);
+		Back_Button.draw(Back_ButtonX,Back_ButtonY);
+		
+		if(Adding) {
+			arg2.setColor(Color.black);
+			arg2.fill(R2);
+			arg2.setColor(Color.white);
+			myFont.drawString(gc.getWidth()/2f - myFont.getWidth("Type the name of the player you wish to add and press the button!")/2f,
+	                    R2.getY()+20, "Type the name of the player you wish to add and press the button!");
+			NewFriend.setAcceptingInput(true);
+			NewFriend.render(gc, arg2);
+			myFont.drawString(gc.getWidth()/2f - myFont.getWidth(Error_Message)/2f, 
+					(gc.getHeight()/2f+NewFriend.getHeight()+R2.getY()+R2.getHeight()-Add_New_Button.getHeight())/2f-myFont.getHeight(Error_Message)/2f, 
+					Error_Message,Color.red);
+			Add_New_Button.draw(gc.getWidth()/2f-Add_New_Button.getWidth()/2f,R2.getY()+R2.getHeight()-Add_New_Button.getHeight());
+		}
+	}
+	
 	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		NewFriend.setAcceptingInput(false);
 	}
 
 	@Override
 	public int getID() {
-		return 7;
+		return 8;
 	}
 	
 	private void Hardcode_Friends() {
@@ -278,16 +279,16 @@ public class FriendsState extends BasicGameState{
 			}
 	}
 	
-	private void Add_New_Button_Pressed(int posX,int posY,GameContainer arg0,int state) {
+	private void Add_New_Button_Pressed(int posX,int posY,GameContainer gc,int state) {
 		if(state==1) {
 			if((posX>Add_New_ButtonX && posX < Add_New_ButtonX + Add_New_Button.getWidth()) && (posY >Add_New_ButtonY  && posY < Add_New_ButtonY+ Add_New_Button.getHeight())){ 	
-				if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) 
+				if(gc.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) 
 					Adding=true;
 				}
 		}
 		else {
-			if((posX>arg0.getWidth()/2f-Add_New_Button.getWidth()/2f && posX < arg0.getWidth()/2f-Add_New_Button.getWidth()/2f + Add_New_Button.getWidth()) && (posY > R2.getY()+R2.getHeight()-Add_New_Button.getHeight()  && posY < R2.getY()+R2.getHeight())){ 	
-				if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) { 
+			if((posX>gc.getWidth()/2f-Add_New_Button.getWidth()/2f && posX < gc.getWidth()/2f-Add_New_Button.getWidth()/2f + Add_New_Button.getWidth()) && (posY > R2.getY()+R2.getHeight()-Add_New_Button.getHeight()  && posY < R2.getY()+R2.getHeight())){ 	
+				if(gc.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) { 
 					//TODO
 					//GET TEXT FIELD VALUE AND SEND TO SERVER
 					//System.out.println("ADDING FRIEND: "+ NewFriend.getText());
@@ -302,6 +303,9 @@ public class FriendsState extends BasicGameState{
 							Error_Message=new String("USER DOESN'T EXIST");
 					}
 				}
+			}
+			if(gc.getInput().isKeyPressed(1)) {
+				Adding=false;
 			}
 		}
 				
