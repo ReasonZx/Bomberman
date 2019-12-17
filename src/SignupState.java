@@ -9,6 +9,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -24,13 +25,17 @@ public class SignupState extends BasicGameState {
 	private Font myFont;
 	private Image Back;
 	private Image signup;
+	private Image Ok;
 	private int signup_x, signup_y;
+	private int ok_x, ok_y;
 	private String user;
 	private String mail;
 	private String pass;
 	private String pass_rpt;
 	private boolean pass_match = true;
 	private String server_response;
+	private boolean say_ok;
+	private Shape R1,R2;
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame arg1) throws SlickException {
@@ -41,6 +46,11 @@ public class SignupState extends BasicGameState {
 		signup = signup.getScaledCopy(0.5f);
 		signup_x = (int) ((float) sbg.Get_Display_width() * 0.5 - signup.getWidth() / 2);
 		signup_y = (int) ((float) sbg.Get_Display_height() * 0.75);
+		
+		Ok = new Image("sprites/ok.png");
+		Ok = Ok.getScaledCopy(0.5f);
+		ok_x = (int) ((float) sbg.Get_Display_width() * 0.5 - signup.getWidth() / 2);
+		ok_y = (int) ((float) sbg.Get_Display_height() * 0.75);
 
 		Username = new TextField(gc, myFont, (int) ((float) sbg.Get_Display_width() * 0.40),
 				(int) ((float) sbg.Get_Display_height() * 0.30), 400, 20);
@@ -73,6 +83,8 @@ public class SignupState extends BasicGameState {
 		pass = "";
 		pass_rpt = "";
 		mail = "";
+		
+		say_ok = false;
 	}
 
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -130,6 +142,7 @@ public class SignupState extends BasicGameState {
 					server_response = sbg.server.request(request);
 					System.out.println(server_response);
 					if (server_response.equals("Registered Successfully")) {
+						say_ok = true;
 						sbg.enterState(sbg.Get_MainMenu_State());
 					}
 
@@ -196,7 +209,14 @@ public class SignupState extends BasicGameState {
 					(int) ((float) sbg.Get_Display_width() * 0.50) - myFont.getWidth("Passwords don't match") / 2,
 					(int) ((float) sbg.Get_Display_height() * 0.15), "Passwords don't match", Color.red);
 		}
+		if(say_ok) {
+			g.setColor(Color.black);
+			g.fill(R2);
+			g.setColor(Color.white);
+		}
 	}
+	
+	
 
 	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		Username.setAcceptingInput(false);
