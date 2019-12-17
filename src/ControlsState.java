@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;

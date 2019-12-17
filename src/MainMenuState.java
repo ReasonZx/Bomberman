@@ -58,7 +58,7 @@ public class MainMenuState extends BasicGameState{
 		
 		if((posX > controls_x && posX < controls_x + Controls.getWidth()) && (posY > controls_y && posY < controls_y + Controls.getHeight())) {	// ver tamanhos certos dos bot�es
 			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-				sbg.enterState(sbg.Get_Controls_State());
+				sbg.enterState(sbg.Get_Friends_State());
 			}
 		}
 		
