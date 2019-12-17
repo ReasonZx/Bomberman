@@ -20,7 +20,8 @@ public class ServerHandler {
 	public String request(String req) throws IOException {
 		String received = null;
 		try {
-			dos.writeUTF(req);
+			if(req!=null)
+				dos.writeUTF(req);
 			while (received == null) {
 				received = dis.readUTF();
 			}

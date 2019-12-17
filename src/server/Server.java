@@ -27,10 +27,13 @@ public class Server implements Runnable{
 		}catch (IOException e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
-		} 
+		}
 		
-		 while (true)  
-	     { 
+		Timer tt = new Timer();
+		tt.schedule(new Queue_Handler(),0, 500);
+			
+		while (true)  
+	    { 
 	         Socket s = null; 
 	           
 	         try 
@@ -43,10 +46,11 @@ public class Server implements Runnable{
 	             // obtaining input and out streams 
 	             DataInputStream dis = new DataInputStream(s.getInputStream()); 
 	             DataOutputStream dos = new DataOutputStream(s.getOutputStream()); 
-	              
+          
 	             Client client = new Client(s, dis, dos);
 	             
 	             System.out.println("Assigning new thread for this client"); 
+	     
 
 	             // create a new thread object 
 	             Thread t = new ClientHandler(client, this); 
@@ -65,15 +69,45 @@ public class Server implements Runnable{
 				}
 	             e.printStackTrace(); 
 	         } 
-	     } 
+	    } 
 	}
 	
 	public ArrayList<Client>Get_UserList(){
 		return userlist;
 	}
 	
-	public void Add_To_Queue(Client x) {
+	public int Add_To_Queue(Client x) {
 		queue.add(x);
+		return queue.size()-1;
 	}
+	
+	public void Remove_From_Queue(int pos) {
+		queue.remove(pos);
+	}
+	
+	private class Queue_Handler extends TimerTask{
 
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			if(queue.size()>=2) {
+				for(int i=0;i<10;i++){
+					if(queue.size()<2)
+						break;
+					try {
+						queue.get(0).Send_Game_Found_Message();
+						queue.get(1).Send_Game_Found_Message();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					GameHandler g = new GameHandler(queue.get(0),queue.get(1));
+					g.start();
+					queue.remove(0);
+					queue.remove(0);
+				}
+			}
+		}
+		
+	}
 }
