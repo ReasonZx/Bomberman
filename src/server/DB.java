@@ -1,6 +1,8 @@
 package server;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class DB {
 
@@ -74,7 +76,7 @@ public class DB {
 		data.setString(3, email);
 
 		try {
-			data.executeQuery();
+			data.executeUpdate();
 		} catch (Exception e) {
 
 		}
@@ -104,6 +106,104 @@ public class DB {
 		}
 
 		return true;
+	}
+
+	private static int isFriend(String username, String friend) throws SQLException {
+		Connection conn = connect();
+
+		ResultSet rs;
+		PreparedStatement data;
+
+		String query = "SELECT confirmed FROM friends WHERE username = ? AND friend = ?";
+		data = conn.prepareStatement(query);
+		data.setString(1, username);
+		data.setString(2, friend);
+
+		rs = data.executeQuery();
+		if (!rs.next()) {
+			return -1;
+		}
+
+		if (rs.getBoolean(1) == true) {
+			return 1;
+		}
+
+		return 0;
+	}
+
+	public String requestFriendship(String username, String friend) throws SQLException {
+		Connection conn = connect();
+		PreparedStatement data;
+
+		// Checks if friend username exists
+		if (!checkUser(conn, friend))
+			return "User does not exist";
+		// Checks if they are already friends
+		if (isFriend(username, friend) == 1)
+			return "Already friends";
+		// Checks if the request has been sent
+		if (isFriend(username, friend) == 0) {
+			return "Already requested";
+		}
+
+		// Checks if the friend has already sent the user a friend request
+		if (isFriend(friend, username) == 0) {
+
+			// If so, just accept the request
+			acceptFriendship(friend, username);
+		}
+
+		String query = "INSERT INTO friends (username,friend,confirmed) VALUES (?,?,?)";
+		data = conn.prepareStatement(query);
+		data.setString(1, username);
+		data.setString(2, friend);
+		data.setBoolean(3, false);
+
+		data.executeUpdate();
+
+		return "Request sent!";
+	}
+
+	public String acceptFriendship(String username, String friend) throws SQLException {
+		Connection conn = connect();
+		PreparedStatement data;
+
+		String query = "UPDATE friends SET confirmed = ? WHERE username = ? AND friend = ?";
+		data = conn.prepareStatement(query);
+		data.setBoolean(1, true);
+		data.setString(2, friend);
+		data.setString(3, username);
+
+		data.executeUpdate();
+		query = "INSERT INTO friends (username,friend,confirmed) VALUES (?,?,?)";
+		data = conn.prepareStatement(query);
+		data.setString(1, username);
+		data.setString(2, friend);
+		data.setBoolean(3, true);
+
+		data.executeUpdate();
+		return "Accepted " + friend + "as friend";
+	}
+
+	public ArrayList<String> getFriendsList(String username) throws SQLException {
+
+		ArrayList<String> friends = new ArrayList<>();
+		
+		Connection conn = connect();
+		PreparedStatement data;
+		ResultSet rs;
+		
+		
+		String query = "SELECT friend FROM friends WHERE username = ? AND confirmed = true";
+		data = conn.prepareStatement(query);
+		data.setString(1, username);
+		
+		rs = data.executeQuery();
+		while (rs.next()) {
+			friends.add(rs.getString(1));
+		}
+		return friends;
+
 	}
 
 }

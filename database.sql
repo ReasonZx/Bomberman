@@ -5,7 +5,7 @@ CREATE TABLE users(
 );
 
 CREATE TABLE friends(
-    user_id SERIAL REFERENCES users(id),
-    friend_id SERIAL REFERENCES users(id),
+    user SERIAL REFERENCES users(username),
+    friend SERIAL REFERENCES users(username),
     confirmed BOOLEAN
 );
