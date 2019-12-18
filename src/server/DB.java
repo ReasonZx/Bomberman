@@ -40,7 +40,7 @@ public class DB {
 
 		// Se query vazia = utilizador no existe na BD
 		if (!rs.next()) {
-			// Utilizador não registado na BD
+			// Utilizador nï¿½o registado na BD
 			return "User not found";
 		}
 
@@ -101,15 +101,15 @@ public class DB {
 
 		// Se query vazia = utilizador no existe na BD
 		if (!rs.next()) {
-			// Utilizador já registado na BD
+			// Utilizador jï¿½ registado na BD
 			return false;
 		}
 
 		return true;
 	}
 
-	public int isFriend(String username, String friend) throws SQLException {
-		/*Connection conn = connect();
+	public static int isFriend(String username, String friend) throws SQLException {
+		Connection conn = connect();
 
 		ResultSet rs;
 		PreparedStatement data;
@@ -135,8 +135,8 @@ public class DB {
 			return 0;
 	}
 
-	public String requestFriendship(String username, String friend) throws SQLException {
-		/*Connection conn = connect();
+	public static String requestFriendship(String username, String friend) throws SQLException {
+		Connection conn = connect();
 		PreparedStatement data;
 
 		// Checks if friend username exists
@@ -168,8 +168,8 @@ public class DB {
 		return "Request sent!";
 	}
 
-	public String acceptFriendship(String username, String friend) throws SQLException {
-		/*Connection conn = connect();
+	public static String acceptFriendship(String username, String friend) throws SQLException {
+		Connection conn = connect();
 		PreparedStatement data;
 
 		String query = "UPDATE friends SET confirmed = ? WHERE username = ? AND friend = ?";
@@ -189,7 +189,7 @@ public class DB {
 		return "Accepted " + friend + "as friend";
 	}
 
-	public ArrayList<String> getFriendsList(String username) throws SQLException {
+	public static ArrayList<String> getFriendsList(String username) throws SQLException {
 
 		ArrayList<String> friends = new ArrayList<>();
 		
@@ -208,6 +208,46 @@ public class DB {
 		}
 		return friends;
 
+	}
+	
+	public static String removeFriend(String username, String friend) throws SQLException {
+		Connection conn = connect();
+		PreparedStatement data;
+
+		String query = "DELETE FROM friends WHERE username = ? AND friend = ? AND confirmed = ?";
+		data = conn.prepareStatement(query);
+		data.setBoolean(3, true);
+		data.setString(2, friend);
+		data.setString(1, username);
+
+		int rs = data.executeUpdate();
+		
+		if(rs > 0) {
+			return friend + " removed from friends list";
+		}
+		else {
+			return "Error removing friend";
+		}
+	}
+	
+	public static String rejectFriendRequest(String username, String friend) throws SQLException {
+		Connection conn = connect();
+		PreparedStatement data;
+
+		String query = "DELETE FROM friends WHERE username = ? AND friend = ? AND confirmed = ?";
+		data = conn.prepareStatement(query);
+		data.setBoolean(3, false);
+		data.setString(2, username);
+		data.setString(1, friend);
+
+		int rs = data.executeUpdate();
+		
+		if(rs > 0) {
+			return "Request removed";
+		}
+		else {
+			return "Request not found";
+		}
 	}
 
 }
