@@ -109,7 +109,7 @@ public class DB {
 	}
 
 	public int isFriend(String username, String friend) throws SQLException {
-		Connection conn = connect();
+		/*Connection conn = connect();
 
 		ResultSet rs;
 		PreparedStatement data;
@@ -128,11 +128,15 @@ public class DB {
 			return 1;
 		}
 
-		return 0;
+		return 0;*/
+		if(friend.equals("SlimShady"))
+			return 1;
+		else
+			return 0;
 	}
 
 	public String requestFriendship(String username, String friend) throws SQLException {
-		Connection conn = connect();
+		/*Connection conn = connect();
 		PreparedStatement data;
 
 		// Checks if friend username exists
@@ -159,13 +163,13 @@ public class DB {
 		data.setString(2, friend);
 		data.setBoolean(3, false);
 
-		data.executeUpdate();
+		data.executeUpdate();*/
 
 		return "Request sent!";
 	}
 
 	public String acceptFriendship(String username, String friend) throws SQLException {
-		Connection conn = connect();
+		/*Connection conn = connect();
 		PreparedStatement data;
 
 		String query = "UPDATE friends SET confirmed = ? WHERE username = ? AND friend = ?";
@@ -181,7 +185,7 @@ public class DB {
 		data.setString(2, friend);
 		data.setBoolean(3, true);
 
-		data.executeUpdate();
+		data.executeUpdate();*/
 		return "Accepted " + friend + "as friend";
 	}
 

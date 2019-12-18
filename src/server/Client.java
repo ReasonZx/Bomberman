@@ -58,6 +58,10 @@ public class Client {
 		dos.writeUTF("game_found");
 		GameFound = true;
 	}
+	
+	public void Send_Invite_Message(String s) throws IOException {
+		dos.writeUTF("friends_invited_"+s);
+	}
 
 	public void register(String user, String pw, String email) throws SQLException, IOException {
 		String result;
@@ -127,11 +131,13 @@ public class Client {
 
 	public void Update_Friends(Server x) {
 		friends=new ArrayList<String>();
-		try {
+		/*try {
 			friends=x.database.getFriendsList(this.username);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
+		friends.add("SlimShady");
+		friends.add("AcceptMePls");
 	}
 }

@@ -21,6 +21,8 @@ public class MainMenuState extends BasicGameState{
 	private Image Settings;
 	private Image Play_online;
 	private Image Cancel;
+	private Image Accept;
+	private Image Decline;
 	private GUI_setup sbg;
 	private int playl_x;
 	private int playl_y;
@@ -38,8 +40,10 @@ public class MainMenuState extends BasicGameState{
 	private int cancel_y;
     protected String server_response;	
 	private boolean looking=false;
+	private boolean Request=false;
 	private Rectangle R1;
 	private Font myFont;
+	private String FriendName;
 	
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -69,6 +73,12 @@ public class MainMenuState extends BasicGameState{
 		
 		Cancel = new Image("sprites/back.png");
 		Cancel = Cancel.getScaledCopy(0.3f);
+		
+		Accept = new Image("sprites/accept.png");
+		Accept = Accept.getScaledCopy(0.3f);
+		
+		Decline = new Image("sprites/decline.png");
+		Decline = Decline.getScaledCopy(0.3f);
 
 		playl_x = (int) (0.40* (float)sbg.Get_Display_width() - Play_local.getWidth()/2);
 		playl_y = (int) (0.35* (float)sbg.Get_Display_height());
@@ -88,90 +98,143 @@ public class MainMenuState extends BasicGameState{
 	
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		arg0.getInput().clearMousePressedRecord();
+		Request=false;
 	}
 
 	@Override
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
 		int posX = arg0.getInput().getMouseX();
 		int posY = arg0.getInput().getMouseY();
-		
-		//PLAY LOCAL BUTTON PRESSED?
-		if(!looking) {	
-			if((posX > playl_x && posX < playl_x + Play_local.getWidth()) && (posY > playl_y && posY < playl_y + Play_local.getHeight())) {		// ver tamanhos certos dos bot�es	
-				if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {	
-					try {	
-						server_response = sbg.server.request("looking_start");	
-					} catch (IOException e) {	
-						// TODO Auto-generated catch block	
-						e.printStackTrace();	
-					}
-					if(server_response!=null)
-						if(server_response.equals("looking_OK"))	
-							looking=true;	
-				}	
-			}
-        
-		//SETTINGS BUTTON PRESSED?
-		if((posX > controls_x && posX < controls_x + Controls.getWidth()) && (posY > controls_y && posY < controls_y + Controls.getHeight())) {	
-			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-				sbg.enterState(sbg.Get_Controls_State());
-			}
+		try {
+			server_response=sbg.server.poll();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
-		
-		//LOGOUT BUTTON PRESSED?
-		if((posX > logout_x && posX < logout_x + Logout.getWidth()) && (posY > logout_y && posY < logout_y + Logout.getHeight())) {	
-			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-				sbg.enterState(sbg.Get_Menu_State());
-			}
-		}
-		
-		//FRIENDS BUTTON PRESSED?
-		if((posX > friends_x && posX < friends_x + Friends.getWidth()) && (posY > friends_y && posY < friends_y + Friends.getHeight())) {	
-			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-				sbg.enterState(sbg.Get_Friends_State());
-			}
-		}
-		
-		//PLAY ONLINE BUTTON PRESSED?
-		if((posX > playo_x && posX < playo_x + Play_online.getWidth()) && (posY > playo_y && posY < playo_y + Play_online.getHeight())) {	
-			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-			}
-		}
-		
-		//SETTINGS BUTTON PRESSED?
-		if((posX > settings_x && posX < settings_x + Settings.getWidth()) && (posY > settings_y && posY < settings_y + Settings.getHeight())) {	
-			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-				
-			}
-		}
-        }
-        else {	
-			try {	
-				server_response=sbg.server.poll();	
-			} catch (IOException e) {	
-				// TODO Auto-generated catch block	
-				e.printStackTrace();
-            }
-            if(server_response!=null)	
-				if(server_response.equals("game_found")) {	
-				looking=false;	
-				sbg.enterState(sbg.Get_OnlineGame_State());	
+		if(Request) {
+			
+			if(server_response!=null)	
+				if(server_response.equals("friends_invited_cancel"+FriendName)) {	
+				Request=false;
 			}
             
+			//DECLINE BUTTON PRESSED
             if((posX > cancel_x && posX < cancel_x + Cancel.getWidth()) && (posY > cancel_y && posY < cancel_y + Cancel.getHeight())) {	
     			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
     				try {	
-						server_response = sbg.server.request("looking_cancel");	
+						server_response = sbg.server.request("friends_invited_decline"+FriendName);	
 					} catch (IOException e) {	
 						// TODO Auto-generated catch block	
 						e.printStackTrace();	
 					}	
     				if(server_response!=null)
-						if(server_response.equals("looking_OK"))	
-							looking=false;	
+						if(server_response.equals("friends_invited_OK"))	
+							Request=false;	
     			}
     		}
-        }
+            
+          //ACCEPT BUTTON PRESSED
+            if((posX > cancel_x && posX < cancel_x + Cancel.getWidth()) && (posY > cancel_y && posY < cancel_y + Cancel.getHeight())) {	
+    			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+    				try {	
+						server_response = sbg.server.request("friends_invited_accept"+FriendName);	
+					} catch (IOException e) {	
+						// TODO Auto-generated catch block	
+						e.printStackTrace();	
+					}	
+    				if(server_response!=null)
+						if(server_response.equals("friends_invited_OK"))	
+							sbg.enterState(sbg.Get_OnlineGame_State());
+						else
+							Request=false;
+    			}
+    		}
+			
+		}
+		else
+			if(!looking) {
+				
+				if(server_response!=null) {
+					String tmp[]=server_response.split("_");
+					if(tmp.length>=3){
+						if(tmp[0].equals("friends") && tmp[1].equals("invited")){
+							Request=true;
+							FriendName=tmp[2];
+						}
+					}
+				}
+				
+				//PLAY LOCAL BUTTON PRESSED?
+				if((posX > playl_x && posX < playl_x + Play_local.getWidth()) && (posY > playl_y && posY < playl_y + Play_local.getHeight())) {		// ver tamanhos certos dos bot�es	
+					if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {	
+						try {	
+							server_response = sbg.server.request("looking_start");	
+							System.out.println(server_response);
+						} catch (IOException e) {	
+							// TODO Auto-generated catch block	
+							e.printStackTrace();	
+						}
+						if(server_response!=null)
+							if(server_response.equals("looking_OK"))	
+								looking=true;	
+					}	
+				}
+	        
+				//SETTINGS BUTTON PRESSED?
+				if((posX > controls_x && posX < controls_x + Controls.getWidth()) && (posY > controls_y && posY < controls_y + Controls.getHeight())) {	
+					if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+						sbg.enterState(sbg.Get_Controls_State());
+					}
+				}
+				
+				//LOGOUT BUTTON PRESSED?
+				if((posX > logout_x && posX < logout_x + Logout.getWidth()) && (posY > logout_y && posY < logout_y + Logout.getHeight())) {	
+					if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+						sbg.enterState(sbg.Get_Menu_State());
+					}
+				}
+				
+				//FRIENDS BUTTON PRESSED?
+				if((posX > friends_x && posX < friends_x + Friends.getWidth()) && (posY > friends_y && posY < friends_y + Friends.getHeight())) {	
+					if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+						sbg.enterState(sbg.Get_Friends_State());
+					}
+				}
+				
+				//PLAY ONLINE BUTTON PRESSED?
+				if((posX > playo_x && posX < playo_x + Play_online.getWidth()) && (posY > playo_y && posY < playo_y + Play_online.getHeight())) {	
+					if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+					}
+				}
+				
+				//SETTINGS BUTTON PRESSED?
+				if((posX > settings_x && posX < settings_x + Settings.getWidth()) && (posY > settings_y && posY < settings_y + Settings.getHeight())) {	
+					if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+						
+					}
+				}
+	        }
+	        else {	
+	            if(server_response!=null)	
+					if(server_response.equals("game_found")) {	
+					looking=false;	
+					sbg.enterState(sbg.Get_OnlineGame_State());	
+				}
+	            
+	            if((posX > cancel_x && posX < cancel_x + Cancel.getWidth()) && (posY > cancel_y && posY < cancel_y + Cancel.getHeight())) {	
+	    			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+	    				try {	
+							server_response = sbg.server.request("looking_cancel");	
+						} catch (IOException e) {	
+							// TODO Auto-generated catch block	
+							e.printStackTrace();	
+						}	
+	    				if(server_response!=null)
+							if(server_response.equals("looking_OK"))	
+								looking=false;	
+	    			}
+	    		}
+	        }
 	}
 	
 	@Override
@@ -183,14 +246,22 @@ public class MainMenuState extends BasicGameState{
 		Settings.draw(settings_x,settings_y);
 		Friends.draw(friends_x,friends_y);
 		
-		if(looking){
+		if(Request){
 			arg2.setColor(Color.white);
 			arg2.fill(R1);
-			myFont.drawString(	R1.getX()+R1.getWidth()/2f - myFont.getWidth("LOOKING FOR A GAME")/2f,
-								R1.getY()+R1.getHeight()/3f - myFont.getHeight("LOOKING FOR A GAME")/2f,
-								"LOOKING FOR A GAME",Color.black);
-			Cancel.draw(cancel_x,cancel_y);
+			myFont.drawString(	R1.getX()+R1.getWidth()/2f - myFont.getWidth("YOU WERE INVITED FOR A GAME BY "+FriendName)/2f,
+					R1.getY()+R1.getHeight()/3f - myFont.getHeight("YOU WERE INVITED FOR A GAME BY "+FriendName)/2f,
+					"YOU WERE INVITED FOR A GAME BY "+FriendName,Color.black);
 		}
+		else
+			if(looking){
+				arg2.setColor(Color.white);
+				arg2.fill(R1);
+				myFont.drawString(	R1.getX()+R1.getWidth()/2f - myFont.getWidth("LOOKING FOR A GAME")/2f,
+									R1.getY()+R1.getHeight()/3f - myFont.getHeight("LOOKING FOR A GAME")/2f,
+									"LOOKING FOR A GAME",Color.black);
+				Cancel.draw(cancel_x,cancel_y);
+			}
 	}
 	
 	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {

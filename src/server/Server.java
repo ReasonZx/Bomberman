@@ -116,4 +116,13 @@ public class Server implements Runnable{
 		}
 		
 	}
+	
+	public Client Is_Player_Online(String s) {
+		for(int i=0;i<userlist.size();i++) {
+			if(userlist.get(i).username!=null)
+				if(userlist.get(i).username.equals(s))
+					return userlist.get(i);
+		}
+		return null;
+	}
 }

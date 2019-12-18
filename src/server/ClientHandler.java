@@ -67,12 +67,12 @@ public class ClientHandler extends Thread {
 						if(words[1].equals("start")) {
 							queue_pos=Server_Handler.Add_To_Queue(client);
 							System.out.println("Added to queue");
-							client.dos.writeUTF("OK");
+							client.dos.writeUTF("looking_OK");
 						}
 						if(words[1].equals("cancel"))
 							if(!IsGameFound()){
 								Server_Handler.Remove_From_Queue(queue_pos);
-								client.dos.writeUTF("OK");
+								client.dos.writeUTF("looking_OK");
 							}
 						else
 							client.dos.writeUTF("start or cancel needed");
@@ -150,10 +150,20 @@ public class ClientHandler extends Thread {
 									client.dos.writeUTF("friends_accept_ERROR");
 							}
 							else
-								client.dos.writeUTF("friends_add_ERROR");
+								client.dos.writeUTF("friends_accept_ERROR");
 						}
 						else if(words[1].equals("invite")) {
-							
+							if(words.length!=2) {
+								Client Target=Server_Handler.Is_Player_Online(words[2]);
+								if(Target!=null){	//Might need to check if players are still friends TODO
+									Target.Send_Invite_Message(client.username);
+									client.dos.writeUTF("friends_invite_online");
+								}
+								else
+									client.dos.writeUTF("friends_invite_ERROR");
+							}
+							else
+								client.dos.writeUTF("friends_invite_ERROR");
 						}
 					}
 					break;

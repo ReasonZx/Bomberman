@@ -33,15 +33,21 @@ public class FriendsState extends BasicGameState{
 	private Image Add_New_Button;
 	private Image Back_Button;
 	private Image Back_Button_2;
+	private Image PopUp_Button;
+	private String OK_Button="sprites/ok.png";
+	private String Cancel_Button="sprites/back.png";
 	private int Back_ButtonX,Back_ButtonY;
 	private int Back_Button2X,Back_Button2Y;
 	private int Add_New_ButtonX,Add_New_ButtonY;
+	private int PopUp_ButtonX,PopUp_ButtonY;
 	private ArrayList<String> Buttons;
 	private boolean Adding=false;
 	private String Error_Message=" ";
 	private String Message=" ";
 	private boolean init=true;
 	private boolean creating_list=false;
+	private boolean block=false;
+	private boolean waiting_for_game=false;
 	private String server_response;
 	
 	@Override
@@ -76,6 +82,11 @@ public class FriendsState extends BasicGameState{
 		
 		Invite_Button= "sprites/invite.png";
 		
+		PopUp_Button = new Image("sprites/ok.png");
+		PopUp_Button=PopUp_Button.getScaledCopy(0.3f);
+		PopUp_ButtonX=(int) (R2.getX()+R2.getWidth()/2f-PopUp_Button.getWidth()/2f);
+		PopUp_ButtonY=(int) (((R2.getY()+R2.getHeight())-(R2.getHeight()-(R2.getHeight()/3f + myFont.getHeight("LOOKING FOR A GAME")/2f))/2f)-PopUp_Button.getHeight()/2f);
+		
 		NewFriend = new TextField(arg0, myFont,(int)(arg0.getWidth()/4f),(int)(arg0.getHeight()/2f),(int)(arg0.getWidth()/4f)*2,20);
 		NewFriend.setBackgroundColor(Color.white);
 		NewFriend.setBorderColor(Color.white);
@@ -96,6 +107,8 @@ public class FriendsState extends BasicGameState{
 		creating_list=false;
 		Error_Message="";
 		Message="";
+		block=false;
+		waiting_for_game=false;
 	}
 	
 
@@ -111,16 +124,28 @@ public class FriendsState extends BasicGameState{
 		}
 		else{
 			if(!Adding) {
-				int arrow=Arrow_Button_Pressed(posX,posY,arg0);
-				if(arrow!=0) {
-					if(arrow==1 && CurrentPage>1)
-						CurrentPage--;
-					else if(arrow==2 && CurrentPage<MaxPage)
-						CurrentPage++;
+				if(!block) {
+					int arrow=Arrow_Button_Pressed(posX,posY,arg0);
+					if(arrow!=0) {
+						if(arrow==1 && CurrentPage>1)
+							CurrentPage--;
+						else if(arrow==2 && CurrentPage<MaxPage)
+							CurrentPage++;
+					}
+					Action_Button_Pressed(posX,posY,arg0);
+					Add_New_Button_Pressed(posX,posY,arg0,1);	
+					Back_Button_Pressed(posX,posY,arg0,1);
 				}
-				Action_Button_Pressed(posX,posY,arg0);
-				Add_New_Button_Pressed(posX,posY,arg0,1);	
-				Back_Button_Pressed(posX,posY,arg0,1);
+				else {
+					try {
+						server_response=sbg.server.poll();
+						PopUp_Button_Pressed(posX,posY,arg0);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
 			}
 			else {
 				Add_New_Button_Pressed(posX,posY,arg0,2);
@@ -154,6 +179,14 @@ public class FriendsState extends BasicGameState{
 			
 			Add_New_Button.draw(Add_New_ButtonX, Add_New_ButtonY);
 			Back_Button.draw(Back_ButtonX,Back_ButtonY);
+			
+			if(block) {
+				arg2.setColor(Color.black);
+				arg2.fill(R2);
+				arg2.setColor(Color.white);
+				myFont.drawString(gc.getWidth()/2f - myFont.getWidth(Error_Message)/2f,R2.getY()+R2.getHeight()/2f-myFont.getHeight(Error_Message),Error_Message,Color.red);
+				PopUp_Button.draw(PopUp_ButtonX,PopUp_ButtonY);
+			}
 			
 			if(Adding) {
 				arg2.setColor(Color.black);
@@ -233,6 +266,17 @@ public class FriendsState extends BasicGameState{
 				String tmp[]=FriendList.get(i).split("_");
 				myFont.drawString(20+R1.getWidth()/7f - myFont.getWidth(tmp[0])/2f, 80+(R1.getHeight()-T2.getHeight()-60)/10f*(i-(CurrentPage-1)*10),
 						tmp[0],Color.black);
+			}
+	}
+	
+	private void PopUp_Button_Pressed(int posX,int posY,GameContainer arg0) throws IOException {
+		if((posX>PopUp_ButtonX && posX < PopUp_ButtonX+ PopUp_Button.getWidth()) && (posY >PopUp_ButtonY  && posY < PopUp_ButtonY+ PopUp_Button.getHeight())){ 	
+			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) 
+				block=false;
+				if(waiting_for_game) {
+					waiting_for_game=false;
+					server_response=sbg.server.request("friends_invite_cancel");
+				}
 			}
 	}
 	
@@ -412,6 +456,12 @@ public class FriendsState extends BasicGameState{
 				//TODO
 				//INVITE BUTTON WAS CLICKED
 				server_response=sbg.server.request("friends_invite_"+FriendList.get(Friend));
+				if(server_response.equals("friends_invite_online")){
+					PopUp_Message("LOOKING FOR PLAYER",Cancel_Button);
+					waiting_for_game=true;
+				}
+				else
+					PopUp_Message("ERROR FINDING PLAYER",OK_Button);
 				return;
 			}
 			else {
@@ -421,9 +471,11 @@ public class FriendsState extends BasicGameState{
 				if(server_response.equals("friends_accept_OK")){
 					FriendListState.set(Friend,"1");
 					Update_Buttons(Friend);
+					PopUp_Message("ADDED TO FRIENDS",OK_Button);
 				}
-				else
-					Error_Message="REQUEST COULDN'T BE ACCEPTED";
+				else {
+					PopUp_Message("REQUEST COULDN'T BE ACCEPTED",OK_Button);
+				}
 				return;
 			}
 		}
@@ -481,5 +533,12 @@ public class FriendsState extends BasicGameState{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private void PopUp_Message(String s,String button) throws SlickException{
+		Image tmp= new Image(button);
+		PopUp_Button= tmp.getScaledCopy(0.2f);
+		block=true;
+		Error_Message=s;
 	}
 }
