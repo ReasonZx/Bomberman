@@ -75,8 +75,8 @@ public class ClientHandler extends Thread {
 					break;
 					
 				case "game":
-					if(words.length>=2){
-						if(words[1].equals("player")){
+					if(words.length>=2 && client.Playing){
+						if(words[1].equals("playerinfo")){
 							Bomber tmp=(Bomber) client.ois.readObject();
 							if(tmp!=null) {
 								client.Add_Player(tmp);
@@ -84,7 +84,7 @@ public class ClientHandler extends Thread {
 						}
 						else if(words[1].equals("act")){
 							try {
-								client.game.Buffer_Input(Integer.parseInt(words[2]));
+								client.game.Buffer_Input(Integer.parseInt(words[2]),client.Get_Player());
 							} catch (NumberFormatException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();

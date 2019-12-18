@@ -9,11 +9,12 @@ public class Bomb extends Element{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -537587995411283071L;
+	public static short serialVersionUID = 3;
 	transient protected Timer tt = new Timer();
-	protected String Bomb_Black = 	"sprites/normal_bomb.png";
-	protected String Bomb_Red = 	"sprites/bomb_explode.png";
-	protected int blink_count=6,counter;
+	static protected String Bomb_Black = 	"sprites/normal_bomb.png";
+	static protected String Bomb_Red = 	"sprites/bomb_explode.png";
+	static protected int blink_count=6;
+	protected int counter;
 	
 	Bomb(int x,int y,Image_Library lib,Map m) throws SlickException{
 		Coordinate tmp = new Coordinate(x,y);
@@ -23,10 +24,6 @@ public class Bomb extends Element{
 		this.m=m;
 		lib.Flag_For_Change(this,Bomb_Black);
 		img = Bomb_Black;
-
-		GUI_Scale=64;
-		GUI_OffsetX=0;
-		GUI_OffsetY=0;
 	}
 	
 	public void Set_Blink_Counts(int x) {

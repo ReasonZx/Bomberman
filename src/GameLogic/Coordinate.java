@@ -3,10 +3,6 @@ package GameLogic;
 import java.io.Serializable;
 
 public class Coordinate implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6846431225379720004L;
 	private int x;
 	private int y;
 	
@@ -37,5 +33,13 @@ public class Coordinate implements Serializable{
 	
 	public int getY() {
 		return y;
+	}
+	
+	public void setX(int i) {
+		x=i;
+	}
+	
+	public void setY(int i) {
+		y=i;
 	}
 }

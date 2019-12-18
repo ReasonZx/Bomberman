@@ -1,20 +1,20 @@
 package GameLogic;
+
 import java.io.Serializable;
 
 public abstract class Element implements Serializable{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7264664472479783418L;
+	public short serialVersionUID;
 	protected Coordinate Coord;
 	protected boolean Solid;
 	protected boolean Destroyable=false;
-	protected int GUI_Scale;
-	protected int GUI_OffsetX,GUI_OffsetY;
+	static protected int GUI_Scale=64;
 
 	protected String img;
 	protected Map m;
-	protected Image_Library lib;
+	public Image_Library lib;
 	
 	public int getX() {
 		return Coord.getX();
@@ -22,6 +22,14 @@ public abstract class Element implements Serializable{
 	
 	public int getY() {
 		return Coord.getY();
+	}
+	
+	public void setX(int i) {
+		Coord.setX(i);
+	}
+	
+	public void setY(int i) {
+		Coord.setY(i);
 	}
 	
 	public String getCoord(){
@@ -55,16 +63,8 @@ public abstract class Element implements Serializable{
 		return GUI_Scale;
 	}
 	
-	public float Get_OffsetX() {
-		return GUI_OffsetX;
-	}
-	
-	public float Get_OffsetY() {
-		return GUI_OffsetY;
-	}
-	
 	public String toString() {
-		return Integer.toString(getX()) + Integer.toString(getY());
+		return Short.toString(serialVersionUID)+","+Integer.toString(getX())+","+Integer.toString(getY())+","+img;
 	}
 
 	protected void Destroy() {

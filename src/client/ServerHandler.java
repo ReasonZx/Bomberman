@@ -51,10 +51,12 @@ public class ServerHandler {
 	}
 	
 	public void Accept_Object_Socket() throws IOException {
+		System.out.println("OBJECT SOCKET WAITING");
 		socketObject=ss.accept();
 		// obtaining input and out streams
+		System.out.println("OBJECT SOCKET OPENED");
 		this.oos = new ObjectOutputStream(socketObject.getOutputStream());
 		this.ois = new ObjectInputStream(socketObject.getInputStream());
-		System.out.println("OBJECT SOCKET OPENED");
+		
 	}
 }

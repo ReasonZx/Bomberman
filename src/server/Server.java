@@ -1,7 +1,6 @@
 package server;
 
 import java.io.*; 
-import java.text.*; 
 import java.util.*; 
 import java.net.*; 
 
@@ -94,14 +93,20 @@ public class Server implements Runnable{
 				for(int i=0;i<10;i++){
 					if(queue.size()<2)
 						break;
+					ArrayList<Client> tmp =new ArrayList<Client>();	
 					try {
-						queue.get(0).Send_Game_Found_Message();
-						queue.get(1).Send_Game_Found_Message();
+						
+						for(i=0;i<queue.size();i++) {
+							queue.get(i).Send_Game_Found_Message();
+							tmp.add(queue.get(i));
+							if(i==3)
+								break;
+						}
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					GameHandler g = new GameHandler(queue.get(0),queue.get(1));
+					GameHandler g = new GameHandler(tmp);
 					g.start();
 					queue.remove(0);
 					queue.remove(0);

@@ -27,7 +27,7 @@ public class Layout_Logic {
 					continue;
 				m.Add_Element(new Wall(i,j,lib,m,2));
 			}
-		
+		lib.m=m;
 		return m;
 	}
 	
@@ -51,7 +51,7 @@ public class Layout_Logic {
 					else m.Add_Element(new Wall(i,j,lib,m,2));
 				else m.Add_Element(new Wall(i,j,lib,m,2));
 			}
-		
+		lib.m=m;
 		return m;
 	}
 }

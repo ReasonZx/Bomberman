@@ -10,15 +10,15 @@ public class Explosion extends Element{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8018201222621918723L;
-	protected String Cross = 		"sprites/ExplosionCross.png";
-	protected String Horizontal =	"sprites/Explosion_Horizontal.png";
-	protected String Vertical = 	"sprites/Explosion_Vertical.png";
-	protected String DownEnd = 		"sprites/Explosion_DownEnd.png";
-	protected String UpEnd = 		"sprites/Explosion_TopEnd.png";
-	protected String RightEnd = 	"sprites/Explosion_RightEnd.png";
-	protected String LeftEnd = 		"sprites/Explosion_LeftEnd.png";
-	private int Explosion_time = 1000;
+	public static short serialVersionUID = 4;
+	static protected String Cross = 		"sprites/ExplosionCross.png";
+	static protected String Horizontal =	"sprites/Explosion_Horizontal.png";
+	static protected String Vertical = 	"sprites/Explosion_Vertical.png";
+	static protected String DownEnd = 		"sprites/Explosion_DownEnd.png";
+	static protected String UpEnd = 		"sprites/Explosion_TopEnd.png";
+	static protected String RightEnd = 	"sprites/Explosion_RightEnd.png";
+	static protected String LeftEnd = 		"sprites/Explosion_LeftEnd.png";
+	static private int Explosion_time = 1000;
 	
 	Explosion(int x,int y,Image_Library lib,Map m,int type,Bomb b) throws SlickException{
 		Coordinate tmp = new Coordinate(x,y);
@@ -26,15 +26,12 @@ public class Explosion extends Element{
 		Solid=false;
 		this.lib=lib;
 		this.m=m;
-		GUI_Scale=64;
-		GUI_OffsetX=-16;
-		GUI_OffsetY=-16;
 		if(type==0)
-			lib.Flag_For_Change(this,Cross);
+			img=Cross;
 		if(type==1)
-			lib.Flag_For_Change(this,Horizontal);
+			img=Horizontal;
 		if(type==2)
-			lib.Flag_For_Change(this,Vertical);
+			img=Vertical;
 	}
 
 	public ArrayList<Element> Propagate() throws SlickException{

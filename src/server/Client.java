@@ -1,6 +1,5 @@
 package server;
 
-import server.DB;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -24,8 +23,10 @@ public class Client {
 	public ObjectOutputStream oos;
 	public GameHandler game;
 	private boolean GameFound=false;
+	public boolean Playing=false;
 	private Bomber Character= null;
 	public int outputsocket;
+	private int player;
 	
 	private ArrayList<String> friends = new ArrayList<String>();
 	
@@ -64,26 +65,27 @@ public class Client {
 	public void AddToGame(GameHandler x) {
 		game=x;
 		Character=null;
+		Playing=true;
 	}
 	
 	public void RemoveFromGame() {
 		game=null;
 		Character=null;
+		Playing=false;
 	}
 	
 	public boolean GetGameFound() {
 		return GameFound;
 	}
 	
-	public Bomber Request_Client_Player() throws IOException {
-		dos.writeUTF("game_player");
+	public Bomber Request_Client_Playerinfo() throws IOException {
+		dos.writeUTF("game_playerinfo");
 		return null;
 	}
 	
 	public void Add_Player(Bomber x) {
-		System.out.println("ADDED BOMBER");
 		Character=x;
-		System.out.println(x.Get_MoveUp_Key());
+		Character.Set_Player(player);
 	}
 	
 	public Bomber GetBomber() {
@@ -94,5 +96,23 @@ public class Client {
 		dos.writeUTF("game_update");
 		oos.reset();
 		oos.writeObject(x);
+	}
+
+	public int Get_Player() {
+		// TODO Auto-generated method stub
+		return player;
+	}
+
+	public void Set_Player(int x) {
+		// TODO Auto-generated method stub
+		player=x;
+	}
+	
+	public void Game_Ended() throws IOException{
+		System.out.println("GameOver");
+		RemoveFromGame();
+		oos.close();
+		ois.close();
+		objectsocket.close();
 	}
 }

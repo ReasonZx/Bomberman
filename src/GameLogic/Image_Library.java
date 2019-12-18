@@ -9,12 +9,13 @@ public class Image_Library implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -8459759623730666317L;
-	ArrayList<Element> Flagged = new ArrayList<Element>();
-	ArrayList<String>  Flagged_images = new ArrayList<String>();
+	private ArrayList<Element> Flagged = new ArrayList<Element>();
+	private ArrayList<String>  Flagged_images = new ArrayList<String>();
+	public Map m;
 	
 	public void Flag_For_Change(Element x,String img){
-		Flagged.add(x);
-		Flagged_images.add(img);
+			Flagged.add(x);
+			Flagged_images.add(img);
 	}
 	
 	public void Run_Changes() throws SlickException {

@@ -114,10 +114,13 @@ public class Gamestate extends BasicGameState{
 							if(tmp instanceof Bomber) {
 								DrawBomber((Bomber)tmp,g);
 							}
-							else
-							g.drawImage(new Image(tmp.Get_Image()),
-										tmp.Get_Scale()*(tmp.getX()) + tmp.Get_OffsetX(), 
-										tmp.Get_Scale()*(tmp.getY()) + tmp.Get_OffsetY());
+							else{
+								Image im = new Image(tmp.Get_Image());
+								im=im.getScaledCopy(64,64);
+								g.drawImage(im,
+											tmp.Get_Scale()*(tmp.getX()), 
+											tmp.Get_Scale()*(tmp.getY()));
+							}
 						}
 					}
 				}
@@ -171,7 +174,7 @@ public class Gamestate extends BasicGameState{
 			
 			if(L.Death_Check()==0)
 			try {
-				L.Action(key);
+				L.Action(key,0);
 			} catch (SlickException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

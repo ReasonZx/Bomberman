@@ -7,15 +7,15 @@ public class Map implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -6168971874434311471L;
-	private ArrayList<ArrayList<ArrayList<Element>>> elements;
-	int LeftBound, RightBound, TopBound, BotBound;
+	transient private ArrayList<ArrayList<ArrayList<Element>>> elements;
+	public ArrayList<ArrayList<ArrayList<String>>> info_elements;
+	private int LeftBound, RightBound, TopBound, BotBound;
 	
 	Map(int LB,int RB,int TB,int BB){
 		LeftBound=LB;
 		RightBound=RB;
 		TopBound=TB;
 		BotBound=BB;
-		
 		Initialize_Space();
 	}
 	
@@ -114,11 +114,14 @@ public class Map implements Serializable{
 	
 	private void Initialize_Space() {
 		elements = new ArrayList<ArrayList<ArrayList<Element>>>(RightBound-1);
+		info_elements = new ArrayList<ArrayList<ArrayList<String>>>(RightBound-1);
 		
 		for (int i = 0; i < RightBound; i++) {
 			elements.add(new ArrayList<ArrayList<Element>>(BotBound));
+			info_elements.add(new ArrayList<ArrayList<String>>(BotBound));
 		    for (int j = 0; j < BotBound; j++) {
 		    	elements.get(i).add(new ArrayList<Element>());
+		    	info_elements.get(i).add(new ArrayList<String>());
 		    }
 		}
 	}
@@ -150,5 +153,15 @@ public class Map implements Serializable{
 	
 	public int Get_TopBound() {
 		return TopBound+1;
+	}
+	
+	public void Update() {
+		for(int x=0;x<elements.size();x++) {
+			for(int y=0;y<elements.get(x).size();y++) {
+				info_elements.get(x).get(y).removeAll(info_elements.get(x).get(y));
+				for(int i=0;i<elements.get(x).get(y).size();i++)
+					info_elements.get(x).get(y).add(elements.get(x).get(y).get(i).toString());
+			}
+		}
 	}
 }

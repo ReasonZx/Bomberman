@@ -5,8 +5,6 @@ import GameLogic.Layout_Logic;
 import GameLogic.Map;
 import GameLogic.GameLogic;
 import GameLogic.Bomber;
-import GameLogic.Element;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -35,6 +33,8 @@ public class OnlineGameState extends BasicGameState
 	 private boolean init=false;
 	 private String server_response;
 	 private Map m;
+	 private boolean won;
+	 private int winner;
 	
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		InputKey = new KeyPresses();
@@ -67,13 +67,16 @@ public class OnlineGameState extends BasicGameState
 	     arg0.getInput().addKeyListener(InputKey);
 	     arg0.getInput().clearMousePressedRecord();
 	     init=true;
+	     won=false;
 	}
 
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
 		int posX = arg0.getInput().getMouseX();
 		int posY = arg0.getInput().getMouseY();
+		String tmp[];
 		try {
 			server_response=sbg.server.poll();
+			
 			//System.out.println(server_response);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -84,18 +87,29 @@ public class OnlineGameState extends BasicGameState
 			setup_online_game();
 		}
 		else {
-			if(server_response!=null)
-				if(server_response.equals("game_end")) {
-					
-				}
-				else if(server_response.equals("game_update")) {
-					try {
-						m=(Map) sbg.server.ois.readObject();
-					} catch (ClassNotFoundException | IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+			if(server_response!=null) {
+				tmp=server_response.split("_");
+				if(tmp[0].equals("game")) {
+					if(tmp[1].equals("over")) {
+						won=false;
+						winner=Integer.parseInt(tmp[2]);
+						sbg.enterState(sbg.Get_OnlineGameOver_State());
+					}
+					else if(tmp[1].equals("won")) {
+						won=true;
+						winner=Integer.parseInt(tmp[2]);
+						sbg.enterState(sbg.Get_OnlineGameOver_State());
+					}
+					else if(tmp[1].equals("update")) {
+						try {
+							m=(Map) sbg.server.ois.readObject();
+						} catch (ClassNotFoundException | IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				}
+			}
 		}
 		
 		/*dead=L.Death_Check();
@@ -113,29 +127,40 @@ public class OnlineGameState extends BasicGameState
 	
 	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		arg0.getInput().removeKeyListener(InputKey);
+		try {
+			sbg.server.oos.close();
+			sbg.server.ois.close();
+			sbg.server.socketObject.close();
+			sbg.server.socketObject=null;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics g) throws SlickException {
 		//g.drawString("Game state", 50, 50);
 		//g.drawString(player1.toString(),100,100);
-		ArrayList<Element> elements;
+		ArrayList<String> elements;
+		String[] tmp;
 		
 		if(m!=null)
 			for(int x = 0 ; x < m.Get_RightBound() ; x++) {
 				for(int y = 0 ; y < m.Get_BotBound() ; y++) {
-						elements=m.Get_List_Elements(x, y);
+						elements=m.info_elements.get(x).get(y);
 						for(int i = 0; i < elements.size(); i++) {
-							Element tmp = elements.get(i);
-							
-							if(tmp.Has_Image()) {
-								if(tmp instanceof Bomber) {
-									DrawBomber((Bomber)tmp,g);
+							tmp = elements.get(i).split(",");
+								if(Short.parseShort(tmp[0])== Bomber.serialVersionUID) {
+									DrawBomber(tmp,g);
 								}
-								else
-								g.drawImage(new Image(tmp.Get_Image()),
-											tmp.Get_Scale()*(tmp.getX()) + tmp.Get_OffsetX(), 
-											tmp.Get_Scale()*(tmp.getY()) + tmp.Get_OffsetY());
-							}
+								else {
+									Image im = new Image(tmp[3]);
+									im=im.getScaledCopy(64,64);
+									g.drawImage(im,
+												64*(Integer.parseInt(tmp[1])), 
+												64*(Integer.parseInt(tmp[2])));
+								}
 						}
 					}
 			}
@@ -195,7 +220,7 @@ public class OnlineGameState extends BasicGameState
 			}
 			
 			Timer tt = new Timer();
-			tt.schedule(new KeyTimer(), 100);
+			tt.schedule(new KeyTimer(), 200);
 			
 			this.setAcceptingInput(false);
 		}
@@ -222,9 +247,9 @@ public class OnlineGameState extends BasicGameState
 			if(sbg.server.socketObject==null)
 				sbg.server.Accept_Object_Socket();
 			if(server_response!=null)
-				if(server_response.equals("game_player")){
+				if(server_response.equals("game_playerinfo")){
 					System.out.println("bomber request received");
-					sbg.server.dos.writeUTF("game_player");
+					sbg.server.dos.writeUTF("game_playerinfo");
 					sbg.server.SendBomber(players.get(0));
 				}
 				else if(server_response.equals("game_start")) {
@@ -237,84 +262,92 @@ public class OnlineGameState extends BasicGameState
 	}
 	
 	
-	private void DrawBomber(Bomber x,Graphics g) throws SlickException {
-		String tmp=x.Get_Image();
-		int sett[][]=sbg.Get_Settings();
+	private void DrawBomber(String[] x,Graphics g) throws SlickException {
+		String tmp=x[3];
 		Image img;
-		
+		//System.out.println(Integer.parseInt(x[1])+" "+Integer.parseInt(x[2])+" "+Float.parseFloat(x[4])+" "+Float.parseFloat(x[5])+" "+Integer.parseInt(x[6])+" "+Integer.parseInt(x[7]));
 		switch(tmp) {
 		case "StopDown":
-			img= new Image("sprites/D_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
-			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			img= new Image("sprites/D_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
+			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
+					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
 			break;
 		case "StopLeft":
-			img= new Image("sprites/D_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img= new Image("sprites/D_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
 			img.setRotation(90);
-			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
+					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
 			break;
 		case "StopUp":
-			img= new Image("sprites/D_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img= new Image("sprites/D_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
 			img.setRotation(180);
-			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
+					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
 			break;
 		case "StopRight":
-			img= new Image("sprites/D_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img= new Image("sprites/D_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
 			img.setRotation(270);
-			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
+					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
 			break;
 		case "Down1":
-			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
-			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			img= new Image("sprites/D1_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
+			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
+					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
 			break;
 		case "Down2":
-			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
-			g.drawImage(img.getFlippedCopy(true,false),x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			img= new Image("sprites/D1_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
+			g.drawImage(img.getFlippedCopy(true,false),64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
+					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
 			break;
 		case "Left1":
-			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img= new Image("sprites/D1_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
 			img.setRotation(90);
-			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
+					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
 			break;
 		case "Left2":
-			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img= new Image("sprites/D1_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
 			img = img.getFlippedCopy(true,false);
 			img.setRotation(90);
-			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
+					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
 			break;
 		case "Up1":
-			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img= new Image("sprites/D1_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
 			img.setRotation(180);
-			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
+					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
 			break;
 		case "Up2":
-			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img= new Image("sprites/D1_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
 			img = img.getFlippedCopy(true,false);
 			img.setRotation(180);
-			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
+					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
 			break;
 		case "Right1":
-			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img= new Image("sprites/D1_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
 			img.setRotation(270);
-			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
+					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
 			break;
 		case "Right2":
-			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img= new Image("sprites/D1_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
 			img = img.getFlippedCopy(true,false);
 			img.setRotation(270);
-			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
+					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
 			break;
 		}
+	}
+
+	public boolean Is_Winner() {
+		// TODO Auto-generated method stub
+		return won;
+	}
+	
+	public int Get_Winner() {
+		return winner;
 	}
 }
