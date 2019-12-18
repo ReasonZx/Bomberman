@@ -1,11 +1,14 @@
 package client;
 import java.io.IOException;
 
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -17,6 +20,7 @@ public class MainMenuState extends BasicGameState{
 	private Image Friends;
 	private Image Settings;
 	private Image Play_online;
+	private Image Cancel;
 	private GUI_setup sbg;
 	private int playl_x;
 	private int playl_y;
@@ -30,13 +34,20 @@ public class MainMenuState extends BasicGameState{
 	private int settings_y;
 	private int playo_x;
 	private int playo_y;
+	private int cancel_x;
+	private int cancel_y;
     protected String server_response;	
 	private boolean looking=false;
+	private Rectangle R1;
+	private Font myFont;
 	
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		sbg=(GUI_setup) arg1;
 		sbg.Set_MainMenu_State(getID());
+		R1 = new Rectangle(0,arg0.getHeight()/3f,arg0.getWidth(),arg0.getHeight()/3f);
+		
+		myFont = arg0.getDefaultFont();
 		
 		Controls = new Image("sprites/Button_Controls.png");
 		Controls = Controls.getScaledCopy(0.4f);
@@ -55,6 +66,9 @@ public class MainMenuState extends BasicGameState{
 		
 		Play_online = new Image("sprites/play_online.png");
 		Play_online = Play_online.getScaledCopy(0.4f);
+		
+		Cancel = new Image("sprites/back.png");
+		Cancel = Cancel.getScaledCopy(0.3f);
 
 		playl_x = (int) (0.40* (float)sbg.Get_Display_width() - Play_local.getWidth()/2);
 		playl_y = (int) (0.35* (float)sbg.Get_Display_height());
@@ -68,6 +82,8 @@ public class MainMenuState extends BasicGameState{
 		settings_y = (int) (0.15* (float)sbg.Get_Display_height());
 		playo_x = (int) (0.60* (float)sbg.Get_Display_width() - Settings.getWidth()/2);
 		playo_y = (int) (0.35* (float)sbg.Get_Display_height());
+		cancel_x=(int) (R1.getX()+R1.getWidth()/2f-Cancel.getWidth()/2f);
+		cancel_y=(int) (((R1.getY()+R1.getHeight())-(R1.getHeight()-(R1.getHeight()/3f + myFont.getHeight("LOOKING FOR A GAME")/2f))/2f)-Cancel.getHeight()/2f);
 	}
 	
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -79,6 +95,7 @@ public class MainMenuState extends BasicGameState{
 		int posX = arg0.getInput().getMouseX();
 		int posY = arg0.getInput().getMouseY();
 		
+		//PLAY LOCAL BUTTON PRESSED?
 		if(!looking) {	
 			if((posX > playl_x && posX < playl_x + Play_local.getWidth()) && (posY > playl_y && posY < playl_y + Play_local.getHeight())) {		// ver tamanhos certos dos bot�es	
 				if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {	
@@ -87,43 +104,42 @@ public class MainMenuState extends BasicGameState{
 					} catch (IOException e) {	
 						// TODO Auto-generated catch block	
 						e.printStackTrace();	
-					}	
-					if(server_response.equals("OK"))	
-						looking=true;	
+					}
+					if(server_response!=null)
+						if(server_response.equals("looking_OK"))	
+							looking=true;	
 				}	
 			}
         
-		
-		if((posX > controls_x && posX < controls_x + Controls.getWidth()) && (posY > controls_y && posY < controls_y + Controls.getHeight())) {	// ver tamanhos certos dos bot�es
+		//SETTINGS BUTTON PRESSED?
+		if((posX > controls_x && posX < controls_x + Controls.getWidth()) && (posY > controls_y && posY < controls_y + Controls.getHeight())) {	
 			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				sbg.enterState(sbg.Get_Controls_State());
 			}
 		}
 		
-		if((posX > logout_x && posX < logout_x + Logout.getWidth()) && (posY > logout_y && posY < logout_y + Logout.getHeight())) {	// ver tamanhos certos dos bot�es
+		//LOGOUT BUTTON PRESSED?
+		if((posX > logout_x && posX < logout_x + Logout.getWidth()) && (posY > logout_y && posY < logout_y + Logout.getHeight())) {	
 			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				sbg.enterState(sbg.Get_Menu_State());
 			}
 		}
 		
-		if((posX > logout_x && posX < logout_x + Logout.getWidth()) && (posY > logout_y && posY < logout_y + Logout.getHeight())) {	// ver tamanhos certos dos bot�es
-			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-				sbg.enterState(sbg.Get_Menu_State());
-			}
-		}
-		
-		if((posX > friends_x && posX < friends_x + Friends.getWidth()) && (posY > friends_y && posY < friends_y + Friends.getHeight())) {	// ver tamanhos certos dos bot�es
+		//FRIENDS BUTTON PRESSED?
+		if((posX > friends_x && posX < friends_x + Friends.getWidth()) && (posY > friends_y && posY < friends_y + Friends.getHeight())) {	
 			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				sbg.enterState(sbg.Get_Friends_State());
 			}
 		}
-			
-		if((posX > playo_x && posX < playo_x + Play_online.getWidth()) && (posY > playo_y && posY < playo_y + Play_online.getHeight())) {	// ver tamanhos certos dos bot�es
+		
+		//PLAY ONLINE BUTTON PRESSED?
+		if((posX > playo_x && posX < playo_x + Play_online.getWidth()) && (posY > playo_y && posY < playo_y + Play_online.getHeight())) {	
 			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 			}
 		}
-			
-		if((posX > settings_x && posX < settings_x + Settings.getWidth()) && (posY > settings_y && posY < settings_y + Settings.getHeight())) {	// ver tamanhos certos dos bot�es
+		
+		//SETTINGS BUTTON PRESSED?
+		if((posX > settings_x && posX < settings_x + Settings.getWidth()) && (posY > settings_y && posY < settings_y + Settings.getHeight())) {	
 			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				
 			}
@@ -141,6 +157,20 @@ public class MainMenuState extends BasicGameState{
 				looking=false;	
 				sbg.enterState(sbg.Get_OnlineGame_State());	
 			}
+            
+            if((posX > cancel_x && posX < cancel_x + Cancel.getWidth()) && (posY > cancel_y && posY < cancel_y + Cancel.getHeight())) {	
+    			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+    				try {	
+						server_response = sbg.server.request("looking_cancel");	
+					} catch (IOException e) {	
+						// TODO Auto-generated catch block	
+						e.printStackTrace();	
+					}	
+    				if(server_response!=null)
+						if(server_response.equals("looking_OK"))	
+							looking=false;	
+    			}
+    		}
         }
 	}
 	
@@ -152,6 +182,15 @@ public class MainMenuState extends BasicGameState{
 		Logout.draw(logout_x,logout_y);
 		Settings.draw(settings_x,settings_y);
 		Friends.draw(friends_x,friends_y);
+		
+		if(looking){
+			arg2.setColor(Color.white);
+			arg2.fill(R1);
+			myFont.drawString(	R1.getX()+R1.getWidth()/2f - myFont.getWidth("LOOKING FOR A GAME")/2f,
+								R1.getY()+R1.getHeight()/3f - myFont.getHeight("LOOKING FOR A GAME")/2f,
+								"LOOKING FOR A GAME",Color.black);
+			Cancel.draw(cancel_x,cancel_y);
+		}
 	}
 	
 	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {

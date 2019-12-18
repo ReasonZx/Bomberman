@@ -261,8 +261,4 @@ public class SignupState extends BasicGameState {
 	public int getID() {
 		return 7;
 	}
-	
-	private void block() {
-		
-	}
 }

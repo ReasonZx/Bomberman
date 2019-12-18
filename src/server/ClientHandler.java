@@ -70,8 +70,10 @@ public class ClientHandler extends Thread {
 							client.dos.writeUTF("OK");
 						}
 						if(words[1].equals("cancel"))
-							if(!IsGameFound())
+							if(!IsGameFound()){
 								Server_Handler.Remove_From_Queue(queue_pos);
+								client.dos.writeUTF("OK");
+							}
 						else
 							client.dos.writeUTF("start or cancel needed");
 					} else
@@ -97,11 +99,62 @@ public class ClientHandler extends Thread {
 					}
 					else
 						client.dos.writeUTF("Wrong number of arguments for g");
+					
 				case "register":
 					if (words.length == 4) {
 						client.register(words[1], words[2], words[3]);
 					} else {
 						client.dos.writeUTF("Username, Password and Email mandatory");
+					}
+					break;
+					
+				case "friends":
+					if(words.length>=2) {
+						if(words[1].equals("request")) {
+							
+							if(client.username==null)
+								client.dos.writeUTF("You're Not Logged In");
+							else {
+								client.dos.writeUTF("friends_request_start");
+								
+								client.Update_Friends(Server_Handler);
+								for(int i=0;i<client.Get_friends().size();i++) {
+									client.dos.writeUTF("friends_info_USER="+client.Get_friends().get(i)+
+								"_FRIENDSTATE420="+Integer.toString(Server_Handler.database.isFriend(client.username,client.Get_friends().get(i))));
+								}
+								
+								client.dos.writeUTF("friends_request_stop");
+							}
+							
+						}
+						else if(words[1].equals("add")) {
+							if(words.length!=2) {
+								String ret=Server_Handler.database.requestFriendship(client.username,words[2]);
+								if(ret.equals("Request sent!"))
+									client.dos.writeUTF("friends_add_OK");
+								else
+									client.dos.writeUTF("friends_add_ERROR");
+							}
+							else
+								client.dos.writeUTF("friends_add_ERROR");
+						}
+						else if(words[1].equals("remove")) {
+							
+						}
+						else if(words[1].equals("accept")){
+							if(words.length!=2) {
+								String ret=Server_Handler.database.acceptFriendship(client.username,words[2]);
+								if(ret.equals("Accepted " + words[2] + "as friend"))
+									client.dos.writeUTF("friends_accept_OK");
+								else
+									client.dos.writeUTF("friends_accept_ERROR");
+							}
+							else
+								client.dos.writeUTF("friends_add_ERROR");
+						}
+						else if(words[1].equals("invite")) {
+							
+						}
 					}
 					break;
 

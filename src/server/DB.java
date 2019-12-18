@@ -108,7 +108,7 @@ public class DB {
 		return true;
 	}
 
-	private static int isFriend(String username, String friend) throws SQLException {
+	public int isFriend(String username, String friend) throws SQLException {
 		Connection conn = connect();
 
 		ResultSet rs;

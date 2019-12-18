@@ -39,12 +39,14 @@ public class Client {
 
 	public void login(String user, String pw, ArrayList<Client> userlist, String socket) throws SQLException, IOException {
 		String result;
-		result = server.DB.login(user, pw);
+		//result = server.DB.login(user, pw);
+		result="Logged in";
 
 		if (result == "Logged in") {
 			this.outputsocket = Integer.parseInt(socket);
 			userlist.add(this);
 			this.dos.writeUTF(result);
+			username=user;
 			return;
 		} else {
 			this.dos.writeUTF(result);
@@ -116,5 +118,20 @@ public class Client {
 		oos.close();
 		ois.close();
 		objectsocket.close();
+	}
+
+	public ArrayList<String> Get_friends() {
+		// TODO Auto-generated method stub
+		return friends;
+	}
+
+	public void Update_Friends(Server x) {
+		friends=new ArrayList<String>();
+		try {
+			friends=x.database.getFriendsList(this.username);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
