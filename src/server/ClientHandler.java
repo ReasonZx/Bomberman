@@ -120,7 +120,7 @@ public class ClientHandler extends Thread {
 								client.Update_Friends(Server_Handler);
 								for(int i=0;i<client.Get_friends().size();i++) {
 									client.dos.writeUTF("friends_info_USER="+client.Get_friends().get(i)+
-								"_FRIENDSTATE420="+Integer.toString(Server_Handler.database.isFriend(client.username,client.Get_friends().get(i))));
+								"_FRIENDSTATE420="+Integer.toString(server.DB.isFriend(client.username,client.Get_friends().get(i))));
 								}
 								
 								client.dos.writeUTF("friends_request_stop");
@@ -129,7 +129,7 @@ public class ClientHandler extends Thread {
 						}
 						else if(words[1].equals("add")) {
 							if(words.length!=2) {
-								String ret=Server_Handler.database.requestFriendship(client.username,words[2]);
+								String ret=server.DB.requestFriendship(client.username,words[2]);
 								if(ret.equals("Request sent!"))
 									client.dos.writeUTF("friends_add_OK");
 								else
@@ -143,7 +143,7 @@ public class ClientHandler extends Thread {
 						}
 						else if(words[1].equals("accept")){
 							if(words.length!=2) {
-								String ret=Server_Handler.database.acceptFriendship(client.username,words[2]);
+								String ret=server.DB.acceptFriendship(client.username,words[2]);
 								if(ret.equals("Accepted " + words[2] + "as friend"))
 									client.dos.writeUTF("friends_accept_OK");
 								else

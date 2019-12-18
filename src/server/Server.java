@@ -9,7 +9,6 @@ public class Server implements Runnable{
 	private ArrayList<Client> userlist = new ArrayList<>();
 	private ServerSocket ss; 
 	private ArrayList<Client> queue = new ArrayList<Client>();
-	public DB database = new DB();
 	
 	Server() throws IOException{
 	}
