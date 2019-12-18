@@ -108,7 +108,7 @@ public class DB {
 		return true;
 	}
 
-	public int isFriend(String username, String friend) throws SQLException {
+	public static int isFriend(String username, String friend) throws SQLException {
 		Connection conn = connect();
 
 		ResultSet rs;
@@ -131,7 +131,7 @@ public class DB {
 		return 0;
 	}
 
-	public String requestFriendship(String username, String friend) throws SQLException {
+	public static String requestFriendship(String username, String friend) throws SQLException {
 		Connection conn = connect();
 		PreparedStatement data;
 
@@ -164,7 +164,7 @@ public class DB {
 		return "Request sent!";
 	}
 
-	public String acceptFriendship(String username, String friend) throws SQLException {
+	public static String acceptFriendship(String username, String friend) throws SQLException {
 		Connection conn = connect();
 		PreparedStatement data;
 
@@ -185,7 +185,7 @@ public class DB {
 		return "Accepted " + friend + "as friend";
 	}
 
-	public ArrayList<String> getFriendsList(String username) throws SQLException {
+	public static ArrayList<String> getFriendsList(String username) throws SQLException {
 
 		ArrayList<String> friends = new ArrayList<>();
 		
@@ -204,6 +204,46 @@ public class DB {
 		}
 		return friends;
 
+	}
+	
+	public static String removeFriend(String username, String friend) throws SQLException {
+		Connection conn = connect();
+		PreparedStatement data;
+
+		String query = "DELETE FROM friends WHERE username = ? AND friend = ? AND confirmed = ?";
+		data = conn.prepareStatement(query);
+		data.setBoolean(3, true);
+		data.setString(2, friend);
+		data.setString(1, username);
+
+		int rs = data.executeUpdate();
+		
+		if(rs > 0) {
+			return friend + " removed from friends list";
+		}
+		else {
+			return "Error removing friend";
+		}
+	}
+	
+	public static String rejectFriendRequest(String username, String friend) throws SQLException {
+		Connection conn = connect();
+		PreparedStatement data;
+
+		String query = "DELETE FROM friends WHERE username = ? AND friend = ? AND confirmed = ?";
+		data = conn.prepareStatement(query);
+		data.setBoolean(3, false);
+		data.setString(2, username);
+		data.setString(1, friend);
+
+		int rs = data.executeUpdate();
+		
+		if(rs > 0) {
+			return "Request removed";
+		}
+		else {
+			return "Request not found";
+		}
 	}
 
 }
