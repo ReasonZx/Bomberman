@@ -9,8 +9,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class GUI_setup extends StateBasedGame{
-	private int Menu_ID,Login_ID,Game_ID,GameOver_ID,MainMenu_ID,Controls_ID,Signup_ID,Friends_ID;
-    private Settings Player_Settings;
+	private int Menu_ID,Login_ID,Game_ID,GameOver_ID,MainMenu_ID,Controls_ID,Signup_ID,OnlineGame_ID,OnlineGameOver_ID,Friends_ID;
+	private Settings Player_Settings;
 	private static int display_x;
 	private static int display_y;
 
@@ -37,7 +37,9 @@ public class GUI_setup extends StateBasedGame{
 		this.addState(new MainMenuState());
 		this.addState(new ControlsState());
 		this.addState(new SignupState());
-		this.addState(new FriendsState());
+		this.addState(new OnlineGameState());
+		this.addState(new OnlineGameOverState());
+        this.addState(new FriendsState());
 		Player_Settings= new Settings();
 		Player_Settings.init_Settings();
 
@@ -74,13 +76,25 @@ public class GUI_setup extends StateBasedGame{
 	public int Get_Controls_State() {
 		return Controls_ID;
 	}
+    
+    public int Get_Friends_State() {
+		return Friends_ID;
+    }
+    
+    public void Set_Friends_State(int x) {
+		Friends_ID=x;
+	}
 	
 	public int Get_Signup_State() {
 		return Signup_ID;
 	}
 	
-	public int Get_Friends_State() {
-		return Friends_ID;
+	public int Get_OnlineGame_State() {
+		return OnlineGame_ID;
+	}
+	
+	public int Get_OnlineGameOver_State() {
+		return OnlineGameOver_ID;
 	}
 	
 	public void Set_Menu_State(int x) {
@@ -97,6 +111,10 @@ public class GUI_setup extends StateBasedGame{
 
 	public void Set_GameOver_State(int x) {
 		GameOver_ID = x;
+	}
+	
+	public void Set_OnlineGameOver_State(int x) {
+		OnlineGameOver_ID = x;
 	}
 	
 	public int Get_Display_height() {
@@ -120,8 +138,8 @@ public class GUI_setup extends StateBasedGame{
 		Signup_ID=x;
 	}
 	
-	public void Set_Friends_State(int x) {
-		Friends_ID=x;
+	public void Set_OnlineGame_State(int x) {
+		OnlineGame_ID=x;
 	}
 	
 	public int[][] Get_Settings() {
@@ -139,8 +157,6 @@ public class GUI_setup extends StateBasedGame{
 	public void Change_Settings_Color(int arrow,int player,int pos) {
 		Player_Settings.Add_New_Color(arrow, player, pos);
 	}
-	
-	
 	
 	public void Reset_Settings() {
 		try {

@@ -1,4 +1,5 @@
 package client;
+
 import java.io.IOException;
 
 import org.lwjgl.input.Mouse;
@@ -82,13 +83,7 @@ public class LogIn extends BasicGameState {
 		int posX = gc.getInput().getMouseX();
 		int posY = gc.getInput().getMouseY();
 
-		if ((posX > backX && posX < backX + Back.getWidth()) && (posY > backY && posY < backY + Back.getHeight())) { // ver
-																														// tamanhos
-																														// certos
-																														// dos
-																														// bot�es
-																														// //go
-																														// back
+		if ((posX > backX && posX < backX + Back.getWidth()) && (posY > backY && posY < backY + Back.getHeight())) {
 			if (Mouse.isButtonDown(0)) {
 				sbg.enterState(sbg.Get_Menu_State());
 			}
@@ -98,7 +93,7 @@ public class LogIn extends BasicGameState {
 				&& (posY > login_y && posY < login_y + Login.getHeight())) { // ver tamanhos certos dos bot�es
 			if (gc.getInput().isMousePressed(gc.getInput().MOUSE_LEFT_BUTTON)) {
 				try {
-					String request = "login_" + this.User + "_" + this.Pass;
+					String request = "login_" + this.User + "_" + this.Pass + "_" + sbg.server.ss.getLocalPort();
 					server_response = sbg.server.request(request);
 					if (server_response.equals("Logged in")) {
 						error_login = false;
@@ -122,7 +117,7 @@ public class LogIn extends BasicGameState {
 
 		if (this.Password.hasFocus() && gc.getInput().isKeyPressed(28)) {
 			try {
-				String request = "login_" + this.User + "_" + this.Pass;
+				String request = "login_" + this.User + "_" + this.Pass + "_" + sbg.server.ss.getLocalPort();
 				server_response = sbg.server.request(request);
 				if (server_response.equals("Logged in")) {
 					error_login = false;
@@ -163,7 +158,8 @@ public class LogIn extends BasicGameState {
 
 		if (error_login) {
 			g.setColor(Color.red);
-			g.drawString(server_response,(int) ((float) sbg.Get_Display_width() * 0.50) - myFont.getWidth(server_response) / 2,
+			g.drawString(server_response,
+					(int) ((float) sbg.Get_Display_width() * 0.50) - myFont.getWidth(server_response) / 2,
 					(int) ((float) sbg.Get_Display_height() * 0.15));
 			g.setColor(Color.white);
 		}

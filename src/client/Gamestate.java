@@ -1,4 +1,12 @@
 package client;
+
+import GameLogic.Image_Library;
+import GameLogic.Layout_Logic;
+import GameLogic.Map;
+import GameLogic.GameLogic;
+import GameLogic.Bomber;
+import GameLogic.Element;
+
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -11,11 +19,6 @@ import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-
-import GameLogic.Bomber;
-import GameLogic.Element;
-import GameLogic.GameLogic;
-import GameLogic.Image_Library;
 
 public class Gamestate extends BasicGameState{
 
@@ -45,10 +48,12 @@ public class Gamestate extends BasicGameState{
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		 lib = new Image_Library();
 		 arg0.getInput().clearMousePressedRecord();
-	     L=new GameLogic(lib);
+		 Layout_Logic map_gen = new Layout_Logic(lib);
+		 Map m = map_gen.Generate_Standard_Map();
+	     L=new GameLogic(lib,m);
 	     players = new ArrayList<Bomber>();
 	     int [][] Settings=sbg.Get_Settings();
-	     players.add(new Bomber(1,1,L,	Settings[0][0],
+	     players.add(new Bomber(1,1,lib,m,	Settings[0][0],
 	    		 						Settings[0][1],
 	    		 						Settings[0][2],
 	    		 						Settings[0][3],
@@ -57,7 +62,7 @@ public class Gamestate extends BasicGameState{
 	    		 						Settings[0][6],
 	    		 						players.size()));
 	     
-	     players.add(new Bomber(11,8,L,	Settings[1][0],
+	     players.add(new Bomber(11,8,lib,m,	Settings[1][0],
 										Settings[1][1],
 										Settings[1][2],
 										Settings[1][3],
@@ -65,12 +70,11 @@ public class Gamestate extends BasicGameState{
 										Settings[1][5],
 										Settings[1][6],
 										players.size()));
-	     L.Create_Map(2);
+	     
 	     L.Place_Characters(players);
 	     
 	     arg0.getInput().addKeyListener(Input);
 	     arg0.getInput().clearMousePressedRecord();
-	     lib.Initialize_Image_Library();
 	}
 
 	public void update(GameContainer container, StateBasedGame arg1, int arg2) throws SlickException {
@@ -85,7 +89,7 @@ public class Gamestate extends BasicGameState{
 		}
 		
 		if((posX > backX && posX < backX + Back.getWidth()) && (posY > backY && posY < backY + Back.getHeight())) {		// ver tamanhos certos dos bot�es	//go back
-			if(container.getInput().isMousePressed(container.getInput().MOUSE_LEFT_BUTTON)) {
+			if(Mouse.isButtonDown(0)) {
 				sbg.enterState(sbg.Get_Menu_State());
 			}
 		}
@@ -107,9 +111,16 @@ public class Gamestate extends BasicGameState{
 						Element tmp = elements.get(i);
 						
 						if(tmp.Has_Image()) {
-							g.drawImage(tmp.Get_Image(),
-										tmp.Get_Scale()*(tmp.getX()) + tmp.Get_OffsetX(), 
-										tmp.Get_Scale()*(tmp.getY()) + tmp.Get_OffsetY());
+							if(tmp instanceof Bomber) {
+								DrawBomber((Bomber)tmp,g);
+							}
+							else{
+								Image im = new Image(tmp.Get_Image());
+								im=im.getScaledCopy(64,64);
+								g.drawImage(im,
+											tmp.Get_Scale()*(tmp.getX()), 
+											tmp.Get_Scale()*(tmp.getY()));
+							}
 						}
 					}
 				}
@@ -163,7 +174,7 @@ public class Gamestate extends BasicGameState{
 			
 			if(L.Death_Check()==0)
 			try {
-				L.Action(key);
+				L.Action(key,0);
 			} catch (SlickException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -190,5 +201,86 @@ public class Gamestate extends BasicGameState{
 			Input.setAcceptingInput(true);
 		}
 		
+	}
+	
+	private void DrawBomber(Bomber x,Graphics g) throws SlickException {
+		String tmp=x.Get_Image();
+		int sett[][]=sbg.Get_Settings();
+		Image img;
+		
+		switch(tmp) {
+		case "StopDown":
+			img= new Image("sprites/D_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
+					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			break;
+		case "StopLeft":
+			img= new Image("sprites/D_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img.setRotation(90);
+			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
+					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			break;
+		case "StopUp":
+			img= new Image("sprites/D_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img.setRotation(180);
+			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
+					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			break;
+		case "StopRight":
+			img= new Image("sprites/D_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img.setRotation(270);
+			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
+					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			break;
+		case "Down1":
+			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
+					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			break;
+		case "Down2":
+			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			g.drawImage(img.getFlippedCopy(true,false),x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
+					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			break;
+		case "Left1":
+			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img.setRotation(90);
+			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
+					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			break;
+		case "Left2":
+			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img = img.getFlippedCopy(true,false);
+			img.setRotation(90);
+			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
+					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			break;
+		case "Up1":
+			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img.setRotation(180);
+			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
+					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			break;
+		case "Up2":
+			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img = img.getFlippedCopy(true,false);
+			img.setRotation(180);
+			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
+					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			break;
+		case "Right1":
+			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img.setRotation(270);
+			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
+					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			break;
+		case "Right2":
+			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img = img.getFlippedCopy(true,false);
+			img.setRotation(270);
+			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
+					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			break;
+		}
 	}
 }

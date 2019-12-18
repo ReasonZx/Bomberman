@@ -1,27 +1,29 @@
 package GameLogic;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 public class Bomb extends Element{
-	protected Timer tt = new Timer();
-	protected String Bomb_Black = 	"sprites/normal_bomb.png";
-	protected String Bomb_Red = 	"sprites/bomb_explode.png";
-	protected int blink_count=6,counter;
+	/**
+	 * 
+	 */
+	public static short serialVersionUID = 3;
+	transient protected Timer tt = new Timer();
+	static protected String Bomb_Black = 	"sprites/normal_bomb.png";
+	static protected String Bomb_Red = 	"sprites/bomb_explode.png";
+	static protected int blink_count=6;
+	protected int counter;
 	
-	Bomb(int x,int y, GameLogic GL) throws SlickException{
+	Bomb(int x,int y,Image_Library lib,Map m) throws SlickException{
 		Coordinate tmp = new Coordinate(x,y);
 		Coord=tmp;
 		Solid=true;
-		GL.lib.Flag_For_Change(this,Bomb_Black);
-		L=GL;
-		img = new Image("sprites/normal_bomb.png");
-
-		GUI_Scale=64;
-		GUI_OffsetX=0;
-		GUI_OffsetY=0;
+		this.lib=lib;
+		this.m=m;
+		lib.Flag_For_Change(this,Bomb_Black);
+		img = Bomb_Black;
 	}
 	
 	public void Set_Blink_Counts(int x) {
@@ -46,6 +48,7 @@ public class Bomb extends Element{
 			counter=0;
 		}
 	}
+	
 	private class Blink extends TimerTask{
 		private Bomb b;
 		private boolean state=false;
@@ -55,25 +58,38 @@ public class Bomb extends Element{
 		}
 
 		public void run() {
-			counter++;
-			if(state) {
-				state=!state;
-				L.lib.Flag_For_Change(b,Bomb_Red);
-			}
-			else {
-				state=!state;
-				L.lib.Flag_For_Change(b,Bomb_Black);
-			}
-			
-			if(blink_count==counter){
-				this.cancel();
-				try {
-					L.Explode(b);
-				} catch (SlickException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			synchronized(m) {
+				counter++;
+				if(state) {
+					state=!state;
+					lib.Flag_For_Change(b,Bomb_Red);
+				}
+				else {
+					state=!state;
+					lib.Flag_For_Change(b,Bomb_Black);
+				}
+				
+				if(blink_count==counter){
+					this.cancel();
+					try {
+						Explode(b);
+					} catch (SlickException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		}		
+	}
+	
+	public void Explode(Bomb b) throws SlickException{
+		m.Remove_Element(b);
+		Propagate_Explosion(b.getX(),b.getY());
+	}
+	
+	private void Propagate_Explosion(int x,int y) throws SlickException {
+		Explosion Exp = new Explosion(x,y,lib,m,0,this);
+		ArrayList<Element> tmp = Exp.Propagate();
+		m.Add_Element_Array(tmp);
 	}
 }

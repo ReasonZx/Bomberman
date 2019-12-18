@@ -1,4 +1,6 @@
 package client;
+import java.io.IOException;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -28,6 +30,8 @@ public class MainMenuState extends BasicGameState{
 	private int settings_y;
 	private int playo_x;
 	private int playo_y;
+    protected String server_response;	
+	private boolean looking=false;
 	
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -75,11 +79,20 @@ public class MainMenuState extends BasicGameState{
 		int posX = arg0.getInput().getMouseX();
 		int posY = arg0.getInput().getMouseY();
 		
-		if((posX > playl_x && posX < playl_x + Play_local.getWidth()) && (posY > playl_y && posY < playl_y + Play_local.getHeight())) {		// ver tamanhos certos dos bot�es
-			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-				sbg.enterState(sbg.Get_Game_State());
+		if(!looking) {	
+			if((posX > playl_x && posX < playl_x + Play_local.getWidth()) && (posY > playl_y && posY < playl_y + Play_local.getHeight())) {		// ver tamanhos certos dos bot�es	
+				if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {	
+					try {	
+						server_response = sbg.server.request("looking_start");	
+					} catch (IOException e) {	
+						// TODO Auto-generated catch block	
+						e.printStackTrace();	
+					}	
+					if(server_response.equals("OK"))	
+						looking=true;	
+				}	
 			}
-		}
+        
 		
 		if((posX > controls_x && posX < controls_x + Controls.getWidth()) && (posY > controls_y && posY < controls_y + Controls.getHeight())) {	// ver tamanhos certos dos bot�es
 			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
@@ -115,6 +128,20 @@ public class MainMenuState extends BasicGameState{
 				
 			}
 		}
+        }
+        else {	
+			try {	
+				server_response=sbg.server.poll();	
+			} catch (IOException e) {	
+				// TODO Auto-generated catch block	
+				e.printStackTrace();
+            }
+            if(server_response!=null)	
+				if(server_response.equals("game_found")) {	
+				looking=false;	
+				sbg.enterState(sbg.Get_OnlineGame_State());	
+			}
+        }
 	}
 	
 	@Override
