@@ -1,3 +1,4 @@
+package client;
 import java.io.IOException;
 
 import org.lwjgl.input.Mouse;

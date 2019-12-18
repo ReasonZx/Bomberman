@@ -1,5 +1,7 @@
+package GameLogic;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+
 import java.util.Timer;
 import java.util.TimerTask;
 

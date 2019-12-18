@@ -1,3 +1,4 @@
+package client;
 import java.util.ArrayList;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;

@@ -1,3 +1,4 @@
+package client;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -10,6 +11,11 @@ import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+
+import GameLogic.Bomber;
+import GameLogic.Element;
+import GameLogic.GameLogic;
+import GameLogic.Image_Library;
 
 public class Gamestate extends BasicGameState{
 
