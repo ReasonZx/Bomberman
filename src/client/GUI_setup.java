@@ -1,6 +1,8 @@
 package client;
 import java.io.IOException;
 
+import javax.swing.JOptionPane;
+
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;

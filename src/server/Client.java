@@ -22,85 +22,78 @@ public class Client {
 	public ObjectInputStream ois;
 	public ObjectOutputStream oos;
 	public GameHandler game;
-	private boolean GameFound=false;
-	public boolean Playing=false;
-	private Bomber Character= null;
+	private boolean GameFound = false;
+	public boolean Playing = false;
+	private Bomber Character = null;
 	public int outputsocket;
 	private int player;
-	
+
 	private ArrayList<String> friends = new ArrayList<String>();
-	
-	
+
 	public Client(Socket socket, DataInputStream dis, DataOutputStream dos) {
 		this.datasocket = socket;
 		this.dis = dis;
 		this.dos = dos;
 		this.username = null;
 	}
-	
-	public void login(String user, String pw, ArrayList<Client> userlist,String socket) throws SQLException, IOException {
-		String result = null;
-		//result = server.DB.login(user, pw);
-		if((user.equals("root1") && pw.equals("1234")) || (user.equals("root2") && pw.equals("1234")))
-			result="Logged in";	
-		
+
+	public void login(String user, String pw, ArrayList<Client> userlist, String socket) throws SQLException, IOException {
+		String result;
+		result = server.DB.login(user, pw);
+
 		if (result == "Logged in") {
+			this.outputsocket = Integer.parseInt(socket);
 			userlist.add(this);
-			outputsocket=Integer.parseInt(socket);
+			this.dos.writeUTF(result);
+			return;
+		} else {
 			this.dos.writeUTF(result);
 			return;
 		}
-		else {
-			this.dos.writeUTF(result);
-			return;
-		}
-		
 	}
-		this.dos.writeUTF(result);
-	
+
 	public void Send_Game_Found_Message() throws IOException {
 		dos.writeUTF("game_found");
-		GameFound=true;
+		GameFound = true;
 	}
-	
+
 	public void register(String user, String pw, String email) throws SQLException, IOException {
 		String result;
 		result = server.DB.register(user, pw, email);
 		System.out.println(result);
 		this.dos.writeUTF(result);
-    }
-	public void AddToGame(GameHandler x) {
-		game=x;
-		Character=null;
-		Playing=true;
 	}
-	
 
-	
-	public void RemoveFromGame() {
-		game=null;
-		Character=null;
-		Playing=false;
+	public void AddToGame(GameHandler x) {
+		game = x;
+		Character = null;
+		Playing = true;
 	}
-	
+
+	public void RemoveFromGame() {
+		game = null;
+		Character = null;
+		Playing = false;
+	}
+
 	public boolean GetGameFound() {
 		return GameFound;
 	}
-	
+
 	public Bomber Request_Client_Playerinfo() throws IOException {
 		dos.writeUTF("game_playerinfo");
 		return null;
 	}
-	
+
 	public void Add_Player(Bomber x) {
-		Character=x;
+		Character = x;
 		Character.Set_Player(player);
 	}
-	
+
 	public Bomber GetBomber() {
 		return Character;
 	}
-	
+
 	public void Send_Map(Map x) throws IOException {
 		dos.writeUTF("game_update");
 		oos.reset();
@@ -114,10 +107,10 @@ public class Client {
 
 	public void Set_Player(int x) {
 		// TODO Auto-generated method stub
-		player=x;
+		player = x;
 	}
-	
-	public void Game_Ended() throws IOException{
+
+	public void Game_Ended() throws IOException {
 		System.out.println("GameOver");
 		RemoveFromGame();
 		oos.close();

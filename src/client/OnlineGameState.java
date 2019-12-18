@@ -168,7 +168,7 @@ public class OnlineGameState extends BasicGameState
 	}
 
 	public int getID(){
-		return 8;
+		return 9;
 	}
 	
 	public int getDeath() {
