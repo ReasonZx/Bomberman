@@ -71,6 +71,8 @@ public class LogIn extends BasicGameState{
 		Password.setText("");
 		Pass = "";
 		User = "";
+        server_response = "";
+		error_login = false;
 	}
 
 
@@ -120,7 +122,7 @@ public class LogIn extends BasicGameState{
 					}
 				}
 			}
-			
+            
 			if(this.Password.hasFocus() && gc.getInput().isKeyPressed(15)) {
 				this.Username.setFocus(true);
 			}
@@ -130,16 +132,6 @@ public class LogIn extends BasicGameState{
 				this.Password.setFocus(true);
 			}
 			
-			if(this.Password.hasFocus() && gc.getInput().isKeyPressed(28)) {
-				if(this.Pass.equals("1234") && this.User.equals("root")) {
-					error_login=false;
-					this.Password.setFocus(false);
-					sbg.enterState(sbg.Get_MainMenu_State());
-				}
-				else {
-					error_login=true;
-				}
-			}
 			
 			String temp = new String();
 			
@@ -156,6 +148,21 @@ public class LogIn extends BasicGameState{
 					this.Password.setText(temp);
 				}
 			}
+            Username.setAcceptingInput(false);
+		    if (this.Password.hasFocus() && gc.getInput().isKeyPressed(28)) {
+		    	try {
+		    		String request = "login_" + this.User + "_" + this.Pass + "_" + sbg-server.ss.getLocalPort();
+		    		server_response = sbg.server.request(request);
+			    	if (server_response.equals("Logged in")) {
+			    		error_login = false;
+				    	sbg.enterState(sbg.Get_MainMenu_State());
+			    	} else {
+			    		error_login = true;
+			    	}
+			    } catch (IOException e) {
+			    	e.printStackTrace();
+		    	}
+		    }
 	}
 	
 
@@ -170,7 +177,10 @@ public class LogIn extends BasicGameState{
 			Login.draw(login_x,login_y);
 			
 			if(error_login) {
-				myFont.drawString(300, 150, server_response, Color.red);
+				g.setColor(Color.red);
+			g.drawString(server_response,(int) ((float) sbg.Get_Display_width() * 0.50) - myFont.getWidth(server_response) / 2,
+					(int) ((float) sbg.Get_Display_height() * 0.15));
+			g.setColor(Color.white);
 			}
 			
 	}
@@ -180,6 +190,8 @@ public class LogIn extends BasicGameState{
 		arg0.getInput().clearMousePressedRecord();
 		Username.setAcceptingInput(false);
 		Password.setAcceptingInput(false);
+		server_response = "";
+		error_login = false;
 	}
 
 	public int getID() {

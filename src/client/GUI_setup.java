@@ -7,7 +7,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class GUI_setup extends StateBasedGame{
-	private int Menu_ID,Login_ID,Game_ID,GameOver_ID,MainMenu_ID,Controls_ID,Signup_ID,OnlineGame_ID,OnlineGameOver_ID;
+	private int Menu_ID,Login_ID,Game_ID,GameOver_ID,MainMenu_ID,Controls_ID,Signup_ID,OnlineGame_ID,OnlineGameOver_ID,Friends_ID;
 	private Settings Player_Settings;
 	private static int display_x;
 	private static int display_y;
@@ -37,6 +37,7 @@ public class GUI_setup extends StateBasedGame{
 		this.addState(new SignupState());
 		this.addState(new OnlineGameState());
 		this.addState(new OnlineGameOverState());
+        this.addState(new FriendsState());
 		Player_Settings= new Settings();
 		Player_Settings.init_Settings();
 
@@ -44,7 +45,7 @@ public class GUI_setup extends StateBasedGame{
 			ServerHandler server = new ServerHandler();
 			this.server = server;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, "Cant' connect to server, restart the game and try again later.\nServer might be down.");
 			e.printStackTrace();
 		}
 
@@ -72,6 +73,14 @@ public class GUI_setup extends StateBasedGame{
 
 	public int Get_Controls_State() {
 		return Controls_ID;
+	}
+    
+    public int Get_Friends_State() {
+		return Friends_ID;
+    }
+    
+    public void Set_Friends_State(int x) {
+		Friends_ID=x;
 	}
 	
 	public int Get_Signup_State() {

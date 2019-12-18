@@ -48,6 +48,10 @@ public class ClientHandler extends Thread {
 
 				// write on output stream based on the
 				// answer from the client
+				for (String field : words) {
+					if (field.equals(""))
+						continue;
+				}
 
 				switch (words[0]) {
 
@@ -93,6 +97,13 @@ public class ClientHandler extends Thread {
 					}
 					else
 						client.dos.writeUTF("Wrong number of arguments for g");
+				case "register":
+					if (words.length == 4) {
+						client.register(words[1], words[2], words[3]);
+					} else {
+						client.dos.writeUTF("Username, Password and Email mandatory");
+					}
+					break;
 
 				default:
 					client.dos.writeUTF("Invalid input");

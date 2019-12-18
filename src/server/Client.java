@@ -56,17 +56,26 @@ public class Client {
 		}
 		
 	}
+		this.dos.writeUTF(result);
 	
 	public void Send_Game_Found_Message() throws IOException {
 		dos.writeUTF("game_found");
 		GameFound=true;
 	}
-
+	
+	public void register(String user, String pw, String email) throws SQLException, IOException {
+		String result;
+		result = server.DB.register(user, pw, email);
+		System.out.println(result);
+		this.dos.writeUTF(result);
+    }
 	public void AddToGame(GameHandler x) {
 		game=x;
 		Character=null;
 		Playing=true;
 	}
+	
+
 	
 	public void RemoveFromGame() {
 		game=null;
