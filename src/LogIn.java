@@ -1,3 +1,4 @@
+
 import java.io.IOException;
 
 import org.lwjgl.input.Mouse;
@@ -101,7 +102,7 @@ public class LogIn extends BasicGameState{
 			if((posX > login_x && posX < login_x + Login.getWidth()) && (posY > login_y && posY < login_y + Login.getHeight())) {		// ver tamanhos certos dos bot�es
 				if(Mouse.isButtonDown(0)) {
 					try {
-						String request = "login_" + this.User + "_" + this.Pass;
+						String request = "login_" + this.User + "_" + this.Pass + "_" + sbg.server.ss.getLocalPort();
 						server_response = sbg.server.request(request);
 						System.out.println(server_response);
 						if(server_response.equals("Logged in")) {

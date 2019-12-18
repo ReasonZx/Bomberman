@@ -1,32 +1,36 @@
+
+
 import java.util.Timer;
 import java.util.TimerTask;
 import org.newdawn.slick.SlickException;
 
 public class Wall extends Element {
-	protected String Wall = "sprites/Wall.png";
-	protected String Wall_Breakable = "sprites/Wall_destroyable.png";
-	protected String Rubble = "sprites/Rubble.png";
+	/**
+	 * 
+	 */
+	public static short serialVersionUID = 2;
+	static protected String Wall = "sprites/Wall.png";
+	static protected String Wall_Breakable = "sprites/Wall_destroyable.png";
+	static protected String Rubble = "sprites/Rubble.png";
 	
-	Wall(int x,int y,GameLogic L, int type) throws SlickException{
+	Wall(int x,int y,Image_Library lib,Map m, int type) throws SlickException{
 		Coordinate tmp = new Coordinate(x,y);
 		Coord=tmp;
 		Solid=true;
-		this.L=L;
+		this.lib=lib;
+		this.m=m;
 		if(type==1) {
 			Destroyable = false;
-			L.lib.Flag_For_Change(this, Wall);
+			img=Wall;
 		}
 		if(type==2) {
 			Destroyable = true;
-			L.lib.Flag_For_Change(this,Wall_Breakable);
+			img=Wall_Breakable;
 		}
-		GUI_Scale=64;
-		GUI_OffsetX=0;
-		GUI_OffsetY=0;
 	}
 	
 	public void Destroy() {
-		L.lib.Flag_For_Change(this,Rubble);
+		lib.Flag_For_Change(this,Rubble);
 		Solid=false;
 		Destroyable=false;
 		Timer tt = new Timer();
@@ -41,7 +45,7 @@ public class Wall extends Element {
 		}
 		@Override
 		public void run() {
-			L.m.Remove_Element(x);
+			m.Remove_Element(x);
 		}
 		
 	}

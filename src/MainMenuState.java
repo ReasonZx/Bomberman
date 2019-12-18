@@ -1,3 +1,4 @@
+
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -65,9 +66,8 @@ public class MainMenuState extends BasicGameState{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					System.out.println(server_response);
-				
-				looking=true;
+					if(server_response.equals("OK"))
+						looking=true;
 				}
 			}
 			
@@ -85,14 +85,15 @@ public class MainMenuState extends BasicGameState{
 		}
 		else {
 			try {
-				server_response=sbg.server.request(null);
+				server_response=sbg.server.poll();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if(server_response.equals("game_found")) {
+			if(server_response!=null)
+				if(server_response.equals("game_found")) {
 				looking=false;
-				sbg.enterState(sbg.Get_Game_State());
+				sbg.enterState(sbg.Get_OnlineGame_State());
 			}
 			
 		}

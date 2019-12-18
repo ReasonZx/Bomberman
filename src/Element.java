@@ -1,15 +1,20 @@
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
 
-public abstract class Element{
+
+import java.io.Serializable;
+
+public abstract class Element implements Serializable{
+	/**
+	 * 
+	 */
+	public short serialVersionUID;
 	protected Coordinate Coord;
 	protected boolean Solid;
 	protected boolean Destroyable=false;
-	protected int GUI_Scale;
-	protected int GUI_OffsetX,GUI_OffsetY;
+	static protected int GUI_Scale=64;
 
-	protected Image img;
-	protected GameLogic L;
+	protected String img;
+	protected Map m;
+	public Image_Library lib;
 	
 	public int getX() {
 		return Coord.getX();
@@ -17,6 +22,14 @@ public abstract class Element{
 	
 	public int getY() {
 		return Coord.getY();
+	}
+	
+	public void setX(int i) {
+		Coord.setX(i);
+	}
+	
+	public void setY(int i) {
+		Coord.setY(i);
 	}
 	
 	public String getCoord(){
@@ -31,11 +44,11 @@ public abstract class Element{
 		return Destroyable;
 	}
 	
-	protected void Set_Image(Image tmp) throws SlickException{
-		img = tmp.copy();
+	protected void Set_Image(String tmp){
+		img = tmp;
 	}
 
-	public Image Get_Image() {
+	public String Get_Image() {
 		return img;
 	}
 	
@@ -50,20 +63,8 @@ public abstract class Element{
 		return GUI_Scale;
 	}
 	
-	public int Get_OffsetX() {
-		return GUI_OffsetX;
-	}
-	
-	public int Get_OffsetY() {
-		return GUI_OffsetY;
-	}
-	
 	public String toString() {
-		return Integer.toString(getX()) + Integer.toString(getY());
-	}
-	
-	public void Set_GameLogic(GameLogic x) {
-		L=x;
+		return Short.toString(serialVersionUID)+","+Integer.toString(getX())+","+Integer.toString(getY())+","+img;
 	}
 
 	protected void Destroy() {

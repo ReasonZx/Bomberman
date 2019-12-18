@@ -1,3 +1,4 @@
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -26,7 +27,7 @@ public class GameOverState extends BasicGameState{
 	}
 	
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-		Game=(Gamestate) arg1.getState(3);
+		Game=(Gamestate) arg1.getState(sbg.Get_Game_State());
 		if(Game.getDeath()==1)
 			Winner=2;
 		else

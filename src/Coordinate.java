@@ -1,5 +1,8 @@
 
-public class Coordinate {
+
+import java.io.Serializable;
+
+public class Coordinate implements Serializable{
 	private int x;
 	private int y;
 	
@@ -30,5 +33,13 @@ public class Coordinate {
 	
 	public int getY() {
 		return y;
+	}
+	
+	public void setX(int i) {
+		x=i;
+	}
+	
+	public void setY(int i) {
+		y=i;
 	}
 }
