@@ -171,14 +171,14 @@ public class DB {
 		String query = "UPDATE friends SET confirmed = ? WHERE username = ? AND friend = ?";
 		data = conn.prepareStatement(query);
 		data.setBoolean(1, true);
-		data.setString(2, username);
-		data.setString(3, friend);
+		data.setString(2, friend);
+		data.setString(3, username);
 
 		data.executeUpdate();
 		query = "INSERT INTO friends (username,friend,confirmed) VALUES (?,?,?)";
 		data = conn.prepareStatement(query);
-		data.setString(1, username);
-		data.setString(2, friend);
+		data.setString(1, friend);
+		data.setString(2, username);
 		data.setBoolean(3, true);
 
 		data.executeUpdate();
