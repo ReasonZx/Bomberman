@@ -24,7 +24,7 @@ public class DB {
 	}
 
 	public static String login(String username, String pw) throws SQLException {
-		/*Connection conn = connect();
+		Connection conn = connect();
 		if (conn == null)
 			return "Can't connect to database";
 		ResultSet rs;
@@ -51,13 +51,13 @@ public class DB {
 
 		data.close();
 		conn.close();
-*/
+
 		return "Logged in";
 
 	}
 
 	public static String register(String username, String pw, String email) throws SQLException {
-/*
+
 		Connection conn = connect();
 		if (conn == null)
 			return "Can't connect to database";
@@ -82,7 +82,7 @@ public class DB {
 
 		data.close();
 		conn.close();
-*/
+
 		return "Registered Successfully";
 
 	}
@@ -108,7 +108,7 @@ public class DB {
 	}
 
 	public static int isFriend(String username, String friend) throws SQLException {
-	/*	Connection conn = connect();
+		Connection conn = connect();
 
 		ResultSet rs;
 		PreparedStatement data;
@@ -126,12 +126,12 @@ public class DB {
 		if (rs.getBoolean(1) == true) {
 			return 1;
 		}
-*/
+
 		return 0;
 	}
 
 	public static String requestFriendship(String username, String friend) throws SQLException {
-		/*Connection conn = connect();
+		Connection conn = connect();
 		PreparedStatement data;
 
 		// Checks if friend username exists
@@ -158,13 +158,13 @@ public class DB {
 		data.setString(2, friend);
 		data.setBoolean(3, false);
 
-		data.executeUpdate();*/
+		data.executeUpdate();
 
 		return "Request sent!";
 	}
 
 	public static String acceptFriendship(String username, String friend) throws SQLException {
-		/*Connection conn = connect();
+		Connection conn = connect();
 		PreparedStatement data;
 
 		String query = "UPDATE friends SET confirmed = ? WHERE username = ? AND friend = ?";
@@ -180,7 +180,7 @@ public class DB {
 		data.setString(2, friend);
 		data.setBoolean(3, true);
 
-		data.executeUpdate();*/
+		data.executeUpdate();
 		return "Accepted " + friend + "as friend";
 	}
 
@@ -206,7 +206,7 @@ public class DB {
 	}
 	
 	public static String removeFriend(String username, String friend) throws SQLException {
-		/*Connection conn = connect();
+		Connection conn = connect();
 		PreparedStatement data;
 
 		String query = "DELETE FROM friends WHERE username = ? AND friend = ? AND confirmed = ?";
@@ -217,16 +217,16 @@ public class DB {
 
 		int rs = data.executeUpdate();
 		
-		if(rs > 0) {*/
+		if(rs > 0) {
 			return friend + " removed from friends list";
-			/*}
+			}
 		else {
 			return "Error removing friend";
-		}*/
+		}
 	}
 	
 	public static String rejectFriendRequest(String username, String friend) throws SQLException {
-	/*	Connection conn = connect();
+		Connection conn = connect();
 		PreparedStatement data;
 
 		String query = "DELETE FROM friends WHERE username = ? AND friend = ? AND confirmed = ?";
@@ -237,12 +237,12 @@ public class DB {
 
 		int rs = data.executeUpdate();
 		
-		if(rs > 0) {*/
+		if(rs > 0) {
 			return "Request removed";
-		/*}
+		}
 		else {
 			return "Request not found";
-		}*/
+		}
 	}
 
 }

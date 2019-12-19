@@ -57,7 +57,7 @@ public class Menu extends BasicGameState {
 		int posY = sbg.Get_Display_height() - Mouse.getY();
 		if ((posX > login_x && posX < login_x + logIn.getWidth())
 				&& (posY > login_y && posY < login_y + logIn.getHeight())) { // ver tamanhos certos dos bot�es
-			if (container.getInput().isMousePressed(container.getInput().MOUSE_LEFT_BUTTON)) {
+			if (container.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				if (sbg.server != null) {
 					sbg.enterState(sbg.Get_Login_State());
 				} else {
@@ -69,14 +69,14 @@ public class Menu extends BasicGameState {
 
 		if ((posX > exit_x && posX < exit_x + exitGame.getWidth())
 				&& (posY > exit_y && posY < exit_y + exitGame.getHeight())) { // ver tamanhos certos dos bot�es
-			if (container.getInput().isMousePressed(container.getInput().MOUSE_LEFT_BUTTON)) {
+			if (container.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				System.exit(0);
 			}
 		}
 
 		if ((posX > guest_x && posX < guest_x + Guest.getWidth())
 				&& (posY > guest_y && posY < guest_y + Guest.getHeight())) { // ver tamanhos certos dos bot�es
-			if (container.getInput().isMousePressed(container.getInput().MOUSE_LEFT_BUTTON)) {
+			if (container.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				sbg.enterState(sbg.Get_Game_State());
 			}
 		}
@@ -85,7 +85,7 @@ public class Menu extends BasicGameState {
 																										// certos dos
 																										// bot�es
 			highlighted = 1;
-			if (container.getInput().isMousePressed(container.getInput().MOUSE_LEFT_BUTTON)) {
+			if (container.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				sbg.enterState(sbg.Get_Signup_State());
 			}
 		} else {

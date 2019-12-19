@@ -231,21 +231,6 @@ public class FriendsState extends BasicGameState{
 		return 8;
 	}
 	
-	private void Hardcode_Friends() {
-		FriendList.add(new String("SlimShady"));
-		FriendList.add(new String("DonaldDuck"));
-		FriendList.add(new String("RemoveMePls"));
-		FriendList.add(new String("RemoveMePls"));
-		FriendList.add(new String("RemoveMePls"));
-		FriendList.add(new String("RemoveMePls"));
-		FriendList.add(new String("RemoveMePls"));
-		FriendList.add(new String("RemoveMePls"));
-		FriendList.add(new String("RemoveMePls"));
-		FriendList.add(new String("RemoveMePls"));
-		FriendList.add(new String("RemoveMePls"));
-		FriendList.add(new String("RemoveMePls"));
-	}
-	
 	private float[] GetTrianglePoints(GameContainer arg0,int direction){
 		float tmp[] = new float[6];
 			if(direction==0) {
@@ -500,12 +485,32 @@ public class FriendsState extends BasicGameState{
 				//TODO
 				//REMOVE BUTTON WAS CLICKED
 				server_response=sbg.server.request("friends_remove_"+FriendList.get(Friend));
+				if(server_response.equals("friends_remove_OK")){
+					FriendList.remove(Friend);
+					FriendListState.remove(Friend);
+					Buttons.remove(Friend*2);
+					Buttons.remove(Friend*2);
+					PopUp_Message("REMOVED FROM FRIENDS",OK_Button);
+				}
+				else {
+					PopUp_Message("ERROR REMOVING FRIEND",OK_Button);
+				}
 				return;
 			}
 			else{
 				//TODO
 				//REJECT BUTTON WAS CLICKED
 				server_response=sbg.server.request("friends_reject_"+FriendList.get(Friend));
+				if(server_response.equals("friends_reject_OK")){
+					FriendList.remove(Friend);
+					FriendListState.remove(Friend);
+					Buttons.remove(Friend*2);
+					Buttons.remove(Friend*2);
+					PopUp_Message("REJECTED FRIEND REQUEST",OK_Button);
+				}
+				else {
+					PopUp_Message("ERROR REJECTING REQUEST",OK_Button);
+				}
 				return;
 			}
 		}

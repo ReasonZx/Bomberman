@@ -43,8 +43,7 @@ public class Client {
 
 	public void login(String user, String pw, ArrayList<Client> userlist, String socket) throws SQLException, IOException {
 		String result;
-		//result = server.DB.login(user, pw);
-		result="Logged in";
+		result = server.DB.login(user, pw);
 
 		if (result == "Logged in") {
 			this.outputsocket = Integer.parseInt(socket);
@@ -138,14 +137,12 @@ public class Client {
 
 	public void Update_Friends(Server x) {
 		friends=new ArrayList<String>();
-		/*try {
-			friends=x.database.getFriendsList(this.username);
+		try {
+			friends=server.DB.getFriendsList(this.username);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
-		friends.add("SlimShady");
-		friends.add("AcceptMePls");
+		}
 	}
 	
 	public void Cancel_Timeout(){

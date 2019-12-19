@@ -6,6 +6,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
+@SuppressWarnings("serial")
 public class Bomber extends Element implements Serializable{
 	/**
 	 * 

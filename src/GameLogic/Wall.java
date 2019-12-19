@@ -4,6 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import org.newdawn.slick.SlickException;
 
+@SuppressWarnings("serial")
 public class Wall extends Element {
 	/**
 	 * 

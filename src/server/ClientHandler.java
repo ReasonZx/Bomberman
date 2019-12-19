@@ -135,8 +135,28 @@ public class ClientHandler extends Thread {
 								client.dos.writeUTF("friends_add_ERROR");
 							break;
 							
-						case "remove":
+						case "reject":
+							if(words.length!=2) {
+								String ret=server.DB.rejectFriendRequest(client.username,words[2]);
+								if(ret.equals("Request removed"))
+									client.dos.writeUTF("friends_reject_OK");
+								else
+									client.dos.writeUTF("friends_reject_ERROR");
+							}
+							else
+								client.dos.writeUTF("friends_reject_ERROR");
+							break;
 							
+						case "remove":
+							if(words.length!=2) {
+								String ret=server.DB.removeFriend(client.username,words[2]);
+								if(ret.equals(words[2] + " removed from friends list"))
+									client.dos.writeUTF("friends_remove_OK");
+								else
+									client.dos.writeUTF("friends_remove_ERROR");
+							}
+							else
+								client.dos.writeUTF("friends_remove_ERROR");
 							break;
 							
 						case "accept":

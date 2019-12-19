@@ -91,7 +91,7 @@ public class LogIn extends BasicGameState {
 
 		if ((posX > login_x && posX < login_x + Login.getWidth())
 				&& (posY > login_y && posY < login_y + Login.getHeight())) { // ver tamanhos certos dos bot�es
-			if (gc.getInput().isMousePressed(gc.getInput().MOUSE_LEFT_BUTTON)) {
+			if (gc.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				try {
 					String request = "login_" + this.User + "_" + this.Pass + "_" + sbg.server.ss.getLocalPort();
 					server_response = sbg.server.request(request);

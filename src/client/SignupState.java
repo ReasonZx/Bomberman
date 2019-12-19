@@ -1,8 +1,6 @@
 package client;
 import java.io.IOException;
 
-import org.lwjgl.input.Mouse;
-
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
@@ -10,13 +8,11 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.state.transition.*;
 
 public class SignupState extends BasicGameState {
 
@@ -38,14 +34,14 @@ public class SignupState extends BasicGameState {
 	private boolean pass_match = true;
 	private String server_response;
 	private boolean say_ok;
-	private Shape R1,R2;
+	private Shape R2;
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame arg1) throws SlickException {
 		sbg = (GUI_setup) arg1;
 		sbg.Set_Signup_State(getID());
 		myFont = gc.getDefaultFont();
-		R1 = new Rectangle(20,20,gc.getWidth()-40,gc.getHeight()-40);
+		new Rectangle(20,20,gc.getWidth()-40,gc.getHeight()-40);
 		R2 = new Rectangle(0, gc.getHeight()/3f, gc.getWidth(), gc.getHeight()/3f);
 		
 		signup = new Image("sprites/signup.png");
@@ -118,7 +114,7 @@ public class SignupState extends BasicGameState {
 			mail = Email.getText();
 	
 			if ((posX > 50 && posX < 50 + Back.getWidth()) && (posY > 50 && posY < 50 + Back.getHeight())) { 
-				if (gc.getInput().isMousePressed(gc.getInput().MOUSE_LEFT_BUTTON)) {
+				if (gc.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 					sbg.enterState(sbg.Get_Menu_State());
 				}
 			}
@@ -171,7 +167,7 @@ public class SignupState extends BasicGameState {
 			if ((Password_repeat.hasFocus() && gc.getInput().isKeyPressed(28))
 					|| (((posX > signup_x && posX < signup_x + signup.getWidth())
 							&& (posY > signup_y && posY < signup_y + signup.getHeight()))
-							&& gc.getInput().isMousePressed(gc.getInput().MOUSE_LEFT_BUTTON))) {
+							&& gc.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON))) {
 				if (!pass.equals(pass_rpt)) {
 					pass_match = false;
 				} else {
@@ -193,7 +189,7 @@ public class SignupState extends BasicGameState {
 		}
 		else {
 			if ((posX > ok_x && posX < ok_x + Ok.getWidth()) && (posY > ok_y && posY < ok_y + Ok.getHeight())) { 
-				if (gc.getInput().isMousePressed(gc.getInput().MOUSE_LEFT_BUTTON)) {
+				if (gc.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 					sbg.enterState(sbg.Get_Menu_State());
 				}
 		}	}

@@ -2,6 +2,7 @@ package GameLogic;
 
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public class Coordinate implements Serializable{
 	private int x;
 	private int y;
