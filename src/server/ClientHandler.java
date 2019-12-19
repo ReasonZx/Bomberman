@@ -109,8 +109,10 @@ public class ClientHandler extends Thread {
 					break;
 					
 				case "friends":
+					System.out.println(rx_string);
 					if(words.length>=2) {
-						if(words[1].equals("request")) {
+						switch (words[1]) {
+						case "request": 
 							
 							if(client.username==null)
 								client.dos.writeUTF("You're Not Logged In");
@@ -125,9 +127,9 @@ public class ClientHandler extends Thread {
 								
 								client.dos.writeUTF("friends_request_stop");
 							}
+							break;
 							
-						}
-						else if(words[1].equals("add")) {
+						case "add":
 							if(words.length!=2) {
 								String ret=Server_Handler.database.requestFriendship(client.username,words[2]);
 								if(ret.equals("Request sent!"))
@@ -137,11 +139,13 @@ public class ClientHandler extends Thread {
 							}
 							else
 								client.dos.writeUTF("friends_add_ERROR");
-						}
-						else if(words[1].equals("remove")) {
+							break;
 							
-						}
-						else if(words[1].equals("accept")){
+						case "remove":
+							
+							break;
+							
+						case "accept":
 							if(words.length!=2) {
 								String ret=Server_Handler.database.acceptFriendship(client.username,words[2]);
 								if(ret.equals("Accepted " + words[2] + "as friend"))
@@ -151,12 +155,13 @@ public class ClientHandler extends Thread {
 							}
 							else
 								client.dos.writeUTF("friends_accept_ERROR");
-						}
-						else if(words[1].equals("invite")) {
+							break;
+							
+						case "invite":
 							if(words.length!=2) {
 								Client Target=Server_Handler.Is_Player_Online(words[2]);
 								if(Target!=null){	//Might need to check if players are still friends TODO
-									Target.Send_Invite_Message(client.username);
+									client.Send_Invite_Message(Target);
 									client.dos.writeUTF("friends_invite_online");
 								}
 								else
@@ -164,8 +169,39 @@ public class ClientHandler extends Thread {
 							}
 							else
 								client.dos.writeUTF("friends_invite_ERROR");
+							break;
+							
+						case "invited":
+							if(words.length>=4) {
+								Client Target=Server_Handler.Is_Player_Online(words[3]);
+								if(Target!=null){
+									if(words[2].equals("get")){
+										Target.Cancel_Timeout();
+									}
+									else if(words[2].equals("decline")){
+										client.dos.writeUTF("friends_invited_OK");
+										Target.dos.writeUTF("friends_invite_decline");
+									}
+									else if(words[2].equals("accept")){
+										client.dos.writeUTF("friends_invited_OK");
+										Target.dos.writeUTF("friends_invite_accept");
+										ArrayList<Client> tmp=new ArrayList<Client>();
+										tmp.add(client);
+										tmp.add(Target);
+										GameHandler g = new GameHandler(tmp);
+										g.start();
+									}
+								}
+								else
+									client.dos.writeUTF("friends_invite_ERROR");
+							}
+							break;
+							
+						default:
+								client.dos.writeUTF("friends_invite_ERROR");
+								break;
+							}
 						}
-					}
 					break;
 
 				default:

@@ -8,6 +8,8 @@ import java.io.ObjectOutputStream;
 import java.net.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import GameLogic.Bomber;
 import GameLogic.Map;
@@ -27,6 +29,8 @@ public class Client {
 	private Bomber Character = null;
 	public int outputsocket;
 	private int player;
+	private Timer tt;
+	protected boolean cancelled_game=false;
 
 	private ArrayList<String> friends = new ArrayList<String>();
 
@@ -59,8 +63,11 @@ public class Client {
 		GameFound = true;
 	}
 	
-	public void Send_Invite_Message(String s) throws IOException {
-		dos.writeUTF("friends_invited_"+s);
+	public void Send_Invite_Message(Client Target) throws IOException {
+		Target.dos.writeUTF("friends_invited_"+username);
+		tt=new Timer();
+		tt.schedule(new Timeout(Target),500);
+		cancelled_game=true;
 	}
 
 	public void register(String user, String pw, String email) throws SQLException, IOException {
@@ -139,5 +146,33 @@ public class Client {
 		}*/
 		friends.add("SlimShady");
 		friends.add("AcceptMePls");
+	}
+	
+	public void Cancel_Timeout(){
+		cancelled_game=false;
+		System.out.println("Cancel Timeout");
+	}
+	
+	private class Timeout extends TimerTask{
+		Client Target;
+		
+		Timeout(Client x){
+			Target=x;
+		}
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			try {
+			if(cancelled_game) {
+				dos.writeUTF("friends_invite_NotAvailable");
+				Target.dos.writeUTF("friends_invited_cancel_"+username);
+			}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 	}
 }

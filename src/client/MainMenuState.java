@@ -38,6 +38,10 @@ public class MainMenuState extends BasicGameState{
 	private int playo_y;
 	private int cancel_x;
 	private int cancel_y;
+	private int accept_x;
+	private int accept_y;
+	private int decline_x;
+	private int decline_y;
     protected String server_response;	
 	private boolean looking=false;
 	private boolean Request=false;
@@ -94,6 +98,10 @@ public class MainMenuState extends BasicGameState{
 		playo_y = (int) (0.35* (float)sbg.Get_Display_height());
 		cancel_x=(int) (R1.getX()+R1.getWidth()/2f-Cancel.getWidth()/2f);
 		cancel_y=(int) (((R1.getY()+R1.getHeight())-(R1.getHeight()-(R1.getHeight()/3f + myFont.getHeight("LOOKING FOR A GAME")/2f))/2f)-Cancel.getHeight()/2f);
+		accept_x=(int) (R1.getX()+R1.getWidth()/3f-Cancel.getWidth()/2f);
+		accept_y=(int) (((R1.getY()+R1.getHeight())-(R1.getHeight()-(R1.getHeight()/3f + myFont.getHeight("LOOKING FOR A GAME")/2f))/2f)-Cancel.getHeight()/2f);
+		decline_x=(int) (R1.getX()+R1.getWidth()/3f*2f-Cancel.getWidth()/2f);
+		decline_y=(int) (((R1.getY()+R1.getHeight())-(R1.getHeight()-(R1.getHeight()/3f + myFont.getHeight("LOOKING FOR A GAME")/2f))/2f)-Cancel.getHeight()/2f);
 	}
 	
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -114,15 +122,15 @@ public class MainMenuState extends BasicGameState{
 		if(Request) {
 			
 			if(server_response!=null)	
-				if(server_response.equals("friends_invited_cancel"+FriendName)) {	
+				if(server_response.equals("friends_invited_cancel_"+FriendName)) {	
 				Request=false;
 			}
             
 			//DECLINE BUTTON PRESSED
-            if((posX > cancel_x && posX < cancel_x + Cancel.getWidth()) && (posY > cancel_y && posY < cancel_y + Cancel.getHeight())) {	
+            if((posX > decline_x && posX < decline_x + Cancel.getWidth()) && (posY > decline_y && posY < decline_y + Cancel.getHeight())) {	
     			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
     				try {	
-						server_response = sbg.server.request("friends_invited_decline"+FriendName);	
+						server_response = sbg.server.request("friends_invited_decline_"+FriendName);	
 					} catch (IOException e) {	
 						// TODO Auto-generated catch block	
 						e.printStackTrace();	
@@ -134,10 +142,10 @@ public class MainMenuState extends BasicGameState{
     		}
             
           //ACCEPT BUTTON PRESSED
-            if((posX > cancel_x && posX < cancel_x + Cancel.getWidth()) && (posY > cancel_y && posY < cancel_y + Cancel.getHeight())) {	
+            if((posX > accept_x && posX < accept_y + Cancel.getWidth()) && (posY > accept_x && posY < accept_y + Cancel.getHeight())) {	
     			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
     				try {	
-						server_response = sbg.server.request("friends_invited_accept"+FriendName);	
+						server_response = sbg.server.request("friends_invited_accept_"+FriendName);	
 					} catch (IOException e) {	
 						// TODO Auto-generated catch block	
 						e.printStackTrace();	
@@ -160,6 +168,7 @@ public class MainMenuState extends BasicGameState{
 						if(tmp[0].equals("friends") && tmp[1].equals("invited")){
 							Request=true;
 							FriendName=tmp[2];
+							sbg.server.send("friends_invited_get_"+FriendName);
 						}
 					}
 				}
@@ -168,8 +177,7 @@ public class MainMenuState extends BasicGameState{
 				if((posX > playl_x && posX < playl_x + Play_local.getWidth()) && (posY > playl_y && posY < playl_y + Play_local.getHeight())) {		// ver tamanhos certos dos bot�es	
 					if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {	
 						try {	
-							server_response = sbg.server.request("looking_start");	
-							System.out.println(server_response);
+							server_response = sbg.server.request("looking_start");
 						} catch (IOException e) {	
 							// TODO Auto-generated catch block	
 							e.printStackTrace();	
@@ -252,6 +260,8 @@ public class MainMenuState extends BasicGameState{
 			myFont.drawString(	R1.getX()+R1.getWidth()/2f - myFont.getWidth("YOU WERE INVITED FOR A GAME BY "+FriendName)/2f,
 					R1.getY()+R1.getHeight()/3f - myFont.getHeight("YOU WERE INVITED FOR A GAME BY "+FriendName)/2f,
 					"YOU WERE INVITED FOR A GAME BY "+FriendName,Color.black);
+			Accept.draw(accept_x,accept_y);
+			Decline.draw(decline_x,decline_y);
 		}
 		else
 			if(looking){

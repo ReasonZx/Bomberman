@@ -144,7 +144,22 @@ public class FriendsState extends BasicGameState{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					
+					if(server_response!=null){
+						System.out.println(server_response);
+						if(waiting_for_game) {
+							if(server_response.equals("friends_invite_NotAvailable")){
+								waiting_for_game=false;
+								PopUp_Message("PLAYER IS UNREACHABLE",OK_Button);
+							}
+							else if(server_response.equals("friends_invite_decline")){
+								waiting_for_game=false;
+								PopUp_Message("PLAYER DECLINED",OK_Button);
+							}
+							else if(server_response.equals("friends_invite_accept")){
+								sbg.enterState(sbg.Get_OnlineGame_State());
+							}
+						}
+					}
 				}
 			}
 			else {
@@ -456,13 +471,14 @@ public class FriendsState extends BasicGameState{
 				//TODO
 				//INVITE BUTTON WAS CLICKED
 				server_response=sbg.server.request("friends_invite_"+FriendList.get(Friend));
-				if(server_response.equals("friends_invite_online")){
-					PopUp_Message("LOOKING FOR PLAYER",Cancel_Button);
-					waiting_for_game=true;
-				}
-				else
-					PopUp_Message("ERROR FINDING PLAYER",OK_Button);
-				return;
+				if(server_response!=null)
+					if(server_response.equals("friends_invite_online")){
+						PopUp_Message("WAITING FOR PLAYER "+FriendList.get(Friend),Cancel_Button);
+						waiting_for_game=true;
+					}
+					else
+						PopUp_Message("ERROR FINDING PLAYER",OK_Button);
+					return;
 			}
 			else {
 				//TODO
@@ -537,7 +553,7 @@ public class FriendsState extends BasicGameState{
 	
 	private void PopUp_Message(String s,String button) throws SlickException{
 		Image tmp= new Image(button);
-		PopUp_Button= tmp.getScaledCopy(0.2f);
+		PopUp_Button= tmp.getScaledCopy(0.3f);
 		block=true;
 		Error_Message=s;
 	}
