@@ -2,7 +2,6 @@ package server;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class DB {
 
@@ -25,7 +24,7 @@ public class DB {
 	}
 
 	public static String login(String username, String pw) throws SQLException {
-		Connection conn = connect();
+		/*Connection conn = connect();
 		if (conn == null)
 			return "Can't connect to database";
 		ResultSet rs;
@@ -40,7 +39,7 @@ public class DB {
 
 		// Se query vazia = utilizador no existe na BD
 		if (!rs.next()) {
-			// Utilizador não registado na BD
+			// Utilizador nï¿½o registado na BD
 			return "User not found";
 		}
 
@@ -52,13 +51,13 @@ public class DB {
 
 		data.close();
 		conn.close();
-
+*/
 		return "Logged in";
 
 	}
 
 	public static String register(String username, String pw, String email) throws SQLException {
-
+/*
 		Connection conn = connect();
 		if (conn == null)
 			return "Can't connect to database";
@@ -83,7 +82,7 @@ public class DB {
 
 		data.close();
 		conn.close();
-
+*/
 		return "Registered Successfully";
 
 	}
@@ -101,15 +100,15 @@ public class DB {
 
 		// Se query vazia = utilizador no existe na BD
 		if (!rs.next()) {
-			// Utilizador já registado na BD
+			// Utilizador jï¿½ registado na BD
 			return false;
 		}
 
 		return true;
 	}
 
-	public int isFriend(String username, String friend) throws SQLException {
-		/*Connection conn = connect();
+	public static int isFriend(String username, String friend) throws SQLException {
+	/*	Connection conn = connect();
 
 		ResultSet rs;
 		PreparedStatement data;
@@ -127,15 +126,11 @@ public class DB {
 		if (rs.getBoolean(1) == true) {
 			return 1;
 		}
-
-		return 0;*/
-		if(friend.equals("SlimShady"))
-			return 1;
-		else
-			return 0;
+*/
+		return 0;
 	}
 
-	public String requestFriendship(String username, String friend) throws SQLException {
+	public static String requestFriendship(String username, String friend) throws SQLException {
 		/*Connection conn = connect();
 		PreparedStatement data;
 
@@ -168,7 +163,7 @@ public class DB {
 		return "Request sent!";
 	}
 
-	public String acceptFriendship(String username, String friend) throws SQLException {
+	public static String acceptFriendship(String username, String friend) throws SQLException {
 		/*Connection conn = connect();
 		PreparedStatement data;
 
@@ -189,7 +184,7 @@ public class DB {
 		return "Accepted " + friend + "as friend";
 	}
 
-	public ArrayList<String> getFriendsList(String username) throws SQLException {
+	public static ArrayList<String> getFriendsList(String username) throws SQLException {
 
 		ArrayList<String> friends = new ArrayList<>();
 		
@@ -208,6 +203,46 @@ public class DB {
 		}
 		return friends;
 
+	}
+	
+	public static String removeFriend(String username, String friend) throws SQLException {
+		/*Connection conn = connect();
+		PreparedStatement data;
+
+		String query = "DELETE FROM friends WHERE username = ? AND friend = ? AND confirmed = ?";
+		data = conn.prepareStatement(query);
+		data.setBoolean(3, true);
+		data.setString(2, friend);
+		data.setString(1, username);
+
+		int rs = data.executeUpdate();
+		
+		if(rs > 0) {*/
+			return friend + " removed from friends list";
+			/*}
+		else {
+			return "Error removing friend";
+		}*/
+	}
+	
+	public static String rejectFriendRequest(String username, String friend) throws SQLException {
+	/*	Connection conn = connect();
+		PreparedStatement data;
+
+		String query = "DELETE FROM friends WHERE username = ? AND friend = ? AND confirmed = ?";
+		data = conn.prepareStatement(query);
+		data.setBoolean(3, false);
+		data.setString(2, username);
+		data.setString(1, friend);
+
+		int rs = data.executeUpdate();
+		
+		if(rs > 0) {*/
+			return "Request removed";
+		/*}
+		else {
+			return "Request not found";
+		}*/
 	}
 
 }
