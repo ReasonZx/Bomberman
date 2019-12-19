@@ -194,7 +194,7 @@ public class DB {
 		ResultSet rs;
 		
 		
-		String query = "SELECT friend FROM friends WHERE username = ?";
+		String query = "SELECT friend FROM friends WHERE username = ? AND confirmed = true";
 		data = conn.prepareStatement(query);
 		data.setString(1, username);
 		
@@ -202,6 +202,16 @@ public class DB {
 		while (rs.next()) {
 			friends.add(rs.getString(1));
 		}
+		
+		query = "SELECT username FROM friends WHERE friend = ? AND confirmed = false";
+		data = conn.prepareStatement(query);
+		data.setString(1, username);
+		
+		rs = data.executeQuery();
+		while (rs.next()) {
+			friends.add(rs.getString(1));
+		}
+		
 		return friends;
 
 	}
