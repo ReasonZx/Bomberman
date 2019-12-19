@@ -120,6 +120,8 @@ public class FriendsState extends BasicGameState{
 		if(init) {
 			Server_Request_FriendList();
 			MaxPage=(int) Math.ceil((double)FriendList.size()/10);
+			if(MaxPage == 0)
+				MaxPage = 1;
 			Generate_Buttons();
 		}
 		else{
