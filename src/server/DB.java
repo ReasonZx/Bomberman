@@ -150,6 +150,7 @@ public class DB {
 
 			// If so, just accept the request
 			acceptFriendship(friend, username);
+			return "Request sent!";
 		}
 
 		String query = "INSERT INTO friends (username,friend,confirmed) VALUES (?,?,?)";
@@ -170,8 +171,8 @@ public class DB {
 		String query = "UPDATE friends SET confirmed = ? WHERE username = ? AND friend = ?";
 		data = conn.prepareStatement(query);
 		data.setBoolean(1, true);
-		data.setString(2, friend);
-		data.setString(3, username);
+		data.setString(2, username);
+		data.setString(3, friend);
 
 		data.executeUpdate();
 		query = "INSERT INTO friends (username,friend,confirmed) VALUES (?,?,?)";
