@@ -147,9 +147,9 @@ public class DB {
 
 		// Checks if the friend has already sent the user a friend request
 		if (isFriend(friend, username) == 0) {
-
+			System.out.println("Diogo");
 			// If so, just accept the request
-			acceptFriendship(friend, username);
+			acceptFriendship(username, friend);
 			return "Request sent!";
 		}
 
@@ -177,8 +177,8 @@ public class DB {
 		data.executeUpdate();
 		query = "INSERT INTO friends (username,friend,confirmed) VALUES (?,?,?)";
 		data = conn.prepareStatement(query);
-		data.setString(1, friend);
-		data.setString(2, username);
+		data.setString(1, username);
+		data.setString(2, friend);
 		data.setBoolean(3, true);
 
 		data.executeUpdate();
@@ -194,7 +194,7 @@ public class DB {
 		ResultSet rs;
 		
 		
-		String query = "SELECT friend FROM friends WHERE username = ? AND confirmed = true";
+		String query = "SELECT friend FROM friends WHERE username = ?";
 		data = conn.prepareStatement(query);
 		data.setString(1, username);
 		
@@ -216,6 +216,13 @@ public class DB {
 		data.setString(2, friend);
 		data.setString(1, username);
 
+		
+		query = "DELETE FROM friends WHERE username = ? AND friend = ? AND confirmed = ?";
+		data = conn.prepareStatement(query);
+		data.setBoolean(3, true);
+		data.setString(2, username);
+		data.setString(1, friend);
+		
 		int rs = data.executeUpdate();
 		
 		if(rs > 0) {
