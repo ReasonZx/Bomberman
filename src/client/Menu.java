@@ -52,6 +52,8 @@ public class Menu extends BasicGameState {
 		bomberman_x = (int) ((float) sbg.Get_Display_width() * 0.50 - bomberman_title.getWidth() / 2);
 		bomberman_y = (int) ((float) sbg.Get_Display_height() * 0.05);
 		
+		backgroundMusic = new Music("music/gomes.ogg");
+		backgroundMusic.play();
 	}
 
 	public void update(GameContainer container, StateBasedGame arg1, int delta) throws SlickException {
