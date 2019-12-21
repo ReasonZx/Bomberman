@@ -225,6 +225,8 @@ public class DB {
 		data.setBoolean(3, true);
 		data.setString(2, friend);
 		data.setString(1, username);
+		
+		data.executeUpdate();
 
 		
 		query = "DELETE FROM friends WHERE username = ? AND friend = ? AND confirmed = ?";

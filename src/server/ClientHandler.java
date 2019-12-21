@@ -116,7 +116,7 @@ public class ClientHandler extends Thread {
 								client.Update_Friends(Server_Handler);
 								for(int i=0;i<client.Get_friends().size();i++) {
 									client.dos.writeUTF("friends_info_USER="+client.Get_friends().get(i)+
-								"_FRIENDSTATE420="+Integer.toString(server.DB.isFriend(client.username,client.Get_friends().get(i))));
+								"_FRIENDSTATE420="+Integer.toString(server.DB.isFriend(client.Get_friends().get(i),client.username)));
 								}
 								
 								client.dos.writeUTF("friends_request_stop");
