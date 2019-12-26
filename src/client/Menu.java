@@ -1,13 +1,10 @@
 package client;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.tests.SoundTest;
 import javax.swing.JOptionPane;
 import org.lwjgl.input.Mouse;
 import java.io.*;
-import java.net.URL;
 import javax.sound.sampled.*;
-import javax.swing.*;
 import org.newdawn.slick.*;
 
 public class Menu extends BasicGameState {
@@ -27,9 +24,12 @@ public class Menu extends BasicGameState {
 	private int bomberman_x, bomberman_y;
 	private GUI_setup sbg;
 	private int highlighted = 0;
-	private boolean login_h = false;
-	private boolean exit_h = false;
-	private boolean guest_h = false;
+	private boolean login_h = false , exit_h = false, guest_h = false;
+	private boolean hovering_l = false , hovering_e = false ,hovering_g = false, clicked = false;
+	private File background_file = new File("music/menu.wav");
+	private File click_file = new File("music/click.wav");
+	private File hover_file = new File("music/hover.wav");
+
 
 	@Override
 	public void enter(GameContainer gc, StateBasedGame arg1) throws SlickException {
@@ -59,38 +59,39 @@ public class Menu extends BasicGameState {
 		exit_hover = exit_hover.getScaledCopy(0.6f);
 		exit_x = (int) ((float) sbg.Get_Display_width() * 0.50 - exitGame.getWidth() / 2);
 		exit_y = (int) ((float) sbg.Get_Display_height() * 0.75);
-		menu = new Image("sprites/menu.png");
+		menu = new Image("sprites/menu_1366x768.png");
 		signup_x = (int) ((float) sbg.Get_Display_width() * 0.50 - logIn.getWidth() / 2);
 		signup_y = (int) ((float) sbg.Get_Display_height() * 0.49);
 		bomberman_title = new Image("sprites/bomberman_title.png");
 		bomberman_x = (int) ((float) sbg.Get_Display_width() * 0.50 - bomberman_title.getWidth() / 2);
 		bomberman_y = (int) ((float) sbg.Get_Display_height() * 0.05);
 		
-		URL url = this.getClass().getClassLoader().getResource("music/test.wav");
-		
+		AudioInputStream background_sound;
 		try {
-			AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
-			Clip clip = AudioSystem.getClip();
-			clip.open(audioIn);
-	        clip.start();
+			background_sound = AudioSystem.getAudioInputStream(background_file);		
+			Clip background_s = AudioSystem.getClip();
+			background_s.open(background_sound);
+			background_s.loop(100);
 		} catch (UnsupportedAudioFileException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (LineUnavailableException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
 
 	public void update(GameContainer container, StateBasedGame arg1, int delta) throws SlickException {
 		int posX = Mouse.getX();
 		int posY = sbg.Get_Display_height() - Mouse.getY();
 		if ((posX > login_x && posX < login_x + logIn.getWidth())
-				&& (posY > login_y && posY < login_y + logIn.getHeight())) {
+				&& (posY > login_y && posY < login_y + logIn.getHeight())) {	//LOGIN button
 			login_h = true;
+			if(hovering_l == false) {
+				play_hover_sound();
+				hovering_l = true;
+			}
 			if (container.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				if (sbg.server != null) {
+					play_click_sound();
 					sbg.enterState(sbg.Get_Login_State());
 				} else {
 					JOptionPane.showMessageDialog(null,
@@ -98,25 +99,46 @@ public class Menu extends BasicGameState {
 				}
 			}
 		}
-		else login_h = false;
+		else {
+			hovering_l = false;
+			login_h = false;
+		}
+		
+		
 
 		if ((posX > exit_x && posX < exit_x + exitGame.getWidth())
-				&& (posY > exit_y && posY < exit_y + exitGame.getHeight())) {
+				&& (posY > exit_y && posY < exit_y + exitGame.getHeight())) {		//EXIT button
 			exit_h = true;
+			if(hovering_e == false) {
+				play_hover_sound();
+				hovering_e = true;
+			}
 			if (container.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+				play_click_sound();
 				System.exit(0);
 			}
 		}
-		else exit_h = false;
+		else {
+			hovering_e = false;
+			exit_h = false;
+		}
 
 		if ((posX > guest_x && posX < guest_x + Guest.getWidth())
-				&& (posY > guest_y && posY < guest_y + Guest.getHeight())) {
+				&& (posY > guest_y && posY < guest_y + Guest.getHeight())) {		//PLAY button
 			guest_h = true;
+			if(hovering_g == false) {
+				play_hover_sound();
+				hovering_g = true;
+			}
 			if (container.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+				play_click_sound();
 				sbg.enterState(sbg.Get_Game_State());
 			}
 		}
-		else guest_h = false;
+		else {
+			hovering_g = false;
+			guest_h = false;
+		}
 
 		if ((posX > signup_x && posX < signup_x + 280) && (posY > signup_y && posY < signup_y + 18)) {
 			highlighted = 1;
@@ -162,5 +184,42 @@ public class Menu extends BasicGameState {
 	public int getID() {
 		return 1;
 	}
+	
+	public void play_hover_sound() {
+		
+		AudioInputStream hover_sound;
+	
+		try {
+			hover_sound = AudioSystem.getAudioInputStream(hover_file);
+			Clip hover_s = AudioSystem.getClip();
+			hover_s.open(hover_sound);
+			hover_s.loop(0);
+		} catch (UnsupportedAudioFileException | IOException e) {
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
+			e.printStackTrace();
+		}
+	}
+	public void play_click_sound() {
+		
+		AudioInputStream click_sound;
+		
+		if(clicked == false) {
+			try {
+				click_sound = AudioSystem.getAudioInputStream(click_file);
+				Clip click_s = AudioSystem.getClip();
+				click_s.open(click_sound);
+				click_s.loop(0);
+			} catch (UnsupportedAudioFileException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (LineUnavailableException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		clicked = false;
+	}
+	
 
 }

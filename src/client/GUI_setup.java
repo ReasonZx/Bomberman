@@ -22,8 +22,8 @@ public class GUI_setup extends StateBasedGame{
 
 	public static void main(String args[]) throws SlickException {
 		AppGameContainer app = new AppGameContainer(new GUI_setup("Setup"));
-		display_x = 1280;
-		display_y = 720;
+		display_x = 1366;
+		display_y = 768;
 		app.setDisplayMode(display_x, display_y, false);
 		app.setShowFPS(false);
 		app.start();
