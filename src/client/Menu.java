@@ -25,7 +25,7 @@ public class Menu extends BasicGameState {
 	private GUI_setup sbg;
 	private int highlighted = 0;
 	private boolean login_h = false , exit_h = false, guest_h = false;
-	private boolean hovering_l = false , hovering_e = false ,hovering_g = false, clicked = false;
+	private boolean hovering_l = false , hovering_e = false ,hovering_g = false;
 	private File background_file = new File("music/menu.wav");
 	private File click_file = new File("music/click.wav");
 	private File hover_file = new File("music/hover.wav");
@@ -71,6 +71,8 @@ public class Menu extends BasicGameState {
 			background_sound = AudioSystem.getAudioInputStream(background_file);		
 			Clip background_s = AudioSystem.getClip();
 			background_s.open(background_sound);
+			FloatControl gainControl = (FloatControl) background_s.getControl(FloatControl.Type.MASTER_GAIN);
+			gainControl.setValue(-11.0f); 
 			background_s.loop(100);
 		} catch (UnsupportedAudioFileException | IOException e) {
 			e.printStackTrace();
@@ -204,21 +206,18 @@ public class Menu extends BasicGameState {
 		
 		AudioInputStream click_sound;
 		
-		if(clicked == false) {
-			try {
-				click_sound = AudioSystem.getAudioInputStream(click_file);
-				Clip click_s = AudioSystem.getClip();
-				click_s.open(click_sound);
-				click_s.loop(0);
-			} catch (UnsupportedAudioFileException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (LineUnavailableException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		try {
+			click_sound = AudioSystem.getAudioInputStream(click_file);
+			Clip click_s = AudioSystem.getClip();
+			click_s.open(click_sound);
+			click_s.loop(0);
+		} catch (UnsupportedAudioFileException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		clicked = false;
 	}
 	
 

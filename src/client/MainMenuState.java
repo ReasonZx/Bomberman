@@ -14,8 +14,10 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class MainMenuState extends BasicGameState{
 
-	private Image Play_local;
-	private Image Controls;
+	private Image background;
+	private Image bomberman_title;
+	private Image Play_local,Play_local_hover;
+	private Image Statistics;
 	private Image Logout;
 	private Image Friends;
 	private Image Settings;
@@ -24,10 +26,11 @@ public class MainMenuState extends BasicGameState{
 	private Image Accept;
 	private Image Decline;
 	private GUI_setup sbg;
+	private int bomberman_x, bomberman_y;
 	private int playl_x;
 	private int playl_y;
-	private int controls_x;
-	private int controls_y;
+	private int statistics_x;
+	private int statistics_y;
 	private int logout_x;
 	private int logout_y;
 	private int friends_x;
@@ -57,8 +60,11 @@ public class MainMenuState extends BasicGameState{
 		
 		myFont = arg0.getDefaultFont();
 		
-		Controls = new Image("sprites/Button_Controls.png");
-		Controls = Controls.getScaledCopy(0.4f);
+		background = new Image("sprites/background.png");
+		bomberman_title = new Image("sprites/bomberman_title.png");
+		
+		Statistics = new Image("sprites/statistics.png");
+		Statistics = Statistics.getScaledCopy(0.4f);
 		
 		Play_local = new Image("sprites/play_local.png");
 		Play_local = Play_local.getScaledCopy(0.4f);
@@ -84,24 +90,26 @@ public class MainMenuState extends BasicGameState{
 		Decline = new Image("sprites/decline.png");
 		Decline = Decline.getScaledCopy(0.3f);
 
-		playl_x = (int) (0.40* (float)sbg.Get_Display_width() - Play_local.getWidth()/2);
-		playl_y = (int) (0.35* (float)sbg.Get_Display_height());
-		controls_x = (int) (0.50* (float)sbg.Get_Display_width() - Controls.getWidth()/2);
-		controls_y = (int) (0.50* (float)sbg.Get_Display_height());
-		logout_x = (int) (0.50* (float)sbg.Get_Display_width() - Logout.getWidth()/2);
-		logout_y = (int) (0.65* (float)sbg.Get_Display_height());
-		friends_x = (int) (0.15* (float)sbg.Get_Display_width() - Friends.getWidth()/2);
-		friends_y = (int) (0.15* (float)sbg.Get_Display_height());
-		settings_x = (int) (0.85* (float)sbg.Get_Display_width() - Settings.getWidth()/2);
-		settings_y = (int) (0.15* (float)sbg.Get_Display_height());
-		playo_x = (int) (0.60* (float)sbg.Get_Display_width() - Settings.getWidth()/2);
-		playo_y = (int) (0.35* (float)sbg.Get_Display_height());
+		playl_x = (int) (0.12* (float)sbg.Get_Display_width() - Play_local.getWidth()/2);
+		playl_y = (int) (0.40* (float)sbg.Get_Display_height());
+		statistics_x = (int) (0.88* (float)sbg.Get_Display_width() - Statistics.getWidth()/2);
+		statistics_y = (int) (0.60* (float)sbg.Get_Display_height());
+		logout_x = (int) (0.12* (float)sbg.Get_Display_width() - Logout.getWidth()/2);
+		logout_y = (int) (0.60* (float)sbg.Get_Display_height());
+		friends_x = (int) (0.88* (float)sbg.Get_Display_width() - Friends.getWidth()/2);
+		friends_y = (int) (0.40* (float)sbg.Get_Display_height());
+		settings_x = (int) (0.88* (float)sbg.Get_Display_width() - Settings.getWidth()/2);
+		settings_y = (int) (0.50* (float)sbg.Get_Display_height());
+		playo_x = (int) (0.12* (float)sbg.Get_Display_width() - Settings.getWidth()/2);
+		playo_y = (int) (0.50* (float)sbg.Get_Display_height());
 		cancel_x=(int) (R1.getX()+R1.getWidth()/2f-Cancel.getWidth()/2f);
 		cancel_y=(int) (((R1.getY()+R1.getHeight())-(R1.getHeight()-(R1.getHeight()/3f + myFont.getHeight("LOOKING FOR A GAME")/2f))/2f)-Cancel.getHeight()/2f);
 		accept_x=(int) (R1.getX()+R1.getWidth()/3f-Cancel.getWidth()/2f);
 		accept_y=(int) (((R1.getY()+R1.getHeight())-(R1.getHeight()-(R1.getHeight()/3f + myFont.getHeight("LOOKING FOR A GAME")/2f))/2f)-Cancel.getHeight()/2f);
 		decline_x=(int) (R1.getX()+R1.getWidth()/3f*2f-Cancel.getWidth()/2f);
 		decline_y=(int) (((R1.getY()+R1.getHeight())-(R1.getHeight()-(R1.getHeight()/3f + myFont.getHeight("LOOKING FOR A GAME")/2f))/2f)-Cancel.getHeight()/2f);
+		bomberman_x = (int) ((float) sbg.Get_Display_width() * 0.50 - bomberman_title.getWidth() / 2);
+		bomberman_y = (int) ((float) sbg.Get_Display_height() * 0.75);
 	}
 	
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -189,7 +197,7 @@ public class MainMenuState extends BasicGameState{
 				}
 	        
 				//SETTINGS BUTTON PRESSED?
-				if((posX > controls_x && posX < controls_x + Controls.getWidth()) && (posY > controls_y && posY < controls_y + Controls.getHeight())) {	
+				if((posX > statistics_x && posX < statistics_x + Statistics.getWidth()) && (posY > statistics_y && posY < statistics_y + Statistics.getHeight())) {	
 					if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 						sbg.enterState(sbg.Get_Controls_State());
 					}
@@ -247,9 +255,11 @@ public class MainMenuState extends BasicGameState{
 	
 	@Override
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
+		background.draw(0,0);
+		bomberman_title.draw(bomberman_x,bomberman_y);
 		Play_local.draw(playl_x,playl_y);
 		Play_online.draw(playo_x,playo_y);
-		Controls.draw(controls_x,controls_y);
+		Statistics.draw(statistics_x,statistics_y);
 		Logout.draw(logout_x,logout_y);
 		Settings.draw(settings_x,settings_y);
 		Friends.draw(friends_x,friends_y);
