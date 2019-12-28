@@ -9,7 +9,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class GUI_setup extends StateBasedGame{
-	private int Menu_ID,Login_ID,Game_ID,GameOver_ID,MainMenu_ID,Controls_ID,Signup_ID,OnlineGame_ID,OnlineGameOver_ID,Friends_ID;
+	private int Menu_ID,Login_ID,Game_ID,GameOver_ID,MainMenu_ID,Controls_ID,Signup_ID,OnlineGame_ID,OnlineGameOver_ID,Friends_ID,LockedMenu_ID, LockedSettingsState_ID;
 	private Settings Player_Settings;
 	private static int display_x;
 	private static int display_y;
@@ -40,6 +40,8 @@ public class GUI_setup extends StateBasedGame{
 		this.addState(new OnlineGameState());
 		this.addState(new OnlineGameOverState());
         this.addState(new FriendsState());
+        this.addState(new LockedMenuState());
+        this.addState(new LockedSettingsState());
 		Player_Settings= new Settings();
 		Player_Settings.init_Settings();
 
@@ -81,8 +83,20 @@ public class GUI_setup extends StateBasedGame{
 		return Friends_ID;
     }
     
+    public int Get_LockedMenu_State() {
+		return LockedMenu_ID;
+    }
+    
+    public int Get_LockedSettings_State() {
+		return LockedSettingsState_ID;
+    }
+    
     public void Set_Friends_State(int x) {
 		Friends_ID=x;
+	}
+    
+    public void Set_LockedSettings_State(int x) {
+		LockedSettingsState_ID=x;
 	}
 	
 	public int Get_Signup_State() {
@@ -115,6 +129,10 @@ public class GUI_setup extends StateBasedGame{
 	
 	public void Set_OnlineGameOver_State(int x) {
 		OnlineGameOver_ID = x;
+	}
+	
+	public void Set_LockedMenu_State(int x) {
+		LockedMenu_ID=x;
 	}
 	
 	public int Get_Display_height() {

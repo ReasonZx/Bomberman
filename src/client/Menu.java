@@ -134,7 +134,7 @@ public class Menu extends BasicGameState {
 			}
 			if (container.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				play_click_sound();
-				sbg.enterState(sbg.Get_Game_State());
+				sbg.enterState(sbg.Get_LockedMenu_State());
 			}
 		}
 		else {
