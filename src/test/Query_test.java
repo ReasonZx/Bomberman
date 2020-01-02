@@ -6,6 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 import org.junit.Test;
+import server.DB;
 
 public class Query_test {
 
@@ -253,5 +254,29 @@ public class Query_test {
 		String rs = acceptFriendship("root","miguel");
 		assertEquals("Accepted " + "root" + "as friend", rs);
 	}
+	
+	@Test
+	public void incrementPlayedGame() throws SQLException{
+		Connection conn = connect();
+		PreparedStatement data;
+
+		String query = 
+				"UPDATE users\r\n" + 
+				"SET \"GamesPlayed\" = \"GamesPlayed\" + 1\r\n" +
+				"WHERE username = ?";
+		data = conn.prepareStatement(query);
+		data.setString(1, "root");
+
+		data.executeUpdate();
+
+	}
+	
+	@Test
+	public void checkPLayedGames() throws SQLException {
+		
+		assertEquals(3, DB.getPlayedGames("diogo"));
+	}
+	
+	
 
 }

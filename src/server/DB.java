@@ -188,34 +188,33 @@ public class DB {
 	public static ArrayList<String> getFriendsList(String username) throws SQLException {
 
 		ArrayList<String> friends = new ArrayList<>();
-		
+
 		Connection conn = connect();
 		PreparedStatement data;
 		ResultSet rs;
-		
-		
+
 		String query = "SELECT friend FROM friends WHERE username = ? AND confirmed = true";
 		data = conn.prepareStatement(query);
 		data.setString(1, username);
-		
+
 		rs = data.executeQuery();
 		while (rs.next()) {
 			friends.add(rs.getString(1));
 		}
-		
+
 		query = "SELECT username FROM friends WHERE friend = ? AND confirmed = false";
 		data = conn.prepareStatement(query);
 		data.setString(1, username);
-		
+
 		rs = data.executeQuery();
 		while (rs.next()) {
 			friends.add(rs.getString(1));
 		}
-		
+
 		return friends;
 
 	}
-	
+
 	public static String removeFriend(String username, String friend) throws SQLException {
 		Connection conn = connect();
 		PreparedStatement data;
@@ -225,26 +224,24 @@ public class DB {
 		data.setBoolean(3, true);
 		data.setString(2, friend);
 		data.setString(1, username);
-		
+
 		data.executeUpdate();
 
-		
 		query = "DELETE FROM friends WHERE username = ? AND friend = ? AND confirmed = ?";
 		data = conn.prepareStatement(query);
 		data.setBoolean(3, true);
 		data.setString(2, username);
 		data.setString(1, friend);
-		
+
 		int rs = data.executeUpdate();
-		
-		if(rs > 0) {
+
+		if (rs > 0) {
 			return friend + " removed from friends list";
-			}
-		else {
+		} else {
 			return "Error removing friend";
 		}
 	}
-	
+
 	public static String rejectFriendRequest(String username, String friend) throws SQLException {
 		Connection conn = connect();
 		PreparedStatement data;
@@ -256,13 +253,74 @@ public class DB {
 		data.setString(1, friend);
 
 		int rs = data.executeUpdate();
-		
-		if(rs > 0) {
+
+		if (rs > 0) {
 			return "Request removed";
-		}
-		else {
+		} else {
 			return "Request not found";
 		}
 	}
 
+	public static void incrementPlayedGame(String username, boolean won) throws SQLException {
+
+		Connection conn = connect();
+		PreparedStatement data;
+
+		String query = 
+				"UPDATE users\r\n" + 
+				"SET \"GamesPlayed\" = \"GamesPlayed\" + 1\r\n" +
+				"WHERE username = ?";
+		data = conn.prepareStatement(query);
+		data.setString(1, username);
+
+		data.executeUpdate();
+
+		if (won) {
+			query = 
+					"UPDATE users\r\n" + 
+					"SET \"GamesWon\" = \"GamesWon\" + 1\r\n" +
+					"WHERE username = ?";
+			data = conn.prepareStatement(query);
+			data.setString(1, username);
+
+			data.executeUpdate();
+		}
+
+	}
+	
+	public static int getWonGames(String username) throws SQLException {
+		Connection conn = connect();
+		PreparedStatement data;
+		ResultSet rs;
+		String query =
+				"SELECT \"GamesWon\" FROM users WHERE username = ?";
+		data = conn.prepareStatement(query);
+		data.setString(1, username);
+		rs = data.executeQuery();
+		
+		if (!rs.next()) {
+			return 0;
+		}
+		
+		return rs.getInt(1);
+	
+	}
+
+	public static int getPlayedGames(String username) throws SQLException {
+
+		Connection conn = connect();
+		PreparedStatement data;
+		ResultSet rs;
+		String query =
+				"SELECT \"GamesPlayed\" FROM users WHERE username = ?";
+		data = conn.prepareStatement(query);
+		data.setString(1, username);
+		rs = data.executeQuery();
+		
+		if (!rs.next()) {
+			return 0;
+		}
+		
+		return rs.getInt(1);
+	}
 }
