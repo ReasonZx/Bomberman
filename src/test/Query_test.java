@@ -6,6 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 import org.junit.Test;
+import server.DB;
 
 public class Query_test {
 
@@ -264,10 +265,16 @@ public class Query_test {
 				"SET \"GamesPlayed\" = \"GamesPlayed\" + 1\r\n" +
 				"WHERE username = ?";
 		data = conn.prepareStatement(query);
-		data.setString(1, "diogo");
+		data.setString(1, "root");
 
 		data.executeUpdate();
 
+	}
+	
+	@Test
+	public void checkPLayedGames() throws SQLException {
+		
+		assertEquals(3, DB.getPlayedGames("diogo"));
 	}
 	
 	

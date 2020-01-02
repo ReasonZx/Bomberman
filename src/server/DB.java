@@ -261,7 +261,7 @@ public class DB {
 		}
 	}
 
-	public static void incrementPlayedGame(String username, boolean won) {
+	public static void incrementPlayedGame(String username, boolean won) throws SQLException {
 
 		Connection conn = connect();
 		PreparedStatement data;
@@ -287,5 +287,40 @@ public class DB {
 		}
 
 	}
+	
+	public static int getWonGames(String username) throws SQLException {
+		Connection conn = connect();
+		PreparedStatement data;
+		ResultSet rs;
+		String query =
+				"SELECT \"GamesWon\" FROM users WHERE username = ?";
+		data = conn.prepareStatement(query);
+		data.setString(1, username);
+		rs = data.executeQuery();
+		
+		if (!rs.next()) {
+			return 0;
+		}
+		
+		return rs.getInt(1);
+	
+	}
 
+	public static int getPlayedGames(String username) throws SQLException {
+
+		Connection conn = connect();
+		PreparedStatement data;
+		ResultSet rs;
+		String query =
+				"SELECT \"GamesPlayed\" FROM users WHERE username = ?";
+		data = conn.prepareStatement(query);
+		data.setString(1, username);
+		rs = data.executeQuery();
+		
+		if (!rs.next()) {
+			return 0;
+		}
+		
+		return rs.getInt(1);
+	}
 }
