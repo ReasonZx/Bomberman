@@ -11,8 +11,8 @@ public class DB {
 			try {
 				Class.forName("org.postgresql.Driver");
 			} catch (ClassNotFoundException ex) {
-				System.out.println("Error: unable to load driver class!");
-				System.exit(1);
+				System.out.println("Error: Can't connect to database!");
+				return null;
 			}
 			conn = DriverManager.getConnection("jdbc:postgresql://dbm.fe.up.pt:5432/sibd1807", "sibd1807", "diogo");
 			conn.setSchema("Bomberman");

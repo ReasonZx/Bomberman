@@ -42,16 +42,16 @@ public class LogIn extends BasicGameState {
 		sbg.Set_Login_State(getID());
 		myFont = gc.getDefaultFont();
 
-		UserTextX = (int) (0.35 * (float) sbg.Get_Display_width());
-		UserTextY = (int) (0.35 * (float) sbg.Get_Display_height());
+		UserTextX = (int) (sbg.Get_Display_width()/2f - 200);
+		UserTextY = (int) (sbg.Get_Display_height()/2f-sbg.Get_Display_height()/10f);
 
 		Username = new TextField(gc, myFont, UserTextX, UserTextY, 400, 20);
 		Username.setBackgroundColor(Color.white);
 		Username.setBorderColor(Color.white);
 		Username.setTextColor(Color.black);
 
-		PassTextX = (int) (0.35 * (float) sbg.Get_Display_width());
-		PassTextY = (int) (0.55 * (float) sbg.Get_Display_height());
+		PassTextX = (int) (sbg.Get_Display_width()/2f - 200);
+		PassTextY = (int) (sbg.Get_Display_height()/2f+sbg.Get_Display_height()/10f);
 
 		Password = new TextField(gc, myFont, PassTextX, PassTextY, 400, 20);
 		Password.setBackgroundColor(Color.white);

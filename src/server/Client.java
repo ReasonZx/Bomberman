@@ -83,7 +83,6 @@ public class Client {
 	}
 
 	public void RemoveFromGame() {
-		game = null;
 		Character = null;
 		Playing = false;
 	}
@@ -124,6 +123,7 @@ public class Client {
 
 	public void Game_Ended() throws IOException {
 		System.out.println("GameOver");
+		game=null;
 		RemoveFromGame();
 		oos.close();
 		ois.close();

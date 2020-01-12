@@ -22,13 +22,12 @@ public class ClientHandler extends Thread {
 	@Override
 	public void run() {
 		String rx_string;
-
+		
 		try {
 			while (true) {
 				rx_string = null;
 
 				// receive the answer from client
-
 				rx_string = client.dis.readUTF();
 				String words[] = rx_string.split("_");
 
@@ -234,7 +233,12 @@ public class ClientHandler extends Thread {
 			// closing resources
 			this.client.dis.close();
 			this.client.dos.close();
-
+			
+			if(client.game!=null){
+				client.Game_Ended();
+				client.game.Remove_Client(client);
+			}
+				
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

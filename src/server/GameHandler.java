@@ -219,4 +219,22 @@ public class GameHandler extends Thread{
 	public void Serialize_Data() {
 		m.Update();
 	}
+	
+	public void Remove_Client(Client x) {
+		int player=x.Get_Player();
+		
+		for(int i=0;i<Players.size();i++)
+			if(Players.get(i).Get_Player()==player){
+				Players.remove(i);
+				return;
+			}
+		
+		for(int i=0;i<Spectators.size();i++)
+			if(Spectators.get(i).Get_Player()==player) {
+				Spectators.remove(i);
+				return;
+			}
+		
+		System.out.println("Client not in this game");
+	}
 }
