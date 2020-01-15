@@ -248,7 +248,7 @@ public class LockedMenuState extends BasicGameState{
 
 	@Override
 	public int getID() {
-		return 9;
+		return 12;
 	}
 	
 }

@@ -170,7 +170,7 @@ public class LockedSettingsState extends BasicGameState{
 	@Override
 	public int getID() {
 		// TODO Auto-generated method stub
-		return 10;
+		return 11;
 	}
 	
 	private boolean Configurating() {
