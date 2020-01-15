@@ -63,7 +63,7 @@ public class LogIn extends BasicGameState {
 
 		Back = new Image("sprites/back.png");
 		Back = Back.getScaledCopy(0.2f);
-		Back_hover = new Image("sprites/Back_hover.png");
+		Back_hover = new Image("sprites/back_hover.png");
 		Back_hover = Back_hover.getScaledCopy(0.2f);
 		
 		background = new Image("sprites/background.png");
