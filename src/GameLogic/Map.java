@@ -38,6 +38,7 @@ public class Map implements Serializable{
 		for(int i=0;i<Get_List_Elements(cha.getX(),cha.getY()).size();i++)
 			if(Get_List_Elements(cha.getX(),cha.getY()).get(i).getClass() == cha.getClass() ) {
 				Get_List_Elements(cha.getX(),cha.getY()).remove(i);
+				cha.lib.Removal_Change();
 				return 1;
 			}
 		

@@ -59,12 +59,14 @@ public class ClientHandler extends Thread {
 					if(words.length==2) {
 						if(words[1].equals("start")) {
 							queue_pos=Server_Handler.Add_To_Queue(client);
+							client.AddToQueue();
 							System.out.println("Added to queue");
 							client.dos.writeUTF("looking_OK");
 						}
 						if(words[1].equals("cancel"))
 							if(!IsGameFound()){
-								Server_Handler.Remove_From_Queue(queue_pos);
+								Server_Handler.Remove_From_Queue(client.username);
+								client.RemoveFromQueue();
 								client.dos.writeUTF("looking_OK");
 							}
 						else
@@ -235,11 +237,18 @@ public class ClientHandler extends Thread {
 			this.client.dos.close();
 			
 			if(client.game!=null){
-				client.Game_Ended();
+				if(client.Playing)
+					DB.incrementPlayedGame(client.username,false);
 				client.game.Remove_Client(client);
+				client.Game_Ended();
+			}
+			
+			if(client.InQueue) {
+				Server_Handler.Remove_From_Queue(client.username);
+				client.RemoveFromQueue();
 			}
 				
-		} catch (IOException e) {
+		} catch (IOException | SQLException e) {
 			e.printStackTrace();
 		}
 	}

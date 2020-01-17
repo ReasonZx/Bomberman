@@ -24,10 +24,10 @@ public class GUI_setup extends StateBasedGame{
 	public static void main(String args[]) throws SlickException {
 		if (System.getProperty("os.name").contains("Windows")) {
 		    // Windows
-		    System.setProperty("org.lwjgl.librarypath", new File("lwjglFolderLocation/natives-windows").getAbsolutePath());
+		    System.setProperty("org.lwjgl.librarypath", new File("libraries/natives-windows").getAbsolutePath());
 		} else if (System.getProperty("os.name").contains("Mac")) {
 		    // Mac OS X
-		    System.setProperty("org.lwjgl.librarypath", new File("lwjglFolderLocation/natives-mac").getAbsolutePath());
+		    System.setProperty("org.lwjgl.librarypath", new File("libraries/natives-mac").getAbsolutePath());
 		} else if (System.getProperty("os.name").contains("Linux")) {
 		    // Linux
 		    System.setProperty("org.lwjgl.librarypath", new File("libraries/natives-linux").getAbsolutePath());
