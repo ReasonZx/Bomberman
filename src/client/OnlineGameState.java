@@ -13,7 +13,6 @@ import java.util.TimerTask;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
@@ -29,7 +28,6 @@ public class OnlineGameState extends BasicGameState
 	 private int dead;
 	 private GUI_setup sbg;
 	 private Image Back;
-	 private int backX, backY;
 	 private boolean init=false;
 	 private String server_response;
 	 private Map m;
@@ -43,8 +41,6 @@ public class OnlineGameState extends BasicGameState
 		
 		Back = new Image("sprites/back.png");
 	    Back = Back.getScaledCopy(0.2f);
-	    backX = 50;
-	    backY = 20;
 	}
 	
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -71,8 +67,6 @@ public class OnlineGameState extends BasicGameState
 	}
 
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
-		int posX = arg0.getInput().getMouseX();
-		int posY = arg0.getInput().getMouseY();
 		String tmp[];
 		try {
 			server_response=sbg.server.poll();
@@ -102,25 +96,13 @@ public class OnlineGameState extends BasicGameState
 					}
 					else if(tmp[1].equals("update")) {
 						try {
-							m=(Map) sbg.server.ois.readObject();
+							m = (Map) sbg.server.ois.readObject();
 						} catch (ClassNotFoundException | IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
 				}
-			}
-		}
-		
-		/*dead=L.Death_Check();
-		
-		if(dead!=0) {
-			sbg.enterState(sbg.Get_GameOver_State());		//Go to Game Over
-		}*/
-		
-		if((posX > backX && posX < backX + Back.getWidth()) && (posY > backY && posY < backY + Back.getHeight())) {		// ver tamanhos certos dos bot�es	//go back
-			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-				sbg.enterState(sbg.Get_Menu_State());
 			}
 		}
 	}
@@ -164,7 +146,6 @@ public class OnlineGameState extends BasicGameState
 						}
 					}
 			}
-		Back.draw(backX,backY);
 	}
 
 	public int getID(){

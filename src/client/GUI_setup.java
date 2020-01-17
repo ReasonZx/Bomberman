@@ -1,4 +1,5 @@
  package client;
+import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JOptionPane;
@@ -21,6 +22,19 @@ public class GUI_setup extends StateBasedGame{
 	}
 
 	public static void main(String args[]) throws SlickException {
+		if (System.getProperty("os.name").contains("Windows")) {
+		    // Windows
+		    System.setProperty("org.lwjgl.librarypath", new File("libraries/natives-windows").getAbsolutePath());
+		} else if (System.getProperty("os.name").contains("Mac")) {
+		    // Mac OS X
+		    System.setProperty("org.lwjgl.librarypath", new File("libraries/natives-mac").getAbsolutePath());
+		} else if (System.getProperty("os.name").contains("Linux")) {
+		    // Linux
+		    System.setProperty("org.lwjgl.librarypath", new File("libraries/natives-linux").getAbsolutePath());
+		} else {
+		    throw new RuntimeException("Your OS is not supported");
+		}
+		
 		AppGameContainer app = new AppGameContainer(new GUI_setup("Setup"));
 		display_x = 1366;
 		display_y = 768;

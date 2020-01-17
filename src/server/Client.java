@@ -27,6 +27,7 @@ public class Client {
 	private boolean GameFound = false;
 	public boolean Playing = false;
 	private Bomber Character = null;
+	public boolean InQueue = false;
 	public int outputsocket;
 	private int player;
 	private Timer tt;
@@ -75,7 +76,15 @@ public class Client {
 		System.out.println(result);
 		this.dos.writeUTF(result);
 	}
+	
+	public void AddToQueue(){
+		InQueue=true;
+	}
 
+	public void RemoveFromQueue(){
+		InQueue=false;
+	}
+	
 	public void AddToGame(GameHandler x) {
 		game = x;
 		Character = null;
@@ -83,7 +92,6 @@ public class Client {
 	}
 
 	public void RemoveFromGame() {
-		game = null;
 		Character = null;
 		Playing = false;
 	}
@@ -124,6 +132,7 @@ public class Client {
 
 	public void Game_Ended() throws IOException {
 		System.out.println("GameOver");
+		game=null;
 		RemoveFromGame();
 		oos.close();
 		ois.close();

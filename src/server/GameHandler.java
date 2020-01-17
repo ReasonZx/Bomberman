@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -24,6 +25,7 @@ public class GameHandler extends Thread{
 	transient private Image_Library lib;
 	private Map m;
 	private ArrayList<Integer> Actions;
+	private boolean First_Action=false;
 	
 	GameHandler(ArrayList<Client> x) {
 		Players = new ArrayList<Client>();
@@ -74,12 +76,16 @@ public class GameHandler extends Thread{
 					
 					try {
 						init_game();
-						for(i=0;i<Players.size();i++) {
-							Players.get(i).dos.writeUTF("game_start");
-						}
+						for(i=0;i<Players.size();i++)
+							try {
+								Players.get(i).dos.writeUTF("game_start");
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						Timer tt2 = new Timer();
-						tt2.schedule(new Update_Task(),100);
-					} catch (SlickException | IOException e) {
+						tt2.schedule(new Update_Task(),20);
+					} catch (SlickException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
@@ -113,53 +119,93 @@ public class GameHandler extends Thread{
 		public void run() {
 			if(Players.size()==0)
 				this.cancel();
-			// TODO Auto-generated method stub
+			
+			if(!First_Action) {
+				Serialize_Data();
+				for(int i=0;i<Players.size();i++)
+					try {
+
+							Players.get(i).Send_Map(m);
+						
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+			}
+			
 			try {
 				while(Actions.size()!=0) {
 					L.Action(Actions.get(0),Actions.get(1));
 					Actions.remove(0);
 					Actions.remove(0);
 				}
-				
-			lib.Run_Changes();
-			int ret=L.Death_Check();
-				if(ret!=0) {
-					Players.get(ret-1).dos.writeUTF("game_lost");
-					Spectators.add(Players.get(ret-1));
-					Players.remove(ret-1);
-					Spectators.get(Spectators.size()-1).RemoveFromGame();
-				}
-			if(Players.size()==1){
-				Players.get(0).dos.writeUTF("game_won_"+Players.get(0).Get_Player());
-				Players.get(0).Game_Ended();
-				for(int i=0;i<Spectators.size();i++) {
-					Spectators.get(i).dos.writeUTF("game_over_"+Players.get(0).Get_Player());
-					Spectators.get(0).Game_Ended();
-				}
-				Players.removeAll(Players);
-				Spectators.removeAll(Spectators);
-				this.cancel();
-			}
-				
-			} catch (SlickException | IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			
-			Serialize_Data();
-			
-			for(int i=0;i<Players.size();i++)
-				try {
-
-						Players.get(i).Send_Map(m);
-					
-				} catch (IOException e) {
+			} catch (SlickException e1) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					e1.printStackTrace();
+			}
+			
+			try {
+				if(lib.Run_Changes()!=0){
+					First_Action=true;
+					int ret=L.Death_Check();
+						if(ret!=0) {
+							Players.get(ret-1).dos.writeUTF("game_lost");
+							Spectators.add(Players.get(ret-1));
+							Players.remove(ret-1);
+							Spectators.get(Spectators.size()-1).RemoveFromGame();
+							DB.incrementPlayedGame(Spectators.get(Spectators.size()-1).username,false);
+						}
+					if(Players.size()==1){
+						Players.get(0).dos.writeUTF("game_won_"+Players.get(0).Get_Player());
+						Players.get(0).Game_Ended();
+						DB.incrementPlayedGame(Players.get(0).username,true);
+						for(int i=0;i<Spectators.size();i++) {
+							Spectators.get(i).dos.writeUTF("game_over_"+Players.get(0).Get_Player());
+							Spectators.get(0).Game_Ended();
+						}
+						Players.removeAll(Players);
+						Spectators.removeAll(Spectators);
+						this.cancel();
+						return;
+					}
+						
+					
+					
+					Serialize_Data();
+					
+					for(int i=0;i<Players.size();i++)
+						try {
+
+								Players.get(i).Send_Map(m);
+							
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					
+					for(int i=0;i<Spectators.size();i++)
+						try {
+
+							Spectators.get(i).Send_Map(m);
+							
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 				}
+			} catch (SlickException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			Timer tt2 = new Timer();
-			tt2.schedule(new Update_Task(),100);
+			tt2.schedule(new Update_Task(),20);
 		}
 		
 	}
@@ -218,5 +264,23 @@ public class GameHandler extends Thread{
 	
 	public void Serialize_Data() {
 		m.Update();
+	}
+	
+	public void Remove_Client(Client x) {
+		int player=x.Get_Player();
+		
+		for(int i=0;i<Players.size();i++)
+			if(Players.get(i).Get_Player()==player){
+				Players.remove(i);
+				return;
+			}
+		
+		for(int i=0;i<Spectators.size();i++)
+			if(Spectators.get(i).Get_Player()==player) {
+				Spectators.remove(i);
+				return;
+			}
+		
+		System.out.println("Client not in this game");
 	}
 }

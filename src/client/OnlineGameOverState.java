@@ -102,7 +102,7 @@ public class OnlineGameOverState extends BasicGameState{
 		@Override
 		public void keyPressed(int arg0, char arg1) {
 			
-			sbg.enterState(sbg.Get_Menu_State());
+			sbg.enterState(sbg.Get_MainMenu_State());
 		}
 
 		@Override

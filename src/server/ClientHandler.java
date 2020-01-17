@@ -22,13 +22,12 @@ public class ClientHandler extends Thread {
 	@Override
 	public void run() {
 		String rx_string;
-
+		
 		try {
 			while (true) {
 				rx_string = null;
 
 				// receive the answer from client
-
 				rx_string = client.dis.readUTF();
 				String words[] = rx_string.split("_");
 
@@ -60,12 +59,14 @@ public class ClientHandler extends Thread {
 					if(words.length==2) {
 						if(words[1].equals("start")) {
 							queue_pos=Server_Handler.Add_To_Queue(client);
+							client.AddToQueue();
 							System.out.println("Added to queue");
 							client.dos.writeUTF("looking_OK");
 						}
 						if(words[1].equals("cancel"))
 							if(!IsGameFound()){
-								Server_Handler.Remove_From_Queue(queue_pos);
+								Server_Handler.Remove_From_Queue(client.username);
+								client.RemoveFromQueue();
 								client.dos.writeUTF("looking_OK");
 							}
 						else
@@ -234,8 +235,20 @@ public class ClientHandler extends Thread {
 			// closing resources
 			this.client.dis.close();
 			this.client.dos.close();
-
-		} catch (IOException e) {
+			
+			if(client.game!=null){
+				if(client.Playing)
+					DB.incrementPlayedGame(client.username,false);
+				client.game.Remove_Client(client);
+				client.Game_Ended();
+			}
+			
+			if(client.InQueue) {
+				Server_Handler.Remove_From_Queue(client.username);
+				client.RemoveFromQueue();
+			}
+				
+		} catch (IOException | SQLException e) {
 			e.printStackTrace();
 		}
 	}

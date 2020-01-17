@@ -120,7 +120,7 @@ public class MainMenuState extends BasicGameState{
 		
 		Decline = new Image("sprites/decline.png");
 		Decline = Decline.getScaledCopy(0.3f);
-		Decline_hover = new Image("sprites/decline_hover.png");
+		Decline_hover = new Image("sprites/decline_HOVER.png");
 		Decline_hover = Decline_hover.getScaledCopy(0.3f);
 
 		playl_x = (int) (0.12* (float)sbg.Get_Display_width() - Play_local.getWidth()/2);

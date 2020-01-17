@@ -68,7 +68,7 @@ public class SignupState extends BasicGameState {
 		
 		Ok = new Image("sprites/ok.png");
 		Ok = Ok.getScaledCopy(0.3f);
-		Ok_hover = new Image("sprites/Ok_hover.png");
+		Ok_hover = new Image("sprites/ok_hover.png");
 		Ok_hover = Ok_hover.getScaledCopy(0.3f);
 		
 		ok_x = (int) ((float) sbg.Get_Display_width() * 0.5 - Ok.getWidth() / 2);
@@ -100,7 +100,7 @@ public class SignupState extends BasicGameState {
 
 		Back = new Image("sprites/back.png");
 		Back = Back.getScaledCopy(0.2f);
-		Back_hover = new Image("sprites/Back_hover.png");
+		Back_hover = new Image("sprites/back_hover.png");
 		Back_hover = Back_hover.getScaledCopy(0.2f);
 
 		user = "";
