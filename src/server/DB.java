@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class DB {
 
-	private static Connection connect() {
+	public static Connection connect() {
 		Connection conn = null;
 		try {
 			try {
@@ -87,7 +87,7 @@ public class DB {
 
 	}
 
-	private static boolean checkUser(Connection conn, String username) throws SQLException {
+	public static boolean checkUser(Connection conn, String username) throws SQLException {
 
 		PreparedStatement data;
 		ResultSet rs;
