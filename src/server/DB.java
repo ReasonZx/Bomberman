@@ -5,6 +5,11 @@ import java.util.ArrayList;
 
 public class DB {
 
+	
+	/**
+	 * Connects and logins to the database
+	 * @return The connection to the database
+	 */
 	public static Connection connect() {
 		Connection conn = null;
 		try {
@@ -23,6 +28,18 @@ public class DB {
 		return conn;
 	}
 
+	
+	/**
+	 * Checks if the user and password match to the database entry
+	 * @param username The username of the user which will log in
+	 * @param pw The password of the user
+	 * @return The message which will be sent to the client. Can be:
+	 * <p>Can't connect to database
+	 * <p>User not found
+	 * <p>Wrong Password
+	 * <p>Logged in
+	 * @throws SQLException 
+	 */
 	public static String login(String username, String pw) throws SQLException {
 		Connection conn = connect();
 		if (conn == null)
@@ -56,6 +73,17 @@ public class DB {
 
 	}
 
+	/** 
+	 * Inserts a user into the database
+	 * @param username The desired username
+	 * @param pw The desired password
+	 * @param email User's email
+	 * @return The message which will be sent to the client. Can be:
+	 * <p>Can't connect to database
+	 * <p>User Already Registered
+	 * <p>Registered Successfully
+	 * @throws SQLException
+	 */
 	public static String register(String username, String pw, String email) throws SQLException {
 
 		Connection conn = connect();
@@ -87,6 +115,13 @@ public class DB {
 
 	}
 
+	/**
+	 * Checks if user is registered
+	 * @param conn The connection to the database
+	 * @param username The username to check
+	 * @return True if username is already in the database. False otherwise.
+	 * @throws SQLException
+	 */
 	public static boolean checkUser(Connection conn, String username) throws SQLException {
 
 		PreparedStatement data;
@@ -107,6 +142,13 @@ public class DB {
 		return true;
 	}
 
+	/**
+	 * Checks if 'friend' is friends with 'username'
+	 * @param username Username of the user
+	 * @param friend Username of the friend
+	 * @return <p>-1 if not friend. <p>0 if friend request is pending. <p>1 if friendship is mutual
+	 * @throws SQLException
+	 */
 	public static int isFriend(String username, String friend) throws SQLException {
 		Connection conn = connect();
 
@@ -130,6 +172,17 @@ public class DB {
 		return 0;
 	}
 
+	/**
+	 * Creates a pending request in the database from 'username' to 'friend'
+	 * @param username Username of the user asking for friendship
+	 * @param friend Username of the friend
+	 * @return The message which will be sent to the client. Can be:
+	 * <p>User does not exist
+	 * <p>Already friends
+	 * <p>Already requested
+	 * <p>Request sent
+	 * @throws SQLException
+	 */
 	public static String requestFriendship(String username, String friend) throws SQLException {
 		Connection conn = connect();
 		PreparedStatement data;
@@ -164,6 +217,14 @@ public class DB {
 		return "Request sent!";
 	}
 
+	/**
+	 * Accepts the friendship request
+	 * @param username Username of the user who will accept the request
+	 * @param friend Username of the friend which sent the request
+	 * @return The message which will be sent to the client. Returns "Accepted "  + friend + "as friend":
+	 * 
+	 * @throws SQLException
+	 */
 	public static String acceptFriendship(String username, String friend) throws SQLException {
 		Connection conn = connect();
 		PreparedStatement data;
@@ -185,6 +246,12 @@ public class DB {
 		return "Accepted " + friend + "as friend";
 	}
 
+	/**
+	 * Retrieves the list of the user's friends from the database
+	 * @param username The username of the user
+	 * @return The list of the user's friends
+	 * @throws SQLException
+	 */
 	public static ArrayList<String> getFriendsList(String username) throws SQLException {
 
 		ArrayList<String> friends = new ArrayList<>();
@@ -215,6 +282,15 @@ public class DB {
 
 	}
 
+	/**
+	 * Deletes from the database the friend relationship specified
+	 * @param username The username of the user asking for friend deletion
+	 * @param friend The username of the friend which will be removed form the user's friend list
+	 * @return The message which will be sent to the client. Can be:
+	 * <p>friend + " removed from friends list"
+	 * <p>Error removing friend
+	 * @throws SQLException
+	 */
 	public static String removeFriend(String username, String friend) throws SQLException {
 		Connection conn = connect();
 		PreparedStatement data;
@@ -242,6 +318,15 @@ public class DB {
 		}
 	}
 
+	/**
+	 * Deletes the pending friendship request from the database
+	 * @param username The username of the user who wants to delete the entry
+	 * @param friend The username of the friend
+	 * @return The message which will be sent to the client. Can be:
+	 * <p>Request removed
+	 * <p>Request not found
+	 * @throws SQLException
+	 */
 	public static String rejectFriendRequest(String username, String friend) throws SQLException {
 		Connection conn = connect();
 		PreparedStatement data;
@@ -261,6 +346,12 @@ public class DB {
 		}
 	}
 
+	/**
+	 * Increments the number of games played by 1. If the player won, also increments their won games. Shall be used after a game is completed
+	 * @param username The username of the user
+	 * @param won If the user won the game
+	 * @throws SQLException
+	 */
 	public static void incrementPlayedGame(String username, boolean won) throws SQLException {
 
 		Connection conn = connect();
@@ -288,6 +379,12 @@ public class DB {
 
 	}
 	
+	/**
+	 * Retrieves the number of won games from the database
+	 * @param username The username of the user
+	 * @return The number of won games
+	 * @throws SQLException
+	 */
 	public static int getWonGames(String username) throws SQLException {
 		Connection conn = connect();
 		PreparedStatement data;
@@ -306,6 +403,12 @@ public class DB {
 	
 	}
 
+	/**
+	 * Retrieves the number of played games from the database
+	 * @param username The username of the user
+	 * @return The number of played games
+	 * @throws SQLException
+	 */
 	public static int getPlayedGames(String username) throws SQLException {
 
 		Connection conn = connect();
