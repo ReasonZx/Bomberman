@@ -397,7 +397,7 @@ public class FriendsState extends BasicGameState{
 					}
 					else{
 						//ERROR MESSAGES GO HERE
-						Message=new String("AN ERROR OCCURED");
+						Message=server_response;
 					}
 				}
 			}

@@ -130,7 +130,7 @@ public class ClientHandler extends Thread {
 								if(ret.equals("Request sent!"))
 									client.dos.writeUTF("friends_add_OK");
 								else
-									client.dos.writeUTF("friends_add_ERROR");
+									client.dos.writeUTF(ret);
 							}
 							else
 								client.dos.writeUTF("friends_add_ERROR");
