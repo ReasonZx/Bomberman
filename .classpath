@@ -10,7 +10,7 @@
 	<classpathentry exported="true" kind="lib" path="libraries/slick.jar"/>
 	<classpathentry exported="true" kind="lib" path="libraries/lwjgl.jar">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Bomberman/libraries/natives-linux"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Bomberman/libraries"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="libraries/java-openal-1.0.0.jar"/>
