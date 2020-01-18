@@ -11,6 +11,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class GUI_setup extends StateBasedGame{
 	private int Menu_ID,Login_ID,Game_ID,GameOver_ID,MainMenu_ID,Controls_ID,Signup_ID,OnlineGame_ID,OnlineGameOver_ID,Friends_ID,LockedMenu_ID, LockedSettingsState_ID, StatisticsState_ID;
+	private boolean LockedStates = false;
 	private Settings Player_Settings;
 	private static int display_x;
 	private static int display_y;
@@ -206,5 +207,13 @@ public class GUI_setup extends StateBasedGame{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void Set_locked_State(boolean x) {
+		LockedStates=x;
+	}
+	
+	public boolean Get_locked_State() {
+		return LockedStates;
 	}
 }

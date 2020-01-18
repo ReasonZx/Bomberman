@@ -5,11 +5,20 @@ import GameLogic.Layout_Logic;
 import GameLogic.Map;
 import GameLogic.GameLogic;
 import GameLogic.Bomber;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+import org.lwjgl.input.Mouse;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -27,12 +36,17 @@ public class OnlineGameState extends BasicGameState
 	 protected int Last_key=0;
 	 private int dead;
 	 private GUI_setup sbg;
-	 private Image Back;
+	 private Image Back, Back_hover;
+	 private int backX, backY;
+	 private boolean login_h = false , back_h = false;
+	 private boolean hovering_l = false , hovering_b = false;
 	 private boolean init=false;
 	 private String server_response;
 	 private Map m;
 	 private boolean won;
 	 private int winner;
+	 private File click_file = new File("music/click.wav");
+	 private File hover_file = new File("music/hover.wav");
 	
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		InputKey = new KeyPresses();
@@ -40,7 +54,12 @@ public class OnlineGameState extends BasicGameState
 		sbg.Set_OnlineGame_State(getID());
 		
 		Back = new Image("sprites/back.png");
-	    Back = Back.getScaledCopy(0.2f);
+		Back = Back.getScaledCopy(0.2f);
+		Back_hover = new Image("sprites/back_hover.png");
+		Back_hover = Back_hover.getScaledCopy(0.2f);
+		
+		backX = 50;
+		backY = 50;
 	}
 	
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -67,6 +86,8 @@ public class OnlineGameState extends BasicGameState
 	}
 
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
+		int posX = arg0.getInput().getMouseX();
+		int posY = arg0.getInput().getMouseY();
 		String tmp[];
 		try {
 			server_response=sbg.server.poll();
@@ -75,6 +96,22 @@ public class OnlineGameState extends BasicGameState
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		
+		if ((posX > backX && posX < backX + Back.getWidth()) && (posY > backY && posY < backY + Back.getHeight())) {
+			back_h = true;
+			if(hovering_b == false) {
+				play_hover_sound();
+				hovering_b = true;
+			}
+			if (Mouse.isButtonDown(0)) {
+				play_click_sound();
+				sbg.enterState(sbg.Get_MainMenu_State());
+			}
+		}
+		else {
+			back_h = false;
+			hovering_b = false;
 		}
 		
 		if(init) {
@@ -126,6 +163,11 @@ public class OnlineGameState extends BasicGameState
 		//g.drawString(player1.toString(),100,100);
 		ArrayList<String> elements;
 		String[] tmp;
+		
+		if(back_h == false) {
+			Back.draw(backX, backY);
+		}
+		else Back_hover.draw(backX, backY);
 		
 		if(m!=null)
 			for(int x = 0 ; x < m.Get_RightBound() ; x++) {
@@ -330,5 +372,38 @@ public class OnlineGameState extends BasicGameState
 	
 	public int Get_Winner() {
 		return winner;
+	}
+	
+	public void play_hover_sound() {
+		
+		AudioInputStream hover_sound;
+	
+		try {
+			hover_sound = AudioSystem.getAudioInputStream(hover_file);
+			Clip hover_s = AudioSystem.getClip();
+			hover_s.open(hover_sound);
+			hover_s.loop(0);
+		} catch (UnsupportedAudioFileException | IOException e) {
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
+			e.printStackTrace();
+		}
+	}
+	public void play_click_sound() {
+		
+		AudioInputStream click_sound;
+		
+		try {
+			click_sound = AudioSystem.getAudioInputStream(click_file);
+			Clip click_s = AudioSystem.getClip();
+			click_s.open(click_sound);
+			click_s.loop(0);
+		} catch (UnsupportedAudioFileException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

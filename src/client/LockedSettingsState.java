@@ -1,6 +1,15 @@
 package client;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
@@ -20,8 +29,8 @@ public class LockedSettingsState extends BasicGameState{
 
 	protected GUI_setup sbg;
 	private Image Configuration;
-	private Image Reset_Button;
-	private Image Back_Button;
+	private Image Reset_Button, Reset_hover;
+	private Image Back, Back_hover;
 	private Image Player1,Player2;
 	private Shape R1,R2,R3;
 	private ArrayList <Shape> T;
@@ -35,9 +44,13 @@ public class LockedSettingsState extends BasicGameState{
 	private int ControlsBoxLenght=300;
 	private int ControlsBoxHeight=500;
 	private Font myFont;
-	private int ResetX=650,ResetY=560;
-	private int BackX=30,BackY=560;
+	private int ResetX,ResetY;
+	private int BackX,BackY;
+	private boolean reset_h = false , back_h = false;
+	private boolean hovering_r = false , hovering_b = false;
 	private int[][] Settings;
+	private File click_file = new File("music/click.wav");
+	private File hover_file = new File("music/hover.wav");
 	
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -48,10 +61,22 @@ public class LockedSettingsState extends BasicGameState{
 		sbg.Set_LockedSettings_State(getID());
 		Configuration= new Image("sprites/Configuration_Wheel.png");
 		Configuration=Configuration.getScaledCopy((float)0.05);
-		Reset_Button= new Image("sprites/Reset_Button.png");
-		Reset_Button=Reset_Button.getScaledCopy(0.2f);
-		Back_Button= new Image("sprites/back.png");
-		Back_Button=Back_Button.getScaledCopy(0.1f);
+		
+		Reset_Button = new Image("sprites/reset.png");
+		Reset_Button = Reset_Button.getScaledCopy(0.2f);
+		Reset_hover = new Image("sprites/reset_hover.png");
+		Reset_hover = Reset_hover.getScaledCopy(0.2f);
+		
+		Back = new Image("sprites/back.png");
+		Back = Back.getScaledCopy(0.2f);
+		Back_hover = new Image("sprites/back_hover.png");
+		Back_hover = Back_hover.getScaledCopy(0.2f);
+		
+		BackX = (int) (sbg.Get_Display_width() * 0.15f);
+		BackY = (int) (sbg.Get_Display_height() * 0.90f ); 
+		ResetX = (int) (sbg.Get_Display_width() * 0.85f);
+		ResetY = (int) (sbg.Get_Display_height() * 0.90f ); 
+		
 		R1 = new Rectangle(50, 50, ControlsBoxLenght, ControlsBoxHeight); 
 		R2 = new Rectangle(450, 50, ControlsBoxLenght, ControlsBoxHeight);
 		R3 = new Rectangle(200, 200, 400, 200);
@@ -71,53 +96,7 @@ public class LockedSettingsState extends BasicGameState{
 		T= new ArrayList<Shape>();
 		Set_Triangles();
 	}
-
-	@Override
-	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
-		// TODO Auto-generated method stub
-		arg2.setColor(Color.white);
-		arg2.fill(R1);
-		arg2.fill(R2);
-		arg2.setColor(Color.black);
 	
-		for(int i=0;i<T.size();i++) {
-			arg2.fill(T.get(i));
-		}
-		
-		arg2.setColor(Color.white);
-		
-		for(int i=0;i<5;i++) {
-			myFont.drawString(50f + ControlsBoxLenght/2f - myFont.getWidth(Input.getKeyName(Settings[0][i+2]))/2f, ConfigY+myFont.getHeight(Input.getKeyName(Settings[0][i+2]))/2f+(i*((ControlsBoxHeight-200)/4)), Input.getKeyName(Settings[0][i+2]),Color.black);
-			arg2.drawImage(Configuration,ConfigX1,ConfigY+(i*((ControlsBoxHeight-200)/4)));
-		}
-		
-		for(int i=0;i<5;i++) {
-			myFont.drawString(450f + ControlsBoxLenght/2f - myFont.getWidth(Input.getKeyName(Settings[1][i+2]))/2f, ConfigY+myFont.getHeight(Input.getKeyName(Settings[1][i+2]))/2f+(i*((ControlsBoxHeight-200)/4)), Input.getKeyName(Settings[1][i+2]),Color.black);
-			arg2.drawImage(Configuration,ConfigX2,ConfigY+(i*((ControlsBoxHeight-200)/4)));
-		}
-		
-		arg2.drawImage(Reset_Button,ResetX,ResetY);
-		arg2.drawImage(Back_Button,BackX,BackY);
-		arg2.drawImage(Player1,50 + ControlsBoxLenght/2f - Player1.getWidth()/2f,50 + Player1.getHeight()/2f);
-		arg2.drawImage(Player2,450 + ControlsBoxLenght/2f - Player2.getWidth()/2f,50 + Player2.getHeight()/2f);
-		
-		if(Configurating()) {
-			arg2.setColor(Color.black);
-			arg2.fill(R3);
-			arg2.setColor(Color.white);
-			myFont.drawString(arg0.getWidth()/2f - myFont.getWidth("Press a new key")/2f,
-	                    250, "Press a new key");
-			myFont.drawString(arg0.getWidth()/2f - myFont.getWidth("Currently:")/2f,
-                    300, "Currently:");
-			if(butt<6)
-				myFont.drawString(arg0.getWidth()/2f - myFont.getWidth("< "+ Input.getKeyName(Settings[0][butt+1]) +" >")/2f,
-	                    350, "< "+ Input.getKeyName(Settings[0][butt+1]) +" >");
-			else
-				myFont.drawString(arg0.getWidth()/2f - myFont.getWidth("< "+ Input.getKeyName(Settings[1][butt-6+2]) +" >")/2f,
-                    350, "< "+ Input.getKeyName(Settings[1][butt-6+2]) +" >");
-		}
-	}
-
 	@Override
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
 		// TODO Auto-generated method stub
@@ -161,6 +140,61 @@ public class LockedSettingsState extends BasicGameState{
 	}
 	
 	@Override
+	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
+		// TODO Auto-generated method stub
+		arg2.setColor(Color.white);
+		arg2.fill(R1);
+		arg2.fill(R2);
+		arg2.setColor(Color.black);
+	
+		for(int i=0;i<T.size();i++) {
+			arg2.fill(T.get(i));
+		}
+		
+		arg2.setColor(Color.white);
+		
+		for(int i=0;i<5;i++) {
+			myFont.drawString(50f + ControlsBoxLenght/2f - myFont.getWidth(Input.getKeyName(Settings[0][i+2]))/2f, ConfigY+myFont.getHeight(Input.getKeyName(Settings[0][i+2]))/2f+(i*((ControlsBoxHeight-200)/4)), Input.getKeyName(Settings[0][i+2]),Color.black);
+			arg2.drawImage(Configuration,ConfigX1,ConfigY+(i*((ControlsBoxHeight-200)/4)));
+		}
+		
+		for(int i=0;i<5;i++) {
+			myFont.drawString(450f + ControlsBoxLenght/2f - myFont.getWidth(Input.getKeyName(Settings[1][i+2]))/2f, ConfigY+myFont.getHeight(Input.getKeyName(Settings[1][i+2]))/2f+(i*((ControlsBoxHeight-200)/4)), Input.getKeyName(Settings[1][i+2]),Color.black);
+			arg2.drawImage(Configuration,ConfigX2,ConfigY+(i*((ControlsBoxHeight-200)/4)));
+		}
+		
+		if(back_h == false) {
+			Back.draw(BackX, BackY);
+		}
+		else Back_hover.draw(BackX, BackY);
+
+		if(reset_h == false) {
+			Reset_Button.draw(ResetX, ResetY);
+		}
+		else Reset_hover.draw(ResetX, ResetY);
+		
+		
+		arg2.drawImage(Player1,50 + ControlsBoxLenght/2f - Player1.getWidth()/2f,50 + Player1.getHeight()/2f);
+		arg2.drawImage(Player2,450 + ControlsBoxLenght/2f - Player2.getWidth()/2f,50 + Player2.getHeight()/2f);
+		
+		if(Configurating()) {
+			arg2.setColor(Color.black);
+			arg2.fill(R3);
+			arg2.setColor(Color.white);
+			myFont.drawString(arg0.getWidth()/2f - myFont.getWidth("Press a new key")/2f,
+	                    250, "Press a new key");
+			myFont.drawString(arg0.getWidth()/2f - myFont.getWidth("Currently:")/2f,
+                    300, "Currently:");
+			if(butt<6)
+				myFont.drawString(arg0.getWidth()/2f - myFont.getWidth("< "+ Input.getKeyName(Settings[0][butt+1]) +" >")/2f,
+	                    350, "< "+ Input.getKeyName(Settings[0][butt+1]) +" >");
+			else
+				myFont.drawString(arg0.getWidth()/2f - myFont.getWidth("< "+ Input.getKeyName(Settings[1][butt-6+2]) +" >")/2f,
+                    350, "< "+ Input.getKeyName(Settings[1][butt-6+2]) +" >");
+		}
+	}
+	
+	@Override
 	public void leave(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		// TODO Auto-generated method stub
 		//System.out.println("LEAVING");
@@ -197,19 +231,43 @@ public class LockedSettingsState extends BasicGameState{
 	}
 	
 	private boolean Reset_Button_Pressed(int posX,int posY,GameContainer arg0) {
-		if((posX>ResetX && posX < ResetX+Reset_Button.getWidth()) && (posY > ResetY  && posY < ResetY+Reset_Button.getHeight())) 	
-			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) 
-				return true;
 		
+		if ((posX > ResetX && posX < ResetX + Reset_Button.getWidth()) && (posY > ResetY && posY < ResetY + Reset_Button.getHeight())) {
+			reset_h = true;
+			if(hovering_r == false) {
+				play_hover_sound();
+				hovering_r = true;
+			}
+			if (Mouse.isButtonDown(0)) {
+				play_click_sound();
+				return true;
+			}
+		}
+		else {
+			reset_h = false;
+			hovering_r = false;
+		}
 			
 		return false;
 	}
 	
 	private boolean Back_Button_Pressed(int posX,int posY,GameContainer arg0) {
-		if((posX>BackX && posX < BackX+Back_Button.getWidth()) && (posY > BackY  && posY < BackY+Back_Button.getHeight())) 	
-			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) 
-				return true;
 		
+		if ((posX > BackX && posX < BackX + Back.getWidth()) && (posY > BackY && posY < BackY + Back.getHeight())) {
+			back_h = true;
+			if(hovering_b == false) {
+				play_hover_sound();
+				hovering_b = true;
+			}
+			if (Mouse.isButtonDown(0)) {
+				play_click_sound();
+				return true;
+			}
+		}
+		else {
+			back_h = false;
+			hovering_b = false;
+		}	
 			
 		return false;
 	}
@@ -319,5 +377,38 @@ public class LockedSettingsState extends BasicGameState{
 		T.get(6).setLocation(tmp);
 		T.get(5).setLocation(tmp.set(450 + ControlsBoxLenght/2f - Player2.getWidth()/2f - 50,50 + Player2.getHeight()/2f-10));
 		T.get(7).setLocation(tmp.set(450 + ControlsBoxLenght/2f - Player2.getWidth()/2f - 50,50 + Player2.getHeight()/2f+60));
+	}
+	
+	public void play_hover_sound() {
+		
+		AudioInputStream hover_sound;
+	
+		try {
+			hover_sound = AudioSystem.getAudioInputStream(hover_file);
+			Clip hover_s = AudioSystem.getClip();
+			hover_s.open(hover_sound);
+			hover_s.loop(0);
+		} catch (UnsupportedAudioFileException | IOException e) {
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
+			e.printStackTrace();
+		}
+	}
+	public void play_click_sound() {
+		
+		AudioInputStream click_sound;
+		
+		try {
+			click_sound = AudioSystem.getAudioInputStream(click_file);
+			Clip click_s = AudioSystem.getClip();
+			click_s.open(click_sound);
+			click_s.loop(0);
+		} catch (UnsupportedAudioFileException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

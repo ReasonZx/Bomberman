@@ -34,13 +34,13 @@ public class Menu extends BasicGameState {
 	@Override
 	public void enter(GameContainer gc, StateBasedGame arg1) throws SlickException {
 		gc.getInput().clearMousePressedRecord();
-		// Mouse.setCursorPosition(0, 0);
+		sbg.Set_locked_State(false);
 	}
 
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		sbg = (GUI_setup) arg1;
 		sbg.Set_Menu_State(getID());
-
+		
 		logIn = new Image("sprites/logIn.png");
 		logIn = logIn.getScaledCopy(0.6f);
 		logIn_hover = new Image("sprites/logIn_hover.png");
@@ -134,6 +134,7 @@ public class Menu extends BasicGameState {
 			}
 			if (container.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				play_click_sound();
+				
 				sbg.enterState(sbg.Get_LockedMenu_State());
 			}
 		}

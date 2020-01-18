@@ -21,7 +21,7 @@ public class StatisticsState extends BasicGameState {
 	private Image Back, Back_hover;
 	private Image background;
 	private int backX, backY;
-	private int games_won, games_played, n_friends;
+	private int games_won = 1, games_played = 1, n_friends = 1;
 	private boolean back_h = false;
 	private boolean hovering_b = false;
 	private GUI_setup sbg;
@@ -43,25 +43,20 @@ public class StatisticsState extends BasicGameState {
 		
 		background = new Image("sprites/background.png");
 		
-		
-		games_won = 5;
-		games_played = 6;
-		n_friends = 10;
-		
-		/*		JUST UPDATE games_won ; games_played ; n_friends
-		try {
-			String request = "statistics" + sbg.server.ss.getLocalPort();
-			server_response = sbg.server.request(request);
-			if (server_response.equals("Logged in")) {
-				error_login = false;
-				sbg.enterState(sbg.Get_MainMenu_State());
-			} else {
-				error_login = true;
+			
+			try {
+				String request = "statistics";
+				server_response = sbg.server.request(request);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	*/
+			
+			String words[] = server_response.split("_");
+			
+			games_won = Integer.parseInt(words[0]);
+			games_played = Integer.parseInt(words[1]);
+
+			
 		
 		
 	}

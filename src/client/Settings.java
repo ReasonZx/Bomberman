@@ -1,4 +1,5 @@
 package client;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -13,6 +14,7 @@ import org.newdawn.slick.Input;
 public class Settings {
 	private Path Setting;
 	int[][] Settings_List;
+
 	
 	
 	public void init_Settings() {

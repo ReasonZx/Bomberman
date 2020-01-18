@@ -52,7 +52,6 @@ public class LockedMenuState extends BasicGameState{
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		sbg=(GUI_setup) arg1;
 		sbg.Set_LockedMenu_State(getID());
-		
 		arg0.getDefaultFont();
 		
 		background = new Image("sprites/background.png");
@@ -101,6 +100,8 @@ public class LockedMenuState extends BasicGameState{
 	
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		arg0.getInput().clearMousePressedRecord();
+		sbg.Set_locked_State(true);
+
 	}
 
 	@Override
@@ -134,6 +135,7 @@ public class LockedMenuState extends BasicGameState{
 			}
 			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				play_click_sound();
+				sbg.Set_locked_State(false);
 				sbg.enterState(sbg.Get_Menu_State());
 			}
 		}
