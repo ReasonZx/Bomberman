@@ -41,30 +41,28 @@ public class StatisticsState extends BasicGameState {
 		backX = (int) (sbg.Get_Display_width() * 0.05);
 		backY = (int) (sbg.Get_Display_height() * 0.05);
 		
-		background = new Image("sprites/background.png");
-		
-			
-			try {
-				String request = "statistics";
-				server_response = sbg.server.request(request);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-			String words[] = server_response.split("_");
-			
-			games_won = Integer.parseInt(words[0]);
-			games_played = Integer.parseInt(words[1]);
-
-			
-		
-		
+		background = new Image("sprites/background.png");	
+				
 	}
 
 	@Override
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		arg0.getInput().clearMousePressedRecord();
 		server_response = "";
+		
+		try {
+			String request = "statistics";
+			server_response = sbg.server.request(request);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		String words[] = server_response.split("_");
+		
+		games_won = Integer.parseInt(words[0]);
+		games_played = Integer.parseInt(words[1]);
+		n_friends = Integer.parseInt(words[2]);
+				
 	}
 
 	public void update(GameContainer gc, StateBasedGame arg1, int delta) throws SlickException {

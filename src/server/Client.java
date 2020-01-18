@@ -85,8 +85,14 @@ public class Client {
 	
 	public int get_games_played() throws SQLException, IOException{
 		int result;
-		result = server.DB.getWonGames(username);
+		result = server.DB.getPlayedGames(username);
 		return result;
+	}
+	
+	public int get_number_of_friends() throws SQLException, IOException{
+		ArrayList<String> friendlist;
+		friendlist = server.DB.getFriendsList(username);
+		return friendlist.size();
 	}
 	
 	

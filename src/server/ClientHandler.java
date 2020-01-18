@@ -48,7 +48,8 @@ public class ClientHandler extends Thread {
 				
 				case "statistics":
 					if(words.length == 1) {
-						client.dos.writeUTF(Integer.toString(client.get_games_won()) + "_" + Integer.toString(client.get_games_played()));
+						client.dos.writeUTF(Integer.toString(client.get_games_won()) + "_" +
+								Integer.toString(client.get_games_played()) + "_" + Integer.toString(client.get_number_of_friends()));
 					}
 					else {
 						client.dos.writeUTF("get_statistics_ERROR");
