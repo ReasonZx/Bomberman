@@ -43,6 +43,7 @@ public class Gamestate extends BasicGameState{
 	    Back = Back.getScaledCopy(0.2f);
 	    backX = 50;
 	    backY = 20;
+	    
 	}
 	
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -72,7 +73,7 @@ public class Gamestate extends BasicGameState{
 										players.size()));
 	     
 	     L.Place_Characters(players);
-	     
+	     System.out.println(sbg.Get_locked_State());
 	     arg0.getInput().addKeyListener(Input);
 	     arg0.getInput().clearMousePressedRecord();
 	}
@@ -88,9 +89,11 @@ public class Gamestate extends BasicGameState{
 			sbg.enterState(sbg.Get_GameOver_State());		//Go to Game Over
 		}
 		
-		if((posX > backX && posX < backX + Back.getWidth()) && (posY > backY && posY < backY + Back.getHeight())) {		// ver tamanhos certos dos bot�es	//go back
+		if((posX > backX && posX < backX + Back.getWidth()) && (posY > backY && posY < backY + Back.getHeight())) {		
 			if(Mouse.isButtonDown(0)) {
-				sbg.enterState(sbg.Get_Menu_State());
+				if(sbg.Get_locked_State())
+					sbg.enterState(sbg.Get_LockedMenu_State());
+				else sbg.enterState(sbg.Get_MainMenu_State());
 			}
 		}
 	}

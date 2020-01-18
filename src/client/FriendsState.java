@@ -1,6 +1,13 @@
 package client;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
@@ -30,8 +37,8 @@ public class FriendsState extends BasicGameState{
 	private String Reject_Button;
 	private String Remove_Button;
 	private String Invite_Button;
-	private Image Add_New_Button;
-	private Image Back_Button;
+	private Image Add_New_Button, Add_hover;
+	private Image Back_Button, Back_hover;
 	private Image Back_Button_2;
 	private Image PopUp_Button;
 	private String OK_Button="sprites/ok.png";
@@ -44,11 +51,15 @@ public class FriendsState extends BasicGameState{
 	private boolean Adding=false;
 	private String Error_Message=" ";
 	private String Message=" ";
+	private boolean add_h = false, hovering_a = false;
+	private boolean back_h = false, hovering_b = false;
 	private boolean init=true;
 	private boolean creating_list=false;
 	private boolean block=false;
 	private boolean waiting_for_game=false;
 	private String server_response;
+	private File click_file = new File("music/click.wav");
+	private File hover_file = new File("music/hover.wav");
 	
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -62,11 +73,15 @@ public class FriendsState extends BasicGameState{
 		
 		Add_New_Button=new Image("sprites/add.png");
 		Add_New_Button=Add_New_Button.getScaledCopy(0.3f);
+		Add_hover=new Image("sprites/add_hover.png");
+		Add_hover=Add_hover.getScaledCopy(0.3f);
 		Add_New_ButtonX=(int) (arg0.getWidth()/3f*2-Add_New_Button.getWidth()/2f);
 		Add_New_ButtonY=arg0.getHeight()-Add_New_Button.getHeight();
 		
 		Back_Button = new Image("sprites/back.png");
 		Back_Button = Back_Button.getScaledCopy(0.3f);
+		Back_hover = new Image("sprites/back_hover.png");
+		Back_hover = Back_hover.getScaledCopy(0.3f);
 		Back_ButtonX=(int) (arg0.getWidth()/3f-Add_New_Button.getWidth()/2f);
 		Back_ButtonY=arg0.getHeight()-Add_New_Button.getHeight();
 
@@ -194,8 +209,16 @@ public class FriendsState extends BasicGameState{
 			RenderFriendList();
 			RenderButtons();
 			
-			Add_New_Button.draw(Add_New_ButtonX, Add_New_ButtonY);
-			Back_Button.draw(Back_ButtonX,Back_ButtonY);
+			if(add_h == false) {
+				Add_New_Button.draw(Add_New_ButtonX, Add_New_ButtonY);
+			}
+			else Add_hover.draw(Add_New_ButtonX, Add_New_ButtonY);
+			
+			if(back_h == false) {
+				Back_Button.draw(Back_ButtonX, Back_ButtonY);
+			}
+			else Back_hover.draw(Back_ButtonX, Back_ButtonY);
+
 			
 			if(block) {
 				arg2.setColor(Color.black);
@@ -366,9 +389,20 @@ public class FriendsState extends BasicGameState{
 	private void Back_Button_Pressed(int posX,int posY,GameContainer arg0,int butt) {
 		if(butt==1) {
 			if((posX>Back_ButtonX && posX < Back_ButtonX + Back_Button.getWidth()) && (posY >Back_ButtonY  && posY < Back_ButtonY+ Back_Button.getHeight())){ 	
-				if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) 
+				back_h = true;
+				if(hovering_b == false) {
+					play_hover_sound();
+					hovering_b = true;
+				}
+				if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+					play_click_sound();
 					sbg.enterState(sbg.Get_MainMenu_State());
 				}
+			}
+			else {
+				back_h = false;
+				hovering_b = false;
+			}
 		}
 		else
 			if((posX>Back_Button2X && posX < Back_Button2X + Back_Button_2.getWidth()) && (posY > Back_Button2Y  && posY < Back_Button2Y+ Back_Button_2.getHeight())){ 	
@@ -380,10 +414,21 @@ public class FriendsState extends BasicGameState{
 	private void Add_New_Button_Pressed(int posX,int posY,GameContainer gc,int state) {
 		if(state==1) {
 			if((posX>Add_New_ButtonX && posX < Add_New_ButtonX + Add_New_Button.getWidth()) && (posY >Add_New_ButtonY  && posY < Add_New_ButtonY+ Add_New_Button.getHeight())){ 	
-				if(gc.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) 
+				add_h = true;
+				if(hovering_a == false) {
+					play_hover_sound();
+					hovering_a = true;
+				}
+				if(gc.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+					play_click_sound();
 					Adding=true;
 					Message="";
 				}
+			}
+			else {
+				add_h = false;
+				hovering_a = false;
+			}
 		}
 		else {
 			if((posX>gc.getWidth()/2f-Add_New_Button.getWidth()/2f && posX < gc.getWidth()/2f-Add_New_Button.getWidth()/2f + Add_New_Button.getWidth()) && (posY > R2.getY()+R2.getHeight()-Add_New_Button.getHeight()  && posY < R2.getY()+R2.getHeight())){ 	
@@ -564,4 +609,38 @@ public class FriendsState extends BasicGameState{
 		block=true;
 		Error_Message=s;
 	}
+	
+	public void play_hover_sound() {
+		
+		AudioInputStream hover_sound;
+	
+		try {
+			hover_sound = AudioSystem.getAudioInputStream(hover_file);
+			Clip hover_s = AudioSystem.getClip();
+			hover_s.open(hover_sound);
+			hover_s.loop(0);
+		} catch (UnsupportedAudioFileException | IOException e) {
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
+			e.printStackTrace();
+		}
+	}
+	public void play_click_sound() {
+		
+		AudioInputStream click_sound;
+		
+		try {
+			click_sound = AudioSystem.getAudioInputStream(click_file);
+			Clip click_s = AudioSystem.getClip();
+			click_s.open(click_sound);
+			click_s.loop(0);
+		} catch (UnsupportedAudioFileException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 }
