@@ -11,7 +11,7 @@ public class Map implements Serializable{
 	public ArrayList<ArrayList<ArrayList<String>>> info_elements;
 	private int LeftBound, RightBound, TopBound, BotBound;
 	
-	Map(int LB,int RB,int TB,int BB){
+	public Map(int LB,int RB,int TB,int BB){
 		LeftBound=LB;
 		RightBound=RB;
 		TopBound=TB;
