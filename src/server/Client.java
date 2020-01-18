@@ -77,17 +77,16 @@ public class Client {
 		this.dos.writeUTF(result);
 	}
 	
-	public void get_games_won() throws SQLException , IOException{
+	public int get_games_won() throws SQLException , IOException{
 		int result;
 		result = server.DB.getWonGames(username);
-		System.out.println(result);
-		this.dos.writeUTF(Integer.toString(result));
+		return result;
 	}
 	
-	public void get_games_played() throws SQLException, IOException{
+	public int get_games_played() throws SQLException, IOException{
 		int result;
 		result = server.DB.getWonGames(username);
-		this.dos.writeUTF(Integer.toString(result));
+		return result;
 	}
 	
 	
