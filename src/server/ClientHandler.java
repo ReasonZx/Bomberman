@@ -53,6 +53,7 @@ public class ClientHandler extends Thread {
 					else {
 						client.dos.writeUTF("get_statistics_ERROR");
 					}
+					break;
 
 				case "login":
 					if (words.length == 4) {

@@ -34,14 +34,13 @@ public class Menu extends BasicGameState {
 	@Override
 	public void enter(GameContainer gc, StateBasedGame arg1) throws SlickException {
 		gc.getInput().clearMousePressedRecord();
-		// Mouse.setCursorPosition(0, 0);
+		sbg.Set_locked_State(false);
 	}
 
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		sbg = (GUI_setup) arg1;
 		sbg.Set_Menu_State(getID());
-		sbg.Set_locked_State(false);
-
+		
 		logIn = new Image("sprites/logIn.png");
 		logIn = logIn.getScaledCopy(0.6f);
 		logIn_hover = new Image("sprites/logIn_hover.png");

@@ -50,7 +50,6 @@ public class StatisticsState extends BasicGameState {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			System.out.println(server_response);
 			
 			String words[] = server_response.split("_");
 			

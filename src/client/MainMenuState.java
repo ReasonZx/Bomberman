@@ -152,6 +152,7 @@ public class MainMenuState extends BasicGameState{
 
 	@Override
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
+
 		int posX = arg0.getInput().getMouseX();
 		int posY = arg0.getInput().getMouseY();
 		try {
@@ -160,6 +161,8 @@ public class MainMenuState extends BasicGameState{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
+
 		if(Request) {
 			
 			if(server_response!=null)	

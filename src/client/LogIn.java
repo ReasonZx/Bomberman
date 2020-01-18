@@ -97,6 +97,7 @@ public class LogIn extends BasicGameState {
 	}
 
 	public void update(GameContainer gc, StateBasedGame arg1, int delta) throws SlickException {
+
 		User = this.Username.getText();
 
 		int posX = gc.getInput().getMouseX();
@@ -140,6 +141,7 @@ public class LogIn extends BasicGameState {
 				try {
 					String request = "login_" + this.User + "_" + this.Pass + "_" + sbg.server.ss.getLocalPort();
 					server_response = sbg.server.request(request);
+					System.out.println(server_response);
 					if (server_response.equals("Logged in")) {
 						error_login = false;
 						sbg.enterState(sbg.Get_MainMenu_State());
@@ -201,6 +203,7 @@ public class LogIn extends BasicGameState {
 		Username.render(gc, g);
 		g.drawString("Password:", PassTextX - 100, PassTextY);
 		Password.render(gc, g);
+		
 		if(back_h == false) {
 			Back.draw(backX, backY);
 		}

@@ -7,9 +7,17 @@ import GameLogic.GameLogic;
 import GameLogic.Bomber;
 import GameLogic.Element;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.GameContainer;
@@ -29,8 +37,12 @@ public class Gamestate extends BasicGameState{
 	 protected int Last_key=0;
 	 private int dead;
 	 private GUI_setup sbg;
-	 private Image Back;
+	 private Image Back, Back_hover;
+	 private boolean back_h = false;
+	 private boolean hovering_b = false;
 	 private int backX, backY;
+	 private File click_file = new File("music/click.wav");
+	 private File hover_file = new File("music/hover.wav");
 
 
 	
@@ -40,7 +52,9 @@ public class Gamestate extends BasicGameState{
 		sbg.Set_Game_State(getID());
 		
 		Back = new Image("sprites/back.png");
-	    Back = Back.getScaledCopy(0.2f);
+		Back = Back.getScaledCopy(0.2f);
+		Back_hover = new Image("sprites/back_hover.png");
+		Back_hover = Back_hover.getScaledCopy(0.2f);
 	    backX = 50;
 	    backY = 20;
 	    
@@ -85,10 +99,27 @@ public class Gamestate extends BasicGameState{
 		lib.Run_Changes();
 		dead=L.Death_Check();
 		
+		if ((posX > backX && posX < backX + Back.getWidth()) && (posY > backY && posY < backY + Back.getHeight())) {
+			back_h = true;
+			if(hovering_b == false) {
+				play_hover_sound();
+				hovering_b = true;
+			}
+			if (Mouse.isButtonDown(0)) {
+				play_click_sound();
+				if(sbg.Get_locked_State())
+					sbg.enterState(sbg.Get_LockedMenu_State());
+				else sbg.enterState(sbg.Get_MainMenu_State());
+			}
+		}
+		else {
+			back_h = false;
+			hovering_b = false;
+		}
+		
 		if(dead!=0) {
 			sbg.enterState(sbg.Get_GameOver_State());		//Go to Game Over
 		}
-		
 		if((posX > backX && posX < backX + Back.getWidth()) && (posY > backY && posY < backY + Back.getHeight())) {		
 			if(Mouse.isButtonDown(0)) {
 				if(sbg.Get_locked_State())
@@ -128,7 +159,10 @@ public class Gamestate extends BasicGameState{
 					}
 				}
 		}
-		Back.draw(backX,backY);
+		if(back_h == false) {
+			Back.draw(backX, backY);
+		}
+		else Back_hover.draw(backX, backY);
 	}
 
 	public int getID() {
@@ -281,4 +315,38 @@ public class Gamestate extends BasicGameState{
 			break;
 		}
 	}
+	
+	public void play_hover_sound() {
+		
+		AudioInputStream hover_sound;
+	
+		try {
+			hover_sound = AudioSystem.getAudioInputStream(hover_file);
+			Clip hover_s = AudioSystem.getClip();
+			hover_s.open(hover_sound);
+			hover_s.loop(0);
+		} catch (UnsupportedAudioFileException | IOException e) {
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
+			e.printStackTrace();
+		}
+	}
+	public void play_click_sound() {
+		
+		AudioInputStream click_sound;
+		
+		try {
+			click_sound = AudioSystem.getAudioInputStream(click_file);
+			Clip click_s = AudioSystem.getClip();
+			click_s.open(click_sound);
+			click_s.loop(0);
+		} catch (UnsupportedAudioFileException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 }
