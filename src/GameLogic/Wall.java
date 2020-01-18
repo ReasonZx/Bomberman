@@ -14,7 +14,7 @@ public class Wall extends Element {
 	static protected String Wall_Breakable = "sprites/Wall_destroyable.png";
 	static protected String Rubble = "sprites/Rubble.png";
 	
-	Wall(int x,int y,Image_Library lib,Map m, int type) throws SlickException{
+	public Wall(int x,int y,Image_Library lib,Map m, int type) throws SlickException{
 		Coordinate tmp = new Coordinate(x,y);
 		Coord=tmp;
 		Solid=true;
