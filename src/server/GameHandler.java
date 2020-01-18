@@ -133,15 +133,10 @@ public class GameHandler extends Thread{
 					}
 			}
 			
-			try {
-				while(Actions.size()!=0) {
-					L.Action(Actions.get(0),Actions.get(1));
-					Actions.remove(0);
-					Actions.remove(0);
-				}
-			} catch (SlickException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+			while(Actions.size()!=0) {
+				L.Action(Actions.get(0),Actions.get(1));
+				Actions.remove(0);
+				Actions.remove(0);
 			}
 			
 			try {
@@ -193,9 +188,6 @@ public class GameHandler extends Thread{
 							e.printStackTrace();
 						}
 				}
-			} catch (SlickException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

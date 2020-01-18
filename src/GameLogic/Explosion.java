@@ -3,8 +3,11 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.newdawn.slick.SlickException;
 
+/**
+ * @author gomes
+ *
+ */
 @SuppressWarnings("serial")
 public class Explosion extends Element{
 	
@@ -21,7 +24,23 @@ public class Explosion extends Element{
 	static protected String LeftEnd = 		"sprites/Explosion_LeftEnd.png";
 	static private int Explosion_time = 1000;
 	
-	Explosion(int x,int y,Image_Library lib,Map m,int type,Bomb b) throws SlickException{
+	/**
+	 * Constructor for the Explosion Class
+	 * <p>
+	 * Creates an object explosion at the given position (x,y)
+	 * It then changes the image depending on the type
+	 * 0- Cross
+	 * 1- Horizontal
+	 * 2- Vertical
+	 * <p>
+	 * @param x Position on the x axis of the map
+	 * @param y Position on the y axis of the map
+	 * @param lib The library where Image changes are to be flagged
+	 * @param m The map where the game is being played
+	 * @param type The type of the wall to be placed
+	 * @param b The bomb that was transformed into this explosion
+	 */
+	public Explosion(int x,int y,Image_Library lib,Map m,int type,Bomb b){
 		Coordinate tmp = new Coordinate(x,y);
 		Coord=tmp;
 		Solid=false;
@@ -34,8 +53,17 @@ public class Explosion extends Element{
 		if(type==2)
 			img=Vertical;
 	}
-
-	public ArrayList<Element> Propagate() throws SlickException{
+	
+	/**
+	 * Propagates the explosion
+	 * <p>
+	 * This will propagate the explosion starting the position (x,y) of the object that called this method
+	 * It will extend in all directions creating new explosion for every square checked until it finds a wall
+	 * If it finds a wall it will then attempt to destroy it
+	 * <p>
+	 * @return The Array List of the explosions created
+	 */
+	public ArrayList<Element> Propagate(){
 		ArrayList<Element> ret = new ArrayList<Element>();
 		ret.add(this);
 		int i;
@@ -110,6 +138,10 @@ public class Explosion extends Element{
 		return ret;
 	}
 	
+	/**
+	 * Sets the explosion Time
+	 * @param x The time in milliseconds the explosion will stay on the map
+	 */
 	public void Set_Explosion_time(int x) {
 		Explosion_time=x;
 	}

@@ -173,12 +173,7 @@ public class Gamestate extends BasicGameState{
 			//System.out.println("KEYPRESSED");
 			
 			if(L.Death_Check()==0)
-			try {
 				L.Action(key,0);
-			} catch (SlickException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			
 			Timer tt = new Timer();
 			tt.schedule(new KeyTimer(), 100);
