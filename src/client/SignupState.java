@@ -8,6 +8,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
@@ -34,6 +35,10 @@ public class SignupState extends BasicGameState {
 	private Image Ok,Ok_hover;
 	private Image background;
 	private int signup_x, signup_y;
+	private int UserTextX, UserTextY;
+	private int PassTextX, PassTextY;
+	private int EmailX, EmailY;
+	private int PassRptX, PassRptY;
 	private int ok_x, ok_y;
 	private String user;
 	private String mail;
@@ -73,27 +78,32 @@ public class SignupState extends BasicGameState {
 		
 		ok_x = (int) ((float) sbg.Get_Display_width() * 0.5 - Ok.getWidth() / 2);
 		ok_y = (int) ((float) sbg.Get_Display_height() * 0.59);
-
-		Username = new TextField(gc, myFont, (int) ((float) sbg.Get_Display_width() * 0.40),
-				(int) ((float) sbg.Get_Display_height() * 0.30), 400, 20);
+		
+		
+		UserTextX = (int) ((float) sbg.Get_Display_width() * 0.40);
+		UserTextY = (int) ((float) sbg.Get_Display_height() * 0.30);
+		Username = new TextField(gc, myFont, UserTextX, UserTextY, 400, 20);
 		Username.setBackgroundColor(Color.white);
 		Username.setBorderColor(Color.white);
 		Username.setTextColor(Color.black);
 
-		Password = new TextField(gc, myFont, (int) ((float) sbg.Get_Display_width() * 0.40),
-				(int) ((float) sbg.Get_Display_height() * 0.50), 400, 20);
+		PassTextX = (int) ((float) sbg.Get_Display_width() * 0.40);
+		PassTextY =(int) ((float) sbg.Get_Display_height() * 0.50);
+		Password = new TextField(gc, myFont, PassTextX, PassTextY, 400, 20);
 		Password.setBackgroundColor(Color.white);
 		Password.setBorderColor(Color.white);
 		Password.setTextColor(Color.black);
 
-		Email = new TextField(gc, myFont, (int) ((float) sbg.Get_Display_width() * 0.40),
-				(int) ((float) sbg.Get_Display_height() * 0.40), 400, 20);
+		EmailX = (int) ((float) sbg.Get_Display_width() * 0.40);
+		EmailY = (int) ((float) sbg.Get_Display_height() * 0.40);
+		Email = new TextField(gc, myFont, EmailX, EmailY, 400, 20);
 		Email.setBackgroundColor(Color.white);
 		Email.setBorderColor(Color.white);
 		Email.setTextColor(Color.black);
 
-		Password_repeat = new TextField(gc, myFont, (int) ((float) sbg.Get_Display_width() * 0.40),
-				(int) ((float) sbg.Get_Display_height() * 0.60), 400, 20);
+		PassRptX = (int) ((float) sbg.Get_Display_width() * 0.40);
+		PassRptY = (int) ((float) sbg.Get_Display_height() * 0.60);
+		Password_repeat = new TextField(gc, myFont, PassRptX, PassRptY, 400, 20);
 		Password_repeat.setBackgroundColor(Color.white);
 		Password_repeat.setBorderColor(Color.white);
 		Password_repeat.setTextColor(Color.black);
@@ -109,6 +119,11 @@ public class SignupState extends BasicGameState {
 		mail = "";
 		
 		say_ok = false;
+		Username.setAcceptingInput(false);
+		Password.setAcceptingInput(false);
+		Password_repeat.setAcceptingInput(false);
+		Email.setAcceptingInput(false);
+
 	}
 
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -149,6 +164,26 @@ public class SignupState extends BasicGameState {
 			else {
 				back_h = false;
 				hovering_b = false;
+			}
+			
+			if(posX > UserTextX && posX < UserTextX + Username.getWidth() && (posY > UserTextY && posY < UserTextY + Username.getHeight())) {
+				if(Mouse.isButtonDown(0))
+					Username.setFocus(true);
+			}
+			
+			if(posX > PassTextX && posX < PassTextX + Password.getWidth() && (posY > PassTextY && posY < PassTextY + Password.getHeight())) {
+				if(Mouse.isButtonDown(0))
+					Password.setFocus(true);
+			}
+			
+			if(posX > EmailX && posX < EmailX + Email.getWidth() && (posY > EmailY && posY < EmailY + Email.getHeight())) {
+				if(Mouse.isButtonDown(0))
+					Email.setFocus(true);
+			}
+			
+			if(posX > PassRptX && posX < PassRptX + Password_repeat.getWidth() && (posY > PassRptY && posY < PassRptY + Password_repeat.getHeight())) {
+				if(Mouse.isButtonDown(0))
+					Password_repeat.setFocus(true);
 			}
 	
 			if (Username.hasFocus() && gc.getInput().isKeyPressed(15)) {

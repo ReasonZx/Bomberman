@@ -260,6 +260,7 @@ public class MainMenuState extends BasicGameState{
 	    			}
 					if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 						play_click_sound();
+						sbg.enterState(sbg.Get_Statistics_State());
 					}
 				}
 				else {

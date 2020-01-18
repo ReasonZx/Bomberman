@@ -77,6 +77,21 @@ public class Client {
 		this.dos.writeUTF(result);
 	}
 	
+	public void get_games_won() throws SQLException , IOException{
+		int result;
+		result = server.DB.getWonGames(username);
+		System.out.println(result);
+		this.dos.writeUTF(Integer.toString(result));
+	}
+	
+	public void get_games_played() throws SQLException, IOException{
+		int result;
+		result = server.DB.getWonGames(username);
+		this.dos.writeUTF(Integer.toString(result));
+	}
+	
+	
+	
 	public void AddToQueue(){
 		InQueue=true;
 	}
@@ -158,6 +173,8 @@ public class Client {
 		cancelled_game=false;
 		System.out.println("Cancel Timeout");
 	}
+	
+	
 	
 	private class Timeout extends TimerTask{
 		Client Target;

@@ -66,9 +66,9 @@ public class LockedMenuState extends BasicGameState{
 		Play_local_hover = new Image("sprites/play_local_hover.png");
 		Play_local_hover = Play_local_hover.getScaledCopy(0.4f);
 		
-		Logout = new Image("sprites/exitGame.png");
+		Logout = new Image("sprites/back.png");
 		Logout = Logout.getScaledCopy(0.4f);
-		Logout_hover = new Image("sprites/exitGame_hover.png");
+		Logout_hover = new Image("sprites/back_hover.png");
 		Logout_hover = Logout_hover.getScaledCopy(0.4f);
 		
 		Friends = new Image("sprites/friends_locked.png");
@@ -134,7 +134,7 @@ public class LockedMenuState extends BasicGameState{
 			}
 			if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				play_click_sound();
-				System.exit(0);
+				sbg.enterState(sbg.Get_Menu_State());
 			}
 		}
 		else {
