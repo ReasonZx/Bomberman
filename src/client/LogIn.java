@@ -43,7 +43,7 @@ public class LogIn extends BasicGameState {
 		myFont = gc.getDefaultFont();
 
 		UserTextX = (int) (sbg.Get_Display_width()/2f - 200);
-		UserTextY = (int) (sbg.Get_Display_height()/2f-sbg.Get_Display_height()/10f);
+		UserTextY = (int) (sbg.Get_Display_height()/2f - sbg.Get_Display_height()/10f);
 
 		Username = new TextField(gc, myFont, UserTextX, UserTextY, 400, 20);
 		Username.setBackgroundColor(Color.white);
@@ -78,6 +78,9 @@ public class LogIn extends BasicGameState {
 
 		login_x = (int) (0.43 * (float) sbg.Get_Display_width());
 		login_y = (int) (0.7 * (float) sbg.Get_Display_height());
+		
+		Username.setAcceptingInput(false);
+		Password.setAcceptingInput(false);
 	}
 
 	@Override
@@ -113,6 +116,16 @@ public class LogIn extends BasicGameState {
 		else {
 			back_h = false;
 			hovering_b = false;
+		}
+		
+		if((posX > UserTextX && posX < UserTextX + Username.getWidth()) && (posY > UserTextY && posY < UserTextY + Username.getHeight())) {
+			if(Mouse.isButtonDown(0))
+				Username.setFocus(true);
+		}
+		
+		if(posX > PassTextX && posX < PassTextX + Password.getWidth() && (posY > PassTextY && posY < PassTextY + Password.getHeight())) {
+			if(Mouse.isButtonDown(0))
+				Password.setFocus(true);
 		}
 
 		if ((posX > login_x && posX < login_x + Login.getWidth())

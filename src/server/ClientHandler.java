@@ -47,6 +47,15 @@ public class ClientHandler extends Thread {
 				}
 
 				switch (words[0]) {
+				
+				case "statistics":
+					if(words.length == 2) {
+						client.get_games_won();
+						client.get_games_played();
+					}
+					else {
+						client.dos.writeUTF("get_statistics_ERROR");
+					}
 
 				case "login":
 					if (words.length == 4) {
