@@ -8,14 +8,11 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -24,14 +21,11 @@ public class LockedMenuState extends BasicGameState{
 	private Image background;
 	private Image bomberman_title;
 	private Image Play_local,Play_local_hover;
-	private Image Statistics, Statistics_hover;
+	private Image Statistics;
 	private Image Logout, Logout_hover;
-	private Image Friends, Friends_hover;
+	private Image Friends;
 	private Image Settings, Settings_hover;
-	private Image Play_online, Play_online_hover;
-	private Image Cancel, Cancel_hover;
-	private Image Accept, Accept_hover;
-	private Image Decline, Decline_hover;
+	private Image Play_online;
 	private GUI_setup sbg;
 	private int bomberman_x, bomberman_y;
 	private int playl_x;
@@ -46,24 +40,11 @@ public class LockedMenuState extends BasicGameState{
 	private int settings_y;
 	private int playo_x;
 	private int playo_y;
-	private int cancel_x;
-	private int cancel_y;
-	private int accept_x;
-	private int accept_y;
-	private int decline_x;
-	private int decline_y;
-    protected String server_response;	
-	private boolean looking=false;
-	private boolean Request=false;
-	private boolean playo_h = false , logout_h = false, playl_h = false;
-	private boolean settings_h = false , statistics_h = false, friends_h = false;
-	private boolean cancel_h = false , accept_h = false, decline_h = false;
-	private boolean hovering_po = false , hovering_l = false, hovering_pl = false;
-	private boolean hovering_se = false , hovering_st = false, hovering_f = false;
-	private boolean hovering_a = false , hovering_d = false, hovering_c = false;
-	private Rectangle R1;
-	private Font myFont;
-	private String FriendName;
+	protected String server_response;	
+	private boolean logout_h = false, playl_h = false;
+	private boolean settings_h = false;
+	private boolean hovering_l = false, hovering_pl = false;
+	private boolean hovering_se = false;
 	private File click_file = new File("music/click.wav");
 	private File hover_file = new File("music/hover.wav");
 	
@@ -72,7 +53,7 @@ public class LockedMenuState extends BasicGameState{
 		sbg=(GUI_setup) arg1;
 		sbg.Set_LockedMenu_State(getID());
 		
-		myFont = arg0.getDefaultFont();
+		arg0.getDefaultFont();
 		
 		background = new Image("sprites/background.png");
 		bomberman_title = new Image("sprites/bomberman_title.png");
@@ -120,7 +101,6 @@ public class LockedMenuState extends BasicGameState{
 	
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		arg0.getInput().clearMousePressedRecord();
-		Request=false;
 	}
 
 	@Override

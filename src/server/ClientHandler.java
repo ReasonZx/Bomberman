@@ -11,8 +11,6 @@ public class ClientHandler extends Thread {
 	private Client client;
 	private ArrayList<Client> userlist;
 	private Server Server_Handler;
-	private int queue_pos;
-
 	public ClientHandler(Client client,Server x) {
 		this.client = client;
 		Server_Handler = x;
@@ -58,7 +56,7 @@ public class ClientHandler extends Thread {
 				case "looking":
 					if(words.length==2) {
 						if(words[1].equals("start")) {
-							queue_pos=Server_Handler.Add_To_Queue(client);
+							Server_Handler.Add_To_Queue(client);
 							client.AddToQueue();
 							System.out.println("Added to queue");
 							client.dos.writeUTF("looking_OK");
