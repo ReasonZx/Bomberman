@@ -38,6 +38,7 @@ public class ControlsState extends BasicGameState{
 	private int ConfigX1=300;
 	private int ConfigX2=700;
 	private int ConfigY=200;
+	private boolean clicked;
 	protected int butt;
 	protected boolean Configurating=false;
 	private KeyPressChange KeyInput;
@@ -72,10 +73,10 @@ public class ControlsState extends BasicGameState{
 		Back_hover = new Image("sprites/back_hover.png");
 		Back_hover = Back_hover.getScaledCopy(0.2f);
 		
-		BackX = (int) (sbg.Get_Display_width() * 0.15f);
-		BackY = (int) (sbg.Get_Display_height() * 0.90f ); 
-		ResetX = (int) (sbg.Get_Display_width() * 0.85f);
-		ResetY = (int) (sbg.Get_Display_height() * 0.90f ); 
+		BackX = (int) (sbg.Get_Display_width() * 0.10f);
+		BackY = (int) (sbg.Get_Display_height() * 0.80f ); 
+		ResetX = (int) (sbg.Get_Display_width() * 0.45f);
+		ResetY = (int) (sbg.Get_Display_height() * 0.80f ); 
 		
 		R1 = new Rectangle(50, 50, ControlsBoxLenght, ControlsBoxHeight); 
 		R2 = new Rectangle(450, 50, ControlsBoxLenght, ControlsBoxHeight);
@@ -239,9 +240,13 @@ public class ControlsState extends BasicGameState{
 				hovering_r = true;
 			}
 			if (Mouse.isButtonDown(0)) {
-				play_click_sound();
+				if(clicked = false) {
+					clicked = true ;
+					play_click_sound();
+				}
 				return true;
 			}
+			else clicked = false;
 		}
 		else {
 			reset_h = false;

@@ -26,7 +26,10 @@ public class Menu extends BasicGameState {
 	private int highlighted = 0;
 	private boolean login_h = false , exit_h = false, guest_h = false;
 	private boolean hovering_l = false , hovering_e = false ,hovering_g = false;
-	private File background_file = new File("music/menu.wav");
+	public File background_file = new File("music/menu.wav");
+	public Clip background_s;
+	public AudioInputStream background_sound;
+	public FloatControl gainControl;
 	private File click_file = new File("music/click.wav");
 	private File hover_file = new File("music/hover.wav");
 
@@ -66,13 +69,13 @@ public class Menu extends BasicGameState {
 		bomberman_x = (int) ((float) sbg.Get_Display_width() * 0.50 - bomberman_title.getWidth() / 2);
 		bomberman_y = (int) ((float) sbg.Get_Display_height() * 0.05);
 		
-		AudioInputStream background_sound;
+		
 		try {
 			background_sound = AudioSystem.getAudioInputStream(background_file);		
-			Clip background_s = AudioSystem.getClip();
+			background_s = AudioSystem.getClip();
 			background_s.open(background_sound);
-			FloatControl gainControl = (FloatControl) background_s.getControl(FloatControl.Type.MASTER_GAIN);
-			gainControl.setValue(-11.0f); 
+			gainControl = (FloatControl) background_s.getControl(FloatControl.Type.MASTER_GAIN);
+			gainControl.setValue(-30.0f); 
 			background_s.loop(100);
 		} catch (UnsupportedAudioFileException | IOException e) {
 			e.printStackTrace();
@@ -84,6 +87,7 @@ public class Menu extends BasicGameState {
 	public void update(GameContainer container, StateBasedGame arg1, int delta) throws SlickException {
 		int posX = Mouse.getX();
 		int posY = sbg.Get_Display_height() - Mouse.getY();
+
 		if ((posX > login_x && posX < login_x + logIn.getWidth())
 				&& (posY > login_y && posY < login_y + logIn.getHeight())) {	//LOGIN button
 			login_h = true;
@@ -134,7 +138,6 @@ public class Menu extends BasicGameState {
 			}
 			if (container.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				play_click_sound();
-				
 				sbg.enterState(sbg.Get_LockedMenu_State());
 			}
 		}
@@ -146,6 +149,7 @@ public class Menu extends BasicGameState {
 		if ((posX > signup_x && posX < signup_x + 280) && (posY > signup_y && posY < signup_y + 18)) {
 			highlighted = 1;
 			if (container.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+				play_click_sound();
 				sbg.enterState(sbg.Get_Signup_State());
 			}
 		} else {
@@ -187,6 +191,15 @@ public class Menu extends BasicGameState {
 	public int getID() {
 		return 1;
 	}
+	
+	public void set_volume(float vol) {
+		gainControl.setValue(vol); 
+	}
+	
+	public float get_volume() {
+		return gainControl.getValue();
+	}
+	
 	
 	public void play_hover_sound() {
 		

@@ -32,14 +32,17 @@ public class LockedSettingsState extends BasicGameState{
 	private Image Reset_Button, Reset_hover;
 	private Image Back, Back_hover;
 	private Image Player1,Player2;
-	private Shape R1,R2,R3;
+	private Image high_volume, medium_volume, low_volume, no_volume;
+	private Shape R1,R2,R3,R4;
 	private ArrayList <Shape> T;
 	
 	private int ConfigX1=300;
 	private int ConfigX2=700;
 	private int ConfigY=200;
+	private int volume;
 	protected int butt;
 	protected boolean Configurating=false;
+	private boolean clicked = false;
 	private KeyPressChange KeyInput;
 	private int ControlsBoxLenght=300;
 	private int ControlsBoxHeight=500;
@@ -49,6 +52,7 @@ public class LockedSettingsState extends BasicGameState{
 	private boolean reset_h = false , back_h = false;
 	private boolean hovering_r = false , hovering_b = false;
 	private int[][] Settings;
+	private Image background;
 	private File click_file = new File("music/click.wav");
 	private File hover_file = new File("music/hover.wav");
 	
@@ -62,6 +66,19 @@ public class LockedSettingsState extends BasicGameState{
 		Configuration= new Image("sprites/Configuration_Wheel.png");
 		Configuration=Configuration.getScaledCopy((float)0.05);
 		
+		high_volume= new Image("sprites/high_volume.png");
+		high_volume=high_volume.getScaledCopy((float)0.25);
+		
+		medium_volume= new Image("sprites/medium_volume.png");
+		medium_volume=medium_volume.getScaledCopy((float)0.25);
+		
+		low_volume= new Image("sprites/low_volume.png");
+		low_volume=low_volume.getScaledCopy((float)0.25);
+		
+		no_volume= new Image("sprites/mute_volume.png");
+		no_volume=no_volume.getScaledCopy((float)0.25);
+			
+		
 		Reset_Button = new Image("sprites/reset.png");
 		Reset_Button = Reset_Button.getScaledCopy(0.2f);
 		Reset_hover = new Image("sprites/reset_hover.png");
@@ -72,14 +89,18 @@ public class LockedSettingsState extends BasicGameState{
 		Back_hover = new Image("sprites/back_hover.png");
 		Back_hover = Back_hover.getScaledCopy(0.2f);
 		
-		BackX = (int) (sbg.Get_Display_width() * 0.15f);
-		BackY = (int) (sbg.Get_Display_height() * 0.90f ); 
-		ResetX = (int) (sbg.Get_Display_width() * 0.85f);
-		ResetY = (int) (sbg.Get_Display_height() * 0.90f ); 
+		BackX = (int) (sbg.Get_Display_width() * 0.038f);
+		BackY = (int) (sbg.Get_Display_height() * 0.75f ); 
+		ResetX = (int) (sbg.Get_Display_width() * 0.49f);
+		ResetY = (int) (sbg.Get_Display_height() * 0.75f ); 
 		
-		R1 = new Rectangle(50, 50, ControlsBoxLenght, ControlsBoxHeight); 
-		R2 = new Rectangle(450, 50, ControlsBoxLenght, ControlsBoxHeight);
+		R1 = new Rectangle((sbg.Get_Display_width() * 0.038f), (int)(0.07*sbg.Get_Display_height()), ControlsBoxLenght, ControlsBoxHeight); 
+		R2 = new Rectangle((sbg.Get_Display_width() * 0.49f) +  Back.getWidth() - ControlsBoxLenght, (int)(0.07*sbg.Get_Display_height()), ControlsBoxLenght, ControlsBoxHeight);
 		R3 = new Rectangle(200, 200, 400, 200);
+		R4 = new Rectangle((int)(0.65*sbg.Get_Display_width()), (int)(0.07*sbg.Get_Display_height()), ControlsBoxLenght + (int)(0.08*sbg.Get_Display_width()), ControlsBoxHeight);
+		
+		
+		background = new Image("sprites/background.png");
 	}
 	
 	@Override
@@ -103,10 +124,15 @@ public class LockedSettingsState extends BasicGameState{
 		int posX = arg0.getInput().getMouseX();
 		int posY = arg0.getInput().getMouseY();
 		
+		
+		
 		if(!Configurating()) {
 			butt=Configuration_Button_Pressed(posX,posY,arg0);
 			if(butt!=0) 
 				Configurating=true;
+			
+			
+			
 			
 			if(Reset_Button_Pressed(posX,posY,arg0)) 
 				sbg.Reset_Settings();
@@ -131,6 +157,9 @@ public class LockedSettingsState extends BasicGameState{
 			Player1=Player1.getScaledCopy(3);
 			Player2 = new Image("sprites/D_"   + Settings[1][0] + Settings[1][1] + ".png");
 			Player2=Player2.getScaledCopy(3);
+			
+			
+			
 		}
 		else
 		{
@@ -141,14 +170,36 @@ public class LockedSettingsState extends BasicGameState{
 	
 	@Override
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
+
 		// TODO Auto-generated method stub
 		arg2.setColor(Color.white);
 		arg2.fill(R1);
 		arg2.fill(R2);
+		arg2.fill(R4);
 		arg2.setColor(Color.black);
 	
 		for(int i=0;i<T.size();i++) {
 			arg2.fill(T.get(i));
+		}
+		
+		arg2.setColor(Color.black);
+		myFont.drawString((float)0.70*sbg.Get_Display_width(), (int)(0.18*sbg.Get_Display_height()), "Resolution",Color.black);
+		
+		myFont.drawString((float)0.70*sbg.Get_Display_width(), (int)(0.42*sbg.Get_Display_height()), "Sound",Color.black);
+
+		
+		
+		if(volume == 0) {
+			arg2.drawImage(no_volume,(float)0.77*sbg.Get_Display_width(), (int)(0.50*sbg.Get_Display_height()));
+		}
+		else if(volume == 1) {
+			arg2.drawImage(low_volume,(float)0.77*sbg.Get_Display_width(), (int)(0.50*sbg.Get_Display_height()));
+		}
+		else if(volume == 2) {
+			arg2.drawImage(medium_volume,(float)0.77*sbg.Get_Display_width(), (int)(0.50*sbg.Get_Display_height()));
+		}
+		else if(volume == 3) {
+			arg2.drawImage(high_volume,(float)0.77*sbg.Get_Display_width(), (int)(0.50*sbg.Get_Display_height()));
 		}
 		
 		arg2.setColor(Color.white);
@@ -172,6 +223,8 @@ public class LockedSettingsState extends BasicGameState{
 			Reset_Button.draw(ResetX, ResetY);
 		}
 		else Reset_hover.draw(ResetX, ResetY);
+		
+		
 		
 		
 		arg2.drawImage(Player1,50 + ControlsBoxLenght/2f - Player1.getWidth()/2f,50 + Player1.getHeight()/2f);
@@ -239,9 +292,13 @@ public class LockedSettingsState extends BasicGameState{
 				hovering_r = true;
 			}
 			if (Mouse.isButtonDown(0)) {
-				play_click_sound();
+				if(clicked == false) {
+					clicked = true ;
+					play_click_sound();
+				}
 				return true;
 			}
+			else clicked = false;
 		}
 		else {
 			reset_h = false;
