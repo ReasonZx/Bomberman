@@ -67,6 +67,7 @@ public class LogIn extends BasicGameState {
 		Back_hover = Back_hover.getScaledCopy(0.2f);
 		
 		background = new Image("sprites/background.png");
+		background=background.getScaledCopy(gc.getWidth(),gc.getHeight());
 		
 		Login = new Image("sprites/logIn.png");
 		Login = Login.getScaledCopy(0.5f);
@@ -76,7 +77,7 @@ public class LogIn extends BasicGameState {
 		backX = 50;
 		backY = 50;
 
-		login_x = (int) (0.43 * (float) sbg.Get_Display_width());
+		login_x = (int) (sbg.Get_Display_width()/2f-Login.getWidth()/2f);
 		login_y = (int) (0.7 * (float) sbg.Get_Display_height());
 		
 		Username.setAcceptingInput(false);
@@ -238,7 +239,7 @@ public class LogIn extends BasicGameState {
 	
 		try {
 			hover_sound = AudioSystem.getAudioInputStream(hover_file);
-			Clip hover_s = AudioSystem.getClip();
+			Clip hover_s = AudioSystem.getClip(null);
 			hover_s.open(hover_sound);
 			hover_s.loop(0);
 		} catch (UnsupportedAudioFileException | IOException e) {
@@ -253,7 +254,7 @@ public class LogIn extends BasicGameState {
 		
 		try {
 			click_sound = AudioSystem.getAudioInputStream(click_file);
-			Clip click_s = AudioSystem.getClip();
+			Clip click_s = AudioSystem.getClip(null);
 			click_s.open(click_sound);
 			click_s.loop(0);
 		} catch (UnsupportedAudioFileException | IOException e) {

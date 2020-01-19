@@ -66,16 +66,18 @@ public class Menu extends BasicGameState {
 		signup_x = (int) ((float) sbg.Get_Display_width() * 0.50 - logIn.getWidth() / 2);
 		signup_y = (int) ((float) sbg.Get_Display_height() * 0.49);
 		bomberman_title = new Image("sprites/bomberman_title.png");
+		bomberman_title=bomberman_title.getScaledCopy((int) (arg0.getWidth()*0.8), bomberman_title.getHeight());
 		bomberman_x = (int) ((float) sbg.Get_Display_width() * 0.50 - bomberman_title.getWidth() / 2);
 		bomberman_y = (int) ((float) sbg.Get_Display_height() * 0.05);
 		
+		menu=menu.getScaledCopy(sbg.Get_Display_width(), sbg.Get_Display_height());
 		
 		try {
 			background_sound = AudioSystem.getAudioInputStream(background_file);		
-			background_s = AudioSystem.getClip();
+			background_s = AudioSystem.getClip(null);
 			background_s.open(background_sound);
 			gainControl = (FloatControl) background_s.getControl(FloatControl.Type.MASTER_GAIN);
-			gainControl.setValue(-30.0f); 
+			set_volume(Get_Volume());
 			background_s.loop(100);
 		} catch (UnsupportedAudioFileException | IOException e) {
 			e.printStackTrace();
@@ -158,7 +160,7 @@ public class Menu extends BasicGameState {
 	}
 
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics g) throws SlickException {
-		menu.draw(0, 0);
+		g.drawImage(menu, 0, 0);
 		bomberman_title.draw(bomberman_x, bomberman_y);
 		if(guest_h == false) {
 			Guest.draw(guest_x, guest_y);
@@ -192,12 +194,26 @@ public class Menu extends BasicGameState {
 		return 1;
 	}
 	
-	public void set_volume(float vol) {
-		gainControl.setValue(vol); 
+	public void set_volume(int level) {
+		switch(level) {
+			case 1:
+				gainControl.setValue(-20);
+				break;
+			case 2:
+				gainControl.setValue(-10);
+				break;
+			case 3:
+				gainControl.setValue(0);
+				break;
+			default:
+				gainControl.setValue(-80);
+		}
+		
+		sbg.Set_Volume(level);
 	}
 	
-	public float get_volume() {
-		return gainControl.getValue();
+	public int Get_Volume() {
+		return sbg.Get_Volume();
 	}
 	
 	
@@ -207,7 +223,7 @@ public class Menu extends BasicGameState {
 	
 		try {
 			hover_sound = AudioSystem.getAudioInputStream(hover_file);
-			Clip hover_s = AudioSystem.getClip();
+			Clip hover_s = AudioSystem.getClip(null);
 			hover_s.open(hover_sound);
 			hover_s.loop(0);
 		} catch (UnsupportedAudioFileException | IOException e) {
@@ -222,7 +238,7 @@ public class Menu extends BasicGameState {
 		
 		try {
 			click_sound = AudioSystem.getAudioInputStream(click_file);
-			Clip click_s = AudioSystem.getClip();
+			Clip click_s = AudioSystem.getClip(null);
 			click_s.open(click_sound);
 			click_s.loop(0);
 		} catch (UnsupportedAudioFileException | IOException e) {

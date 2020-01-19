@@ -76,7 +76,10 @@ public class MainMenuState extends BasicGameState{
 		myFont = arg0.getDefaultFont();
 		
 		background = new Image("sprites/background.png");
+		background=background.getScaledCopy(arg0.getWidth(),arg0.getHeight());
+		
 		bomberman_title = new Image("sprites/bomberman_title.png");
+		bomberman_title=bomberman_title.getScaledCopy((int) (arg0.getWidth()*0.8), bomberman_title.getHeight());
 		
 		Statistics = new Image("sprites/statistics.png");
 		Statistics = Statistics.getScaledCopy(0.4f);
@@ -280,6 +283,7 @@ public class MainMenuState extends BasicGameState{
 	    			}
 					if(arg0.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 						play_click_sound();
+						sbg.server.send("logout");
 						sbg.enterState(sbg.Get_Menu_State());
 					}
 				}
@@ -382,7 +386,7 @@ public class MainMenuState extends BasicGameState{
 	
 	@Override
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
-		background.draw(0,0);
+		arg2.drawImage(background, 0, 0);
 		bomberman_title.draw(bomberman_x,bomberman_y);
 		
 		if(playl_h == false) {
@@ -456,7 +460,7 @@ public class MainMenuState extends BasicGameState{
 	
 		try {
 			hover_sound = AudioSystem.getAudioInputStream(hover_file);
-			Clip hover_s = AudioSystem.getClip();
+			Clip hover_s = AudioSystem.getClip(null);
 			hover_s.open(hover_sound);
 			hover_s.loop(0);
 		} catch (UnsupportedAudioFileException | IOException e) {
@@ -471,7 +475,7 @@ public class MainMenuState extends BasicGameState{
 		
 		try {
 			click_sound = AudioSystem.getAudioInputStream(click_file);
-			Clip click_s = AudioSystem.getClip();
+			Clip click_s = AudioSystem.getClip(null);
 			click_s.open(click_sound);
 			click_s.loop(0);
 		} catch (UnsupportedAudioFileException | IOException e) {

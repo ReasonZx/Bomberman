@@ -55,7 +55,10 @@ public class LockedMenuState extends BasicGameState{
 		arg0.getDefaultFont();
 		
 		background = new Image("sprites/background.png");
+		background=background.getScaledCopy(arg0.getWidth(),arg0.getHeight());
+		
 		bomberman_title = new Image("sprites/bomberman_title.png");
+		bomberman_title=bomberman_title.getScaledCopy((int) (arg0.getWidth()*0.8), bomberman_title.getHeight());
 		
 		Statistics = new Image("sprites/statistics_locked.png");
 		Statistics = Statistics.getScaledCopy(0.4f);
@@ -201,7 +204,7 @@ public class LockedMenuState extends BasicGameState{
 	
 		try {
 			hover_sound = AudioSystem.getAudioInputStream(hover_file);
-			Clip hover_s = AudioSystem.getClip();
+			Clip hover_s = AudioSystem.getClip(null);
 			hover_s.open(hover_sound);
 			hover_s.loop(0);
 		} catch (UnsupportedAudioFileException | IOException e) {
@@ -216,7 +219,7 @@ public class LockedMenuState extends BasicGameState{
 		
 		try {
 			click_sound = AudioSystem.getAudioInputStream(click_file);
-			Clip click_s = AudioSystem.getClip();
+			Clip click_s = AudioSystem.getClip(null);
 			click_s.open(click_sound);
 			click_s.loop(0);
 		} catch (UnsupportedAudioFileException | IOException e) {

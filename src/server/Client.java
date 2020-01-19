@@ -1,3 +1,4 @@
+
 package server;
 
 import java.io.DataInputStream;
@@ -44,10 +45,17 @@ public class Client {
 
 	public void login(String user, String pw, ArrayList<Client> userlist, String socket) throws SQLException, IOException {
 		String result;
+		this.outputsocket = Integer.parseInt(socket);
+		for(int i=0;i<userlist.size();i++) {
+			if(userlist.get(i).username.equals(user)){
+				this.dos.writeUTF("User already Logged In");
+				return;
+			}
+		}
+		
 		result = server.DB.login(user, pw);
 
 		if (result == "Logged in") {
-			this.outputsocket = Integer.parseInt(socket);
 			userlist.add(this);
 			this.dos.writeUTF(result);
 			username=user;
@@ -202,5 +210,20 @@ public class Client {
 			}
 		}
 		
+	}
+
+
+
+	public void Send_Bombers(ArrayList<Client> x) throws IOException {
+		dos.writeUTF("game_bombers_start");
+		ArrayList<String[]> tmp = new ArrayList<String[]>();
+		
+		for(int i=0;i<x.size();i++){
+			String tmp2;
+			tmp2=x.get(i).GetBomber().toString()+","+x.get(i).username;
+			tmp.add(tmp2.split(","));
+		}
+		
+		oos.writeObject(tmp);
 	}
 }

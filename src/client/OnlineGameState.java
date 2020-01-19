@@ -18,12 +18,14 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import org.lwjgl.input.Mouse;
+import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Rectangle;
+import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -36,10 +38,6 @@ public class OnlineGameState extends BasicGameState
 	 protected int Last_key=0;
 	 private int dead;
 	 private GUI_setup sbg;
-	 private Image Back, Back_hover;
-	 private int backX, backY;
-	 private boolean login_h = false , back_h = false;
-	 private boolean hovering_l = false , hovering_b = false;
 	 private boolean init=false;
 	 private String server_response;
 	 private Map m;
@@ -47,19 +45,37 @@ public class OnlineGameState extends BasicGameState
 	 private int winner;
 	 private File click_file = new File("music/click.wav");
 	 private File hover_file = new File("music/hover.wav");
-	
-	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+	 private int Map_OffsetX,Map_OffsetY;
+	 private Shape R1,R2,R3,R4,R5;
+	 private Image Game_Background;
+	 private Image background;
+	 private Image Player1,Player2,Player3,Player4;
+	 private ArrayList<String[]> PlayerList;
+	 private Font MyFont;
+	 
+	 public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		InputKey = new KeyPresses();
 		sbg=(GUI_setup) arg1;
 		sbg.Set_OnlineGame_State(getID());
 		
-		Back = new Image("sprites/back.png");
-		Back = Back.getScaledCopy(0.2f);
-		Back_hover = new Image("sprites/back_hover.png");
-		Back_hover = Back_hover.getScaledCopy(0.2f);
+		MyFont=arg0.getDefaultFont();
 		
-		backX = 50;
-		backY = 50;
+		background=new Image("sprites/background.png");
+		background=background.getScaledCopy(arg0.getWidth(), arg0.getHeight());
+		
+		Game_Background= new Image("sprites/Game_Background.png");
+		Game_Background=Game_Background.getScaledCopy(sbg.Get_GUI_Scale()*11, sbg.Get_GUI_Scale()*8);
+		
+		 Map_OffsetX=(int) ((sbg.Get_Display_width()-sbg.Get_GUI_Scale()*11)/2f)-sbg.Get_GUI_Scale();
+		 Map_OffsetY=(int) ((sbg.Get_Display_height()-sbg.Get_GUI_Scale()*8)/2f)-sbg.Get_GUI_Scale();
+		 
+		  R1=new Rectangle((Map_OffsetX+sbg.Get_GUI_Scale())/6f,arg0.getHeight()/10f,(Map_OffsetX+sbg.Get_GUI_Scale())*4/6f,arg0.getHeight()*3/10f);
+		  R2=new Rectangle(sbg.Get_Display_width()-(Map_OffsetX+sbg.Get_GUI_Scale())*5/6f,arg0.getHeight()/10f,(Map_OffsetX+sbg.Get_GUI_Scale())*4/6f,arg0.getHeight()*3/10f);
+		  
+		  R3=new Rectangle((Map_OffsetX+sbg.Get_GUI_Scale())/6f,arg0.getHeight()*6/10f,(Map_OffsetX+sbg.Get_GUI_Scale())*4/6f,arg0.getHeight()*3/10f);
+		  R4=new Rectangle(sbg.Get_Display_width()-(Map_OffsetX+sbg.Get_GUI_Scale())*5/6f,arg0.getHeight()*6/10f,(Map_OffsetX+sbg.Get_GUI_Scale())*4/6f,arg0.getHeight()*3/10f);
+		  
+		  R5=new Rectangle(Map_OffsetX+sbg.Get_GUI_Scale()*2/3,Map_OffsetY+sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*11+sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*8+sbg.Get_GUI_Scale()*2/3);
 	}
 	
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -70,7 +86,7 @@ public class OnlineGameState extends BasicGameState
 	     L=new GameLogic(lib,m);
 	     players = new ArrayList<Bomber>();
 	     int [][] Settings=sbg.Get_Settings();
-	     players.add(new Bomber(1,1,lib,m,	Settings[0][0],
+	     players.add(new Bomber(1,1,lib,m,Settings[0][0],
 	    		 						Settings[0][1],
 	    		 						Settings[0][2],
 	    		 						Settings[0][3],
@@ -83,11 +99,10 @@ public class OnlineGameState extends BasicGameState
 	     arg0.getInput().clearMousePressedRecord();
 	     init=true;
 	     won=false;
+	     PlayerList=new ArrayList<String[]>();
 	}
 
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
-		int posX = arg0.getInput().getMouseX();
-		int posY = arg0.getInput().getMouseY();
 		String tmp[];
 		try {
 			server_response=sbg.server.poll();
@@ -96,22 +111,6 @@ public class OnlineGameState extends BasicGameState
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-		if ((posX > backX && posX < backX + Back.getWidth()) && (posY > backY && posY < backY + Back.getHeight())) {
-			back_h = true;
-			if(hovering_b == false) {
-				play_hover_sound();
-				hovering_b = true;
-			}
-			if (Mouse.isButtonDown(0)) {
-				play_click_sound();
-				sbg.enterState(sbg.Get_MainMenu_State());
-			}
-		}
-		else {
-			back_h = false;
-			hovering_b = false;
 		}
 		
 		if(init) {
@@ -124,12 +123,14 @@ public class OnlineGameState extends BasicGameState
 					if(tmp[1].equals("over")) {
 						won=false;
 						winner=Integer.parseInt(tmp[2]);
-						sbg.enterState(sbg.Get_OnlineGameOver_State());
+						Timer tt= new Timer();
+						tt.schedule(new Game_End_Delay(), 2000);
 					}
 					else if(tmp[1].equals("won")) {
 						won=true;
 						winner=Integer.parseInt(tmp[2]);
-						sbg.enterState(sbg.Get_OnlineGameOver_State());
+						Timer tt= new Timer();
+						tt.schedule(new Game_End_Delay(), 2000);
 					}
 					else if(tmp[1].equals("update")) {
 						try {
@@ -159,15 +160,43 @@ public class OnlineGameState extends BasicGameState
 	}
 
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics g) throws SlickException {
-		//g.drawString("Game state", 50, 50);
-		//g.drawString(player1.toString(),100,100);
 		ArrayList<String> elements;
 		String[] tmp;
 		
-		if(back_h == false) {
-			Back.draw(backX, backY);
+		g.drawImage(background, 0, 0);
+		
+		g.texture(R1,background,true);
+		g.texture(R2,background,true);
+		g.texture(R3,background,true);
+		g.texture(R4,background,true);
+		g.texture(R5,background,true);
+		
+		g.drawImage(Game_Background, Map_OffsetX+sbg.Get_GUI_Scale(), Map_OffsetY+sbg.Get_GUI_Scale());		
+		
+		for(int i=1;i<PlayerList.size()+1;i++){
+			switch(i) {
+				case 1:
+					MyFont.drawString(R1.getCenterX()-MyFont.getWidth("PLAYER 1")/2f, R1.getY(), "PLAYER 1");
+					g.drawImage(Player1, R1.getCenterX()-Player1.getWidth()/2f,R1.getCenterY()-Player1.getHeight()/2f);
+					MyFont.drawString(R1.getCenterX()-MyFont.getWidth(PlayerList.get(i-1)[8])/2f, R1.getMaxY()-MyFont.getWidth(PlayerList.get(i-1)[8]), PlayerList.get(i-1)[8]);
+					break;
+				case 2:
+					MyFont.drawString(R2.getCenterX()-MyFont.getWidth("PLAYER 2")/2f, R2.getY(), "PLAYER 2");
+					g.drawImage(Player2, R2.getCenterX()-Player2.getWidth()/2f,R2.getCenterY()-Player2.getHeight()/2f);
+					MyFont.drawString(R2.getCenterX()-MyFont.getWidth(PlayerList.get(i-1)[8])/2f, R2.getMaxY()-MyFont.getWidth(PlayerList.get(i-1)[8]), PlayerList.get(i-1)[8]);
+					break;
+				case 3:
+					MyFont.drawString(R3.getCenterX()-MyFont.getWidth("PLAYER 3")/2f, R3.getY(), "PLAYER 3");
+					g.drawImage(Player3, R3.getCenterX()-Player3.getWidth()/2f,R3.getCenterY()-Player3.getHeight()/2f);
+					MyFont.drawString(R3.getCenterX()-MyFont.getWidth(PlayerList.get(i-1)[8])/2f, R3.getMaxY()-MyFont.getWidth(PlayerList.get(i-1)[8]), PlayerList.get(i-1)[8]);
+					break;
+				case 4:
+					MyFont.drawString(R4.getCenterX()-MyFont.getWidth("PLAYER 4")/2f, R4.getY(), "PLAYER 4");
+					g.drawImage(Player4, R4.getCenterX()-Player4.getWidth()/2f,R4.getCenterY()-Player4.getHeight()/2f);
+					MyFont.drawString(R4.getCenterX()-MyFont.getWidth(PlayerList.get(i-1)[8])/2f, R4.getMaxY()-MyFont.getWidth(PlayerList.get(i-1)[8]), PlayerList.get(i-1)[8]);
+					break;
+			}
 		}
-		else Back_hover.draw(backX, backY);
 		
 		if(m!=null)
 			for(int x = 0 ; x < m.Get_RightBound() ; x++) {
@@ -175,15 +204,12 @@ public class OnlineGameState extends BasicGameState
 						elements=m.info_elements.get(x).get(y);
 						for(int i = 0; i < elements.size(); i++) {
 							tmp = elements.get(i).split(",");
-								if(Short.parseShort(tmp[0])== Bomber.serialVersionUID) {
-									DrawBomber(tmp,g);
-								}
-								else {
+								if(!DrawBomber(tmp,g)){
 									Image im = new Image(tmp[3]);
-									im=im.getScaledCopy(64,64);
+									im=im.getScaledCopy(sbg.Get_GUI_Scale(),sbg.Get_GUI_Scale());
 									g.drawImage(im,
-												64*(Integer.parseInt(tmp[1])), 
-												64*(Integer.parseInt(tmp[2])));
+											sbg.Get_GUI_Scale()*(Integer.parseInt(tmp[1]))+Map_OffsetX, 
+											sbg.Get_GUI_Scale()*(Integer.parseInt(tmp[2]))+Map_OffsetY);
 								}
 						}
 					}
@@ -275,94 +301,143 @@ public class OnlineGameState extends BasicGameState
 					sbg.server.dos.writeUTF("game_playerinfo");
 					sbg.server.SendBomber(players.get(0));
 				}
-				else if(server_response.equals("game_start")) {
+				else if(server_response.equals("game_start")){
+					
 					init=false;
 				}
-		} catch (IOException e) {
+				else if(server_response.equals("game_bombers_start")){
+					Read_Opponents_Info();
+				}
+		} catch (IOException | NumberFormatException | SlickException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
+	private void Read_Opponents_Info() throws IOException, NumberFormatException, SlickException{
+		
+		try {
+			PlayerList= (ArrayList<String[]>) sbg.server.ois.readObject();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		
+		for(int i=1;i<PlayerList.size()+1;i++){
+			switch(i) {
+				case 1:
+					Player1 = new Image("sprites/D_"   + Integer.parseInt(PlayerList.get(i-1)[6]) + Integer.parseInt(PlayerList.get(i-1)[7]) + ".png");
+					Player1=Player1.getScaledCopy(3);
+					break;
+				case 2:
+					Player2=new Image("sprites/D_"   + Integer.parseInt(PlayerList.get(i-1)[6]) + Integer.parseInt(PlayerList.get(i-1)[7]) + ".png");
+					Player2=Player2.getScaledCopy(3);
+					break;
+				case 3:
+					Player3=new Image("sprites/D_"   + Integer.parseInt(PlayerList.get(i-1)[6]) + Integer.parseInt(PlayerList.get(i-1)[7]) + ".png");
+					Player3=Player3.getScaledCopy(3);
+					break;
+				case 4:
+					Player4=new Image("sprites/D_"   + Integer.parseInt(PlayerList.get(i-1)[6]) + Integer.parseInt(PlayerList.get(i-1)[7]) + ".png");
+					Player4=Player4.getScaledCopy(3);
+					break;
+			}
+		}
+	}
 	
-	private void DrawBomber(String[] x,Graphics g) throws SlickException {
+	
+	private boolean DrawBomber(String[] x,Graphics g) throws SlickException {
 		String tmp=x[3];
 		Image img;
 		//System.out.println(Integer.parseInt(x[1])+" "+Integer.parseInt(x[2])+" "+Float.parseFloat(x[4])+" "+Float.parseFloat(x[5])+" "+Integer.parseInt(x[6])+" "+Integer.parseInt(x[7]));
 		switch(tmp) {
 		case "StopDown":
 			img= new Image("sprites/D_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
-			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
-					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
-			break;
+			img=img.getScaledCopy(sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*2/3);
+			g.drawImage(img,sbg.Get_GUI_Scale()*Integer.parseInt(x[1]) + sbg.Get_GUI_Scale()*Float.parseFloat(x[4])+(sbg.Get_GUI_Scale()-img.getWidth())/2f+Map_OffsetX, 
+					sbg.Get_GUI_Scale()*Integer.parseInt(x[2]) + sbg.Get_GUI_Scale()*Float.parseFloat(x[5])+(sbg.Get_GUI_Scale()-img.getHeight())/2f+Map_OffsetY);
+			return true;
 		case "StopLeft":
 			img= new Image("sprites/D_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
+			img=img.getScaledCopy(sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*2/3);
 			img.setRotation(90);
-			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
-					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
-			break;
+			g.drawImage(img,sbg.Get_GUI_Scale()*Integer.parseInt(x[1]) + sbg.Get_GUI_Scale()*Float.parseFloat(x[4])+(sbg.Get_GUI_Scale()-img.getWidth())/2f+Map_OffsetX, 
+					sbg.Get_GUI_Scale()*Integer.parseInt(x[2]) + sbg.Get_GUI_Scale()*Float.parseFloat(x[5])+(sbg.Get_GUI_Scale()-img.getHeight())/2f+Map_OffsetY);
+			return true;
 		case "StopUp":
 			img= new Image("sprites/D_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
+			img=img.getScaledCopy(sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*2/3);
 			img.setRotation(180);
-			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
-					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
-			break;
+			g.drawImage(img,sbg.Get_GUI_Scale()*Integer.parseInt(x[1]) + sbg.Get_GUI_Scale()*Float.parseFloat(x[4])+(sbg.Get_GUI_Scale()-img.getWidth())/2f+Map_OffsetX, 
+					sbg.Get_GUI_Scale()*Integer.parseInt(x[2]) + sbg.Get_GUI_Scale()*Float.parseFloat(x[5])+(sbg.Get_GUI_Scale()-img.getHeight())/2f+Map_OffsetY);
+			return true;
 		case "StopRight":
 			img= new Image("sprites/D_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
+			img=img.getScaledCopy(sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*2/3);
 			img.setRotation(270);
-			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
-					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
-			break;
+			g.drawImage(img,sbg.Get_GUI_Scale()*Integer.parseInt(x[1]) + sbg.Get_GUI_Scale()*Float.parseFloat(x[4])+(sbg.Get_GUI_Scale()-img.getWidth())/2f+Map_OffsetX, 
+					sbg.Get_GUI_Scale()*Integer.parseInt(x[2]) + sbg.Get_GUI_Scale()*Float.parseFloat(x[5])+(sbg.Get_GUI_Scale()-img.getHeight())/2f+Map_OffsetY);
+			return true;
 		case "Down1":
 			img= new Image("sprites/D1_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
-			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
-					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
-			break;
+			img=img.getScaledCopy(sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*2/3);
+			g.drawImage(img,sbg.Get_GUI_Scale()*Integer.parseInt(x[1]) + sbg.Get_GUI_Scale()*Float.parseFloat(x[4])+(sbg.Get_GUI_Scale()-img.getWidth())/2f+Map_OffsetX, 
+					sbg.Get_GUI_Scale()*Integer.parseInt(x[2]) + sbg.Get_GUI_Scale()*Float.parseFloat(x[5])+(sbg.Get_GUI_Scale()-img.getHeight())/2f+Map_OffsetY);
+			return true;
 		case "Down2":
 			img= new Image("sprites/D1_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
-			g.drawImage(img.getFlippedCopy(true,false),64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
-					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
-			break;
+			img=img.getScaledCopy(sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*2/3);
+			g.drawImage(img.getFlippedCopy(true,false),sbg.Get_GUI_Scale()*Integer.parseInt(x[1]) + sbg.Get_GUI_Scale()*Float.parseFloat(x[4])+(sbg.Get_GUI_Scale()-img.getWidth())/2f+Map_OffsetX,  
+					sbg.Get_GUI_Scale()*Integer.parseInt(x[2]) + sbg.Get_GUI_Scale()*Float.parseFloat(x[5])+(sbg.Get_GUI_Scale()-img.getHeight())/2f+Map_OffsetY);
+			return true;
 		case "Left1":
 			img= new Image("sprites/D1_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
+			img=img.getScaledCopy(sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*2/3);
 			img.setRotation(90);
-			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
-					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
-			break;
+			g.drawImage(img,sbg.Get_GUI_Scale()*Integer.parseInt(x[1]) + sbg.Get_GUI_Scale()*Float.parseFloat(x[4])+(sbg.Get_GUI_Scale()-img.getWidth())/2f+Map_OffsetX, 
+					sbg.Get_GUI_Scale()*Integer.parseInt(x[2]) + sbg.Get_GUI_Scale()*Float.parseFloat(x[5])+(sbg.Get_GUI_Scale()-img.getHeight())/2f+Map_OffsetY);
+			return true;
 		case "Left2":
 			img= new Image("sprites/D1_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
+			img=img.getScaledCopy(sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*2/3);
 			img = img.getFlippedCopy(true,false);
 			img.setRotation(90);
-			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
-					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
-			break;
+			g.drawImage(img,sbg.Get_GUI_Scale()*Integer.parseInt(x[1]) + sbg.Get_GUI_Scale()*Float.parseFloat(x[4])+(sbg.Get_GUI_Scale()-img.getWidth())/2f+Map_OffsetX, 
+					sbg.Get_GUI_Scale()*Integer.parseInt(x[2]) + sbg.Get_GUI_Scale()*Float.parseFloat(x[5])+(sbg.Get_GUI_Scale()-img.getHeight())/2f+Map_OffsetY);
+			return true;
 		case "Up1":
 			img= new Image("sprites/D1_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
+			img=img.getScaledCopy(sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*2/3);
 			img.setRotation(180);
-			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
-					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
-			break;
+			g.drawImage(img,sbg.Get_GUI_Scale()*Integer.parseInt(x[1]) + sbg.Get_GUI_Scale()*Float.parseFloat(x[4])+(sbg.Get_GUI_Scale()-img.getWidth())/2f+Map_OffsetX, 
+					sbg.Get_GUI_Scale()*Integer.parseInt(x[2]) + sbg.Get_GUI_Scale()*Float.parseFloat(x[5])+(sbg.Get_GUI_Scale()-img.getHeight())/2f+Map_OffsetY);
+			return true;
 		case "Up2":
 			img= new Image("sprites/D1_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
+			img=img.getScaledCopy(sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*2/3);
 			img = img.getFlippedCopy(true,false);
 			img.setRotation(180);
-			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
-					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
-			break;
+			g.drawImage(img,sbg.Get_GUI_Scale()*Integer.parseInt(x[1]) + sbg.Get_GUI_Scale()*Float.parseFloat(x[4])+(sbg.Get_GUI_Scale()-img.getWidth())/2f+Map_OffsetX, 
+					sbg.Get_GUI_Scale()*Integer.parseInt(x[2]) + sbg.Get_GUI_Scale()*Float.parseFloat(x[5])+(sbg.Get_GUI_Scale()-img.getHeight())/2f+Map_OffsetY);
+			return true;
 		case "Right1":
 			img= new Image("sprites/D1_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
+			img=img.getScaledCopy(sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*2/3);
 			img.setRotation(270);
-			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
-					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
-			break;
+			g.drawImage(img,sbg.Get_GUI_Scale()*Integer.parseInt(x[1]) + sbg.Get_GUI_Scale()*Float.parseFloat(x[4])+(sbg.Get_GUI_Scale()-img.getWidth())/2f+Map_OffsetX, 
+					sbg.Get_GUI_Scale()*Integer.parseInt(x[2]) + sbg.Get_GUI_Scale()*Float.parseFloat(x[5])+(sbg.Get_GUI_Scale()-img.getHeight())/2f+Map_OffsetY);
+			return true;
 		case "Right2":
 			img= new Image("sprites/D1_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
+			img=img.getScaledCopy(sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*2/3);
 			img = img.getFlippedCopy(true,false);
 			img.setRotation(270);
-			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
-					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
-			break;
+			g.drawImage(img,sbg.Get_GUI_Scale()*Integer.parseInt(x[1]) + sbg.Get_GUI_Scale()*Float.parseFloat(x[4])+(sbg.Get_GUI_Scale()-img.getWidth())/2f+Map_OffsetX, 
+					sbg.Get_GUI_Scale()*Integer.parseInt(x[2]) + sbg.Get_GUI_Scale()*Float.parseFloat(x[5])+(sbg.Get_GUI_Scale()-img.getHeight())/2f+Map_OffsetY);
+			return true;
 		}
+		return false;
 	}
 
 	public boolean Is_Winner() {
@@ -380,7 +455,7 @@ public class OnlineGameState extends BasicGameState
 	
 		try {
 			hover_sound = AudioSystem.getAudioInputStream(hover_file);
-			Clip hover_s = AudioSystem.getClip();
+			Clip hover_s = AudioSystem.getClip(null);
 			hover_s.open(hover_sound);
 			hover_s.loop(0);
 		} catch (UnsupportedAudioFileException | IOException e) {
@@ -395,7 +470,7 @@ public class OnlineGameState extends BasicGameState
 		
 		try {
 			click_sound = AudioSystem.getAudioInputStream(click_file);
-			Clip click_s = AudioSystem.getClip();
+			Clip click_s = AudioSystem.getClip(null);
 			click_s.open(click_sound);
 			click_s.loop(0);
 		} catch (UnsupportedAudioFileException | IOException e) {
@@ -406,4 +481,14 @@ public class OnlineGameState extends BasicGameState
 			e.printStackTrace();
 		}
 	}
+	
+	private class Game_End_Delay extends TimerTask{
+
+		@Override
+		public void run() {
+			sbg.enterState(sbg.Get_OnlineGameOver_State());		//Go to Game Over
+		}
+		
+	}
+	
 }

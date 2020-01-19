@@ -12,9 +12,11 @@ import org.newdawn.slick.state.StateBasedGame;
 public class GUI_setup extends StateBasedGame{
 	private int Menu_ID,Login_ID,Game_ID,GameOver_ID,MainMenu_ID,Controls_ID,Signup_ID,OnlineGame_ID,OnlineGameOver_ID,Friends_ID,LockedMenu_ID, LockedSettingsState_ID, StatisticsState_ID;
 	private boolean LockedStates = false;
-	private Settings Player_Settings;
+	private static Settings Player_Settings;
 	private static int display_x;
 	private static int display_y;
+	private static int Resolution;
+	private static int GUI_Scale;
 
 	public ServerHandler server;
 
@@ -37,8 +39,26 @@ public class GUI_setup extends StateBasedGame{
 		}
 		
 		AppGameContainer app = new AppGameContainer(new GUI_setup("Setup"));
-		display_x = 1366;
-		display_y = 768;
+		Player_Settings= new Settings();
+		Player_Settings.init_Settings();
+		
+		Resolution=Get_Resolution();
+		if(Resolution==1) {
+			display_x = 1600;
+			display_y = 900;
+			GUI_Scale=78;
+		}
+		else if(Resolution==2){
+			display_x = 1366;
+			display_y = 768;
+			GUI_Scale=64;
+		}
+		else{
+			display_x = 1024;
+			display_y = 768;
+			GUI_Scale=50;
+		}
+		
 		app.setDisplayMode(display_x, display_y, false);
 		app.setShowFPS(false);
 		app.start();
@@ -58,8 +78,6 @@ public class GUI_setup extends StateBasedGame{
         this.addState(new LockedMenuState());
         this.addState(new LockedSettingsState());
         this.addState(new StatisticsState());
-		Player_Settings= new Settings();
-		Player_Settings.init_Settings();
 
 		try {
 			ServerHandler server = new ServerHandler();
@@ -215,5 +233,25 @@ public class GUI_setup extends StateBasedGame{
 	
 	public boolean Get_locked_State() {
 		return LockedStates;
+	}
+	
+	public static int Get_Resolution() {
+		return Player_Settings.Get_Resolution();
+	}
+	
+	public void Set_Resolution(int res){
+		Player_Settings.Set_Resolution(res);
+	}
+	
+	public void Set_Volume(int vol){
+		Player_Settings.Set_Volume(vol);
+	}
+	
+	public int Get_Volume() {
+		return Player_Settings.Get_Volume();
+	}
+	
+	public int Get_GUI_Scale() {
+		return GUI_Scale;
 	}
 }

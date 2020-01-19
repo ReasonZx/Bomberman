@@ -26,6 +26,7 @@ public class GameHandler extends Thread{
 	private Map m;
 	private ArrayList<Integer> Actions;
 	private boolean First_Action=false;
+	private boolean Game_Over;
 	
 	GameHandler(ArrayList<Client> x) {
 		Players = new ArrayList<Client>();
@@ -40,6 +41,7 @@ public class GameHandler extends Thread{
 			Players.get(i).Set_Player(i+1);
 			Players.get(i).AddToGame(this);
 		}
+		Game_Over=false;
 	}
 	
 	@Override
@@ -78,6 +80,7 @@ public class GameHandler extends Thread{
 						init_game();
 						for(i=0;i<Players.size();i++)
 							try {
+								Players.get(i).Send_Bombers(Players);
 								Players.get(i).dos.writeUTF("game_start");
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
@@ -142,28 +145,28 @@ public class GameHandler extends Thread{
 			try {
 				if(lib.Run_Changes()!=0){
 					First_Action=true;
-					int ret=L.Death_Check();
-						if(ret!=0) {
-							Players.get(ret-1).dos.writeUTF("game_lost");
-							Spectators.add(Players.get(ret-1));
-							Players.remove(ret-1);
-							Spectators.get(Spectators.size()-1).RemoveFromGame();
-							DB.incrementPlayedGame(Spectators.get(Spectators.size()-1).username,false);
+					
+					if(!Game_Over){
+						int ret=L.Death_Check();
+							if(ret!=0) {
+								Players.get(ret-1).dos.writeUTF("game_lost");
+								Spectators.add(Players.get(ret-1));
+								Players.remove(ret-1);
+								Spectators.get(Spectators.size()-1).RemoveFromGame();
+								DB.incrementPlayedGame(Spectators.get(Spectators.size()-1).username,false);
+							}
+							
+						if(Players.size()==1){
+							Game_Over=true;
+							Players.get(0).dos.writeUTF("game_won_"+Players.get(0).Get_Player());
+							Timer tt = new Timer();
+							tt.schedule(new Game_End_Delay(this), 2000);
+							DB.incrementPlayedGame(Players.get(0).username,true);
+							for(int i=0;i<Spectators.size();i++) {
+								Spectators.get(i).dos.writeUTF("game_over_"+Players.get(0).Get_Player());
+							}
 						}
-					if(Players.size()==1){
-						Players.get(0).dos.writeUTF("game_won_"+Players.get(0).Get_Player());
-						Players.get(0).Game_Ended();
-						DB.incrementPlayedGame(Players.get(0).username,true);
-						for(int i=0;i<Spectators.size();i++) {
-							Spectators.get(i).dos.writeUTF("game_over_"+Players.get(0).Get_Player());
-							Spectators.get(0).Game_Ended();
-						}
-						Players.removeAll(Players);
-						Spectators.removeAll(Spectators);
-						this.cancel();
-						return;
-					}
-						
+					}		
 					
 					
 					Serialize_Data();
@@ -274,5 +277,32 @@ public class GameHandler extends Thread{
 			}
 		
 		System.out.println("Client not in this game");
+	}
+	
+	private class Game_End_Delay extends TimerTask{
+		private Update_Task Update;
+		
+		Game_End_Delay(Update_Task x){
+			Update=x;
+		}
+
+		@Override
+		public void run() {
+			try {
+				Players.get(0).Game_Ended();
+				
+				for(int i=0;i<Spectators.size();i++) {
+					Spectators.get(0).Game_Ended();
+				}
+				
+				Players.removeAll(Players);
+				Spectators.removeAll(Spectators);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Update.cancel();
+		}
+		
 	}
 }
