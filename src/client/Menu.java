@@ -74,7 +74,7 @@ public class Menu extends BasicGameState {
 		
 		try {
 			background_sound = AudioSystem.getAudioInputStream(background_file);		
-			background_s = AudioSystem.getClip();
+			background_s = AudioSystem.getClip(null);
 			background_s.open(background_sound);
 			gainControl = (FloatControl) background_s.getControl(FloatControl.Type.MASTER_GAIN);
 			set_volume(Get_Volume());
@@ -223,7 +223,7 @@ public class Menu extends BasicGameState {
 	
 		try {
 			hover_sound = AudioSystem.getAudioInputStream(hover_file);
-			Clip hover_s = AudioSystem.getClip();
+			Clip hover_s = AudioSystem.getClip(null);
 			hover_s.open(hover_sound);
 			hover_s.loop(0);
 		} catch (UnsupportedAudioFileException | IOException e) {
@@ -238,7 +238,7 @@ public class Menu extends BasicGameState {
 		
 		try {
 			click_sound = AudioSystem.getAudioInputStream(click_file);
-			Clip click_s = AudioSystem.getClip();
+			Clip click_s = AudioSystem.getClip(null);
 			click_s.open(click_sound);
 			click_s.loop(0);
 		} catch (UnsupportedAudioFileException | IOException e) {
