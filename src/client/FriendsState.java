@@ -60,6 +60,7 @@ public class FriendsState extends BasicGameState{
 	private String server_response;
 	private File click_file = new File("music/click.wav");
 	private File hover_file = new File("music/hover.wav");
+	private Image background;
 	
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -96,6 +97,8 @@ public class FriendsState extends BasicGameState{
 		Remove_Button= "sprites/remove.png";
 		
 		Invite_Button= "sprites/invite.png";
+		
+		background=new Image("sprites/background.png");
 		
 		PopUp_Button = new Image("sprites/ok.png");
 		PopUp_Button=PopUp_Button.getScaledCopy(0.3f);
@@ -195,16 +198,14 @@ public class FriendsState extends BasicGameState{
 		}
 		else {
 			arg2.setColor(Color.white);
-			arg2.fill(R1);
-			arg2.setColor(Color.black);
+			arg2.texture(R1, background, true);
 			arg2.fill(T1);
 			arg2.fill(T2);
-			arg2.setColor(Color.white);
 			
 			myFont.drawString(20+R1.getWidth()/2f - myFont.getWidth(Integer.toString(CurrentPage) + " / " + Integer.toString(MaxPage))/2f, gc.getHeight()-80,
-					"" + Integer.toString(CurrentPage) + " / " + Integer.toString(MaxPage) + "",Color.black);
+					"" + Integer.toString(CurrentPage) + " / " + Integer.toString(MaxPage) + "");
 			myFont.drawString(20+R1.getWidth()/7f - myFont.getWidth("Username")/2f, 20+20,
-					"Username",Color.black);
+					"Username");
 			
 			RenderFriendList();
 			RenderButtons();
@@ -283,14 +284,14 @@ public class FriendsState extends BasicGameState{
 			for(int i=(CurrentPage-1)*10;i<(CurrentPage-1)*10+FriendList.size()%10;i++) {
 				String tmp[]=FriendList.get(i).split("_");
 				myFont.drawString(20+R1.getWidth()/7f - myFont.getWidth(tmp[0])/2f, 80+(R1.getHeight()-T2.getHeight()-60)/10f*(i-(CurrentPage-1)*10),
-						tmp[0],Color.black);
+						tmp[0]);
 			}
 		}
 		else
 			for(int i=(CurrentPage-1)*10;i<(CurrentPage-1)*10+10;i++) {
 				String tmp[]=FriendList.get(i).split("_");
 				myFont.drawString(20+R1.getWidth()/7f - myFont.getWidth(tmp[0])/2f, 80+(R1.getHeight()-T2.getHeight()-60)/10f*(i-(CurrentPage-1)*10),
-						tmp[0],Color.black);
+						tmp[0]);
 			}
 	}
 	

@@ -67,6 +67,7 @@ public class LogIn extends BasicGameState {
 		Back_hover = Back_hover.getScaledCopy(0.2f);
 		
 		background = new Image("sprites/background.png");
+		background=background.getScaledCopy(gc.getWidth(),gc.getHeight());
 		
 		Login = new Image("sprites/logIn.png");
 		Login = Login.getScaledCopy(0.5f);
@@ -76,7 +77,7 @@ public class LogIn extends BasicGameState {
 		backX = 50;
 		backY = 50;
 
-		login_x = (int) (0.43 * (float) sbg.Get_Display_width());
+		login_x = (int) (sbg.Get_Display_width()/2f-Login.getWidth()/2f);
 		login_y = (int) (0.7 * (float) sbg.Get_Display_height());
 		
 		Username.setAcceptingInput(false);

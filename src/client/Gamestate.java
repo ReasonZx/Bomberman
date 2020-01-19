@@ -38,11 +38,13 @@ public class Gamestate extends BasicGameState{
 	 private int dead;
 	 private GUI_setup sbg;
 	 private Image Back, Back_hover;
+	 private boolean Game_Over;
 	 private boolean back_h = false;
 	 private boolean hovering_b = false;
 	 private int backX, backY;
 	 private File click_file = new File("music/click.wav");
 	 private File hover_file = new File("music/hover.wav");
+	 private int Map_OffsetX,Map_OffsetY;
 
 
 	
@@ -58,6 +60,8 @@ public class Gamestate extends BasicGameState{
 	    backX = 50;
 	    backY = 20;
 	    
+	    Map_OffsetX=(int) ((sbg.Get_Display_width()-640)/2f);
+	    Map_OffsetY=(int) ((sbg.Get_Display_height()-512)/2f);
 	}
 	
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -90,6 +94,8 @@ public class Gamestate extends BasicGameState{
 	     System.out.println(sbg.Get_locked_State());
 	     arg0.getInput().addKeyListener(Input);
 	     arg0.getInput().clearMousePressedRecord();
+	     
+	     Game_Over=false;
 	}
 
 	public void update(GameContainer container, StateBasedGame arg1, int arg2) throws SlickException {
@@ -97,34 +103,40 @@ public class Gamestate extends BasicGameState{
 		int posY = sbg.Get_Display_height() - Mouse.getY();
 		
 		lib.Run_Changes();
-		dead=L.Death_Check();
 		
-		if ((posX > backX && posX < backX + Back.getWidth()) && (posY > backY && posY < backY + Back.getHeight())) {
-			back_h = true;
-			if(hovering_b == false) {
-				play_hover_sound();
-				hovering_b = true;
-			}
-			if (Mouse.isButtonDown(0)) {
-				play_click_sound();
-				if(sbg.Get_locked_State())
-					sbg.enterState(sbg.Get_LockedMenu_State());
-				else sbg.enterState(sbg.Get_MainMenu_State());
-			}
-		}
-		else {
-			back_h = false;
-			hovering_b = false;
-		}
 		
-		if(dead!=0) {
-			sbg.enterState(sbg.Get_GameOver_State());		//Go to Game Over
-		}
-		if((posX > backX && posX < backX + Back.getWidth()) && (posY > backY && posY < backY + Back.getHeight())) {		
-			if(Mouse.isButtonDown(0)) {
-				if(sbg.Get_locked_State())
-					sbg.enterState(sbg.Get_LockedMenu_State());
-				else sbg.enterState(sbg.Get_MainMenu_State());
+		if(!Game_Over) {
+			dead=L.Death_Check();
+			
+			if ((posX > backX && posX < backX + Back.getWidth()) && (posY > backY && posY < backY + Back.getHeight())) {
+				back_h = true;
+				if(hovering_b == false) {
+					play_hover_sound();
+					hovering_b = true;
+				}
+				if (Mouse.isButtonDown(0)) {
+					play_click_sound();
+					if(sbg.Get_locked_State())
+						sbg.enterState(sbg.Get_LockedMenu_State());
+					else sbg.enterState(sbg.Get_MainMenu_State());
+				}
+			}
+			else {
+				back_h = false;
+				hovering_b = false;
+			}
+			
+			if(dead!=0) {
+				Game_Over=true;
+				Timer tt= new Timer();
+				tt.schedule(new Game_End_Delay(), 2000);
+			}
+			if((posX > backX && posX < backX + Back.getWidth()) && (posY > backY && posY < backY + Back.getHeight())) {		
+				if(Mouse.isButtonDown(0)) {
+					if(sbg.Get_locked_State())
+						sbg.enterState(sbg.Get_LockedMenu_State());
+					else sbg.enterState(sbg.Get_MainMenu_State());
+				}
 			}
 		}
 	}
@@ -152,8 +164,8 @@ public class Gamestate extends BasicGameState{
 								Image im = new Image(tmp.Get_Image());
 								im=im.getScaledCopy(64,64);
 								g.drawImage(im,
-											tmp.Get_Scale()*(tmp.getX()), 
-											tmp.Get_Scale()*(tmp.getY()));
+											tmp.Get_Scale()*(tmp.getX())+Map_OffsetX, 
+											tmp.Get_Scale()*(tmp.getY())+Map_OffsetY);
 							}
 						}
 					}
@@ -243,75 +255,80 @@ public class Gamestate extends BasicGameState{
 		switch(tmp) {
 		case "StopDown":
 			img= new Image("sprites/D_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
-			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
+					Map_OffsetY+x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
 			break;
 		case "StopLeft":
 			img= new Image("sprites/D_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
 			img.setRotation(90);
-			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
+					Map_OffsetY+x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
 			break;
 		case "StopUp":
 			img= new Image("sprites/D_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
 			img.setRotation(180);
-			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
+					Map_OffsetY+x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
 			break;
 		case "StopRight":
 			img= new Image("sprites/D_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
 			img.setRotation(270);
-			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
+					Map_OffsetY+x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
 			break;
 		case "Down1":
 			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
-			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
+					Map_OffsetY+x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
 			break;
 		case "Down2":
 			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
-			g.drawImage(img.getFlippedCopy(true,false),x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
+					Map_OffsetY+x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
 			break;
 		case "Left1":
 			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
 			img.setRotation(90);
-			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
+					Map_OffsetY+x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
 			break;
 		case "Left2":
 			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
 			img = img.getFlippedCopy(true,false);
 			img.setRotation(90);
-			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
+					Map_OffsetY+x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
 			break;
 		case "Up1":
 			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
 			img.setRotation(180);
-			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
+					Map_OffsetY+x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
 			break;
 		case "Up2":
 			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
 			img = img.getFlippedCopy(true,false);
 			img.setRotation(180);
-			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
+					Map_OffsetY+x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
 			break;
 		case "Right1":
 			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
 			img.setRotation(270);
-			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
+					Map_OffsetY+x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
 			break;
 		case "Right2":
 			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
 			img = img.getFlippedCopy(true,false);
 			img.setRotation(270);
-			g.drawImage(img,x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
+					Map_OffsetY+x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			break;
+		case "sprites/blood.png":
+			img= new Image(tmp);
+			img=img.getScaledCopy(64,64);
+			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX(),Map_OffsetY+x.Get_Scale()*x.getY());
 			break;
 		}
 	}
@@ -347,6 +364,15 @@ public class Gamestate extends BasicGameState{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private class Game_End_Delay extends TimerTask{
+
+		@Override
+		public void run() {
+			sbg.enterState(sbg.Get_GameOver_State());		//Go to Game Over
+		}
+		
 	}
 	
 }

@@ -1,3 +1,4 @@
+
 package server;
 
 import java.io.DataInputStream;
@@ -44,10 +45,17 @@ public class Client {
 
 	public void login(String user, String pw, ArrayList<Client> userlist, String socket) throws SQLException, IOException {
 		String result;
+		this.outputsocket = Integer.parseInt(socket);
+		for(int i=0;i<userlist.size();i++) {
+			if(userlist.get(i).username.equals(user)){
+				this.dos.writeUTF("User already Logged In");
+				return;
+			}
+		}
+		
 		result = server.DB.login(user, pw);
 
 		if (result == "Logged in") {
-			this.outputsocket = Integer.parseInt(socket);
 			userlist.add(this);
 			this.dos.writeUTF(result);
 			username=user;

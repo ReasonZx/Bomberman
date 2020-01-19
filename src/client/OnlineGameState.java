@@ -38,8 +38,8 @@ public class OnlineGameState extends BasicGameState
 	 private GUI_setup sbg;
 	 private Image Back, Back_hover;
 	 private int backX, backY;
-	 private boolean login_h = false , back_h = false;
-	 private boolean hovering_l = false , hovering_b = false;
+	 private boolean back_h = false;
+	 private boolean hovering_b = false;
 	 private boolean init=false;
 	 private String server_response;
 	 private Map m;
@@ -175,10 +175,7 @@ public class OnlineGameState extends BasicGameState
 						elements=m.info_elements.get(x).get(y);
 						for(int i = 0; i < elements.size(); i++) {
 							tmp = elements.get(i).split(",");
-								if(Short.parseShort(tmp[0])== Bomber.serialVersionUID) {
-									DrawBomber(tmp,g);
-								}
-								else {
+								if(!DrawBomber(tmp,g)){
 									Image im = new Image(tmp[3]);
 									im=im.getScaledCopy(64,64);
 									g.drawImage(im,
@@ -285,7 +282,7 @@ public class OnlineGameState extends BasicGameState
 	}
 	
 	
-	private void DrawBomber(String[] x,Graphics g) throws SlickException {
+	private boolean DrawBomber(String[] x,Graphics g) throws SlickException {
 		String tmp=x[3];
 		Image img;
 		//System.out.println(Integer.parseInt(x[1])+" "+Integer.parseInt(x[2])+" "+Float.parseFloat(x[4])+" "+Float.parseFloat(x[5])+" "+Integer.parseInt(x[6])+" "+Integer.parseInt(x[7]));
@@ -294,75 +291,76 @@ public class OnlineGameState extends BasicGameState
 			img= new Image("sprites/D_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
 			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
 					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
-			break;
+			return true;
 		case "StopLeft":
 			img= new Image("sprites/D_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
 			img.setRotation(90);
 			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
 					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
-			break;
+			return true;
 		case "StopUp":
 			img= new Image("sprites/D_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
 			img.setRotation(180);
 			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
 					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
-			break;
+			return true;
 		case "StopRight":
 			img= new Image("sprites/D_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
 			img.setRotation(270);
 			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
 					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
-			break;
+			return true;
 		case "Down1":
 			img= new Image("sprites/D1_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
 			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
 					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
-			break;
+			return true;
 		case "Down2":
 			img= new Image("sprites/D1_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
 			g.drawImage(img.getFlippedCopy(true,false),64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
 					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
-			break;
+			return true;
 		case "Left1":
 			img= new Image("sprites/D1_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
 			img.setRotation(90);
 			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
 					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
-			break;
+			return true;
 		case "Left2":
 			img= new Image("sprites/D1_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
 			img = img.getFlippedCopy(true,false);
 			img.setRotation(90);
 			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
 					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
-			break;
+			return true;
 		case "Up1":
 			img= new Image("sprites/D1_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
 			img.setRotation(180);
 			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
 					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
-			break;
+			return true;
 		case "Up2":
 			img= new Image("sprites/D1_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
 			img = img.getFlippedCopy(true,false);
 			img.setRotation(180);
 			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
 					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
-			break;
+			return true;
 		case "Right1":
 			img= new Image("sprites/D1_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
 			img.setRotation(270);
 			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
 					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
-			break;
+			return true;
 		case "Right2":
 			img= new Image("sprites/D1_"   + Integer.parseInt(x[6]) + Integer.parseInt(x[7]) + ".png");
 			img = img.getFlippedCopy(true,false);
 			img.setRotation(270);
 			g.drawImage(img,64*Integer.parseInt(x[1]) + 64*Float.parseFloat(x[4])+(64-img.getWidth())/2f, 
 					64*Integer.parseInt(x[2]) + 64*Float.parseFloat(x[5])+(64-img.getHeight())/2f);
-			break;
+			return true;
 		}
+		return false;
 	}
 
 	public boolean Is_Winner() {

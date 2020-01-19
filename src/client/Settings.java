@@ -1,5 +1,4 @@
 package client;
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -14,8 +13,8 @@ import org.newdawn.slick.Input;
 public class Settings {
 	private Path Setting;
 	int[][] Settings_List;
-
-	
+	int Resolution;
+	int Volume;
 	
 	public void init_Settings() {
 		Setting = Paths.get("Settings.txt");
@@ -54,6 +53,12 @@ public class Settings {
 						if(Settings_List[i][j]==Settings_List[k][l])
 							return true;
 		//System.out.println("CONTROLS OKAY");
+		if(Resolution>3 || Resolution<1)
+			return true;
+		
+		if(Volume>3 || Volume<0)
+			return true;
+		
 		return false;
 	}
 
@@ -61,12 +66,15 @@ public class Settings {
 		List<String> s = Files.readAllLines(Setting);
 		int[][] tmp = new int[2][7];
 		
-		if(s.size()!=14)
+		if(s.size()!=16)
 			return null;
 		
 		for(int i=0;i<2;i++)
 			for(int j=0;j<7;j++)
-				tmp[i][j]=Integer.parseInt(s.get(j+i*7));	
+				tmp[i][j]=Integer.parseInt(s.get(j+i*7));
+		
+		Resolution=Integer.parseInt(s.get(14));
+		Volume=Integer.parseInt(s.get(15));
 		
 		return tmp;
 	}
@@ -83,11 +91,15 @@ public class Settings {
 										Integer.toString(Input.KEY_DOWN),
 										Integer.toString(Input.KEY_LEFT),
 										Integer.toString(Input.KEY_RIGHT),
-										Integer.toString(Input.KEY_RSHIFT));
+										Integer.toString(Input.KEY_RSHIFT),
+										"2",
+										"3");
 		Files.write(Setting,s,StandardCharsets.UTF_8);
 		for(int i=0;i<2;i++)
 			for(int j=0;j<7;j++)
 				Settings_List[i][j]=Integer.parseInt(s.get(j+i*7));
+		Resolution=2;
+		Volume=3;
 	}
 	
 	private void Write_Settings() throws IOException {
@@ -96,6 +108,9 @@ public class Settings {
 		for(int i=0;i<2;i++)
 			for(int j=0;j<7;j++)
 				s.add(Integer.toString(Settings_List[i][j]));
+		
+		s.add(Integer.toString(Resolution));
+		s.add(Integer.toString(Volume));
 		
 		Files.write(Setting,s,StandardCharsets.UTF_8);
 	}
@@ -143,5 +158,31 @@ public class Settings {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public void Set_Resolution(int res) {
+		Resolution=res;
+		try {
+			Write_Settings();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public int Get_Resolution() {
+		return Resolution;
+	}
+
+	public void Set_Volume(int vol) {
+		Volume=vol;
+		try {
+			Write_Settings();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public int Get_Volume() {
+		return Volume;
 	}
 }

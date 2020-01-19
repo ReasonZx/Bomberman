@@ -55,7 +55,10 @@ public class LockedMenuState extends BasicGameState{
 		arg0.getDefaultFont();
 		
 		background = new Image("sprites/background.png");
+		background=background.getScaledCopy(arg0.getWidth(),arg0.getHeight());
+		
 		bomberman_title = new Image("sprites/bomberman_title.png");
+		bomberman_title=bomberman_title.getScaledCopy((int) (arg0.getWidth()*0.8), bomberman_title.getHeight());
 		
 		Statistics = new Image("sprites/statistics_locked.png");
 		Statistics = Statistics.getScaledCopy(0.4f);

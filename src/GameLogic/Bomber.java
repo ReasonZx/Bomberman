@@ -42,9 +42,9 @@ public class Bomber extends Element implements Serializable{
 	static protected String StopRight="StopRight";
 	static protected String Right1="Right1";
 	static protected String Right2="Right2";
+	static protected String Blood="sprites/blood.png";
     protected int upkey,downkey,rightkey,leftkey,actionkey;
     transient private int player;
-	
     /**
 	 * Constructor for Bomber Class
 	 * <p>
@@ -211,7 +211,14 @@ public class Bomber extends Element implements Serializable{
 	 * @return If the position (x,y) has an explosion
 	 */
 	public boolean Death_Check(){
-		return m.Has_Explosion(Coord.getX(),Coord.getY());
+		if (m.Has_Explosion(Coord.getX(),Coord.getY())){
+			lib.Flag_For_Change(this, Blood);
+			Walking_cd=true;
+			bomb_cd=true;
+			return true;
+		}
+		
+		return false;
 	}
 	
 	private class Bomb_Cd extends TimerTask{

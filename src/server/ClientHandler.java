@@ -1,5 +1,6 @@
 package server;
 
+
 import java.io.*;
 import java.util.*;
 import GameLogic.Bomber;
@@ -61,6 +62,10 @@ public class ClientHandler extends Thread {
 						client.login(words[1], words[2], userlist,words[3]);
 					} else
 						client.dos.writeUTF("Login and Password mandatory");
+					break;
+					
+				case "logout":
+					Server_Handler.Remove_User_From_Userlist(client.username);
 					break;
 					
 				case "looking":
@@ -255,7 +260,8 @@ public class ClientHandler extends Thread {
 				Server_Handler.Remove_From_Queue(client.username);
 				client.RemoveFromQueue();
 			}
-				
+			
+			Server_Handler.Remove_User_From_Userlist(client.username);
 		} catch (IOException | SQLException e) {
 			e.printStackTrace();
 		}

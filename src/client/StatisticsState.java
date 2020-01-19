@@ -12,7 +12,6 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.*;
-import org.newdawn.slick.gui.*;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -42,7 +41,7 @@ public class StatisticsState extends BasicGameState {
 		backY = (int) (sbg.Get_Display_height() * 0.05);
 		
 		background = new Image("sprites/background.png");	
-				
+		background=background.getScaledCopy(gc.getWidth(),gc.getHeight());		
 	}
 
 	@Override

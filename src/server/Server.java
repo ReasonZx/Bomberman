@@ -10,7 +10,7 @@ public class Server implements Runnable{
 	private ServerSocket ss; 
 	private ArrayList<Client> queue = new ArrayList<Client>();
 	public DB database = new DB();
-	private int People_Per_Game=2;
+	private int People_Per_Game=3;
 	
 	Server() throws IOException{
 	}
@@ -73,7 +73,7 @@ public class Server implements Runnable{
 	    } 
 	}
 	
-	public ArrayList<Client>Get_UserList(){
+	public ArrayList<Client> Get_UserList(){
 		return userlist;
 	}
 	
@@ -86,6 +86,13 @@ public class Server implements Runnable{
 		for(int i=0;i<queue.size();i++){
 			if(queue.get(i).username.equals(user))
 				queue.remove(i);
+		}
+	}
+	
+	public void Remove_User_From_Userlist(String user) {
+		for(int i=0;i<userlist.size();i++){
+			if(userlist.get(i).username.equals(user))
+				userlist.remove(i);
 		}
 	}
 	
