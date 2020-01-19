@@ -22,7 +22,7 @@ public class Explosion extends Element{
 	static protected String UpEnd = 		"sprites/Explosion_TopEnd.png";
 	static protected String RightEnd = 	"sprites/Explosion_RightEnd.png";
 	static protected String LeftEnd = 		"sprites/Explosion_LeftEnd.png";
-	static private int Explosion_time = 1000;
+	static private int Explosion_time = 500;
 	
 	/**
 	 * Constructor for the Explosion Class

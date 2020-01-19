@@ -267,7 +267,7 @@ public class ControlsState extends BasicGameState{
 		myFont.drawString(R4.getX()+R4.getWidth()/8f, R4.getY()+R4.getHeight()/8f, "Resolution",Color.white);
 		myFont.drawString(R4.getX()+R4.getWidth()*2/8f, R4.getY()+R4.getHeight()/8f+myFont.getHeight("Resolution")*2, "requires restart",Color.white);
 		
-		myFont.drawString(R4.getX()+R4.getWidth()/4f, R4.getY()+R4.getHeight()*2/8f, "1920x1080",Color.white);
+		myFont.drawString(R4.getX()+R4.getWidth()/4f, R4.getY()+R4.getHeight()*2/8f, "1600x900",Color.white);
 		myFont.drawString(R4.getX()+R4.getWidth()/4f, R4.getY()+R4.getHeight()*3/8f, "1366x768",Color.white);
 		myFont.drawString(R4.getX()+R4.getWidth()/4f, R4.getY()+R4.getHeight()*4/8f, "1024x768",Color.white);
 		

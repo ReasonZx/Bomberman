@@ -16,6 +16,7 @@ public class GUI_setup extends StateBasedGame{
 	private static int display_x;
 	private static int display_y;
 	private static int Resolution;
+	private static int GUI_Scale;
 
 	public ServerHandler server;
 
@@ -45,14 +46,17 @@ public class GUI_setup extends StateBasedGame{
 		if(Resolution==1) {
 			display_x = 1600;
 			display_y = 900;
+			GUI_Scale=78;
 		}
 		else if(Resolution==2){
 			display_x = 1366;
 			display_y = 768;
+			GUI_Scale=64;
 		}
 		else{
 			display_x = 1024;
 			display_y = 768;
+			GUI_Scale=50;
 		}
 		
 		app.setDisplayMode(display_x, display_y, false);
@@ -245,5 +249,9 @@ public class GUI_setup extends StateBasedGame{
 	
 	public int Get_Volume() {
 		return Player_Settings.Get_Volume();
+	}
+	
+	public int Get_GUI_Scale() {
+		return GUI_Scale;
 	}
 }

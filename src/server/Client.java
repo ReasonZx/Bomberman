@@ -211,4 +211,19 @@ public class Client {
 		}
 		
 	}
+
+
+
+	public void Send_Bombers(ArrayList<Client> x) throws IOException {
+		dos.writeUTF("game_bombers_start");
+		ArrayList<String[]> tmp = new ArrayList<String[]>();
+		
+		for(int i=0;i<x.size();i++){
+			String tmp2;
+			tmp2=x.get(i).GetBomber().toString()+","+x.get(i).username;
+			tmp.add(tmp2.split(","));
+		}
+		
+		oos.writeObject(tmp);
+	}
 }

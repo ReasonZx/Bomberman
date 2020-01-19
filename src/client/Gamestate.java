@@ -20,11 +20,14 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.lwjgl.input.Mouse;
+import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Rectangle;
+import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -45,13 +48,24 @@ public class Gamestate extends BasicGameState{
 	 private File click_file = new File("music/click.wav");
 	 private File hover_file = new File("music/hover.wav");
 	 private int Map_OffsetX,Map_OffsetY;
-
-
-	
+	 private Image background;
+	 private Font MyFont;
+	 private Shape R1,R2,R3;
+	 private Image Game_Background;
+	 private Image Player1,Player2;
+	 
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		Input = new KeyPresses();
 		sbg=(GUI_setup) arg1;
 		sbg.Set_Game_State(getID());
+		
+		MyFont=arg0.getDefaultFont();
+		
+		background=new Image("sprites/background.png");
+		background=background.getScaledCopy(arg0.getWidth(), arg0.getHeight());
+		
+		Game_Background= new Image("sprites/Game_Background.png");
+		Game_Background=Game_Background.getScaledCopy(sbg.Get_GUI_Scale()*11, sbg.Get_GUI_Scale()*8);
 		
 		Back = new Image("sprites/back.png");
 		Back = Back.getScaledCopy(0.2f);
@@ -60,8 +74,12 @@ public class Gamestate extends BasicGameState{
 	    backX = 50;
 	    backY = 20;
 	    
-	    Map_OffsetX=(int) ((sbg.Get_Display_width()-640)/2f);
-	    Map_OffsetY=(int) ((sbg.Get_Display_height()-512)/2f);
+	    Map_OffsetX=(int) ((sbg.Get_Display_width()-sbg.Get_GUI_Scale()*11)/2f)-sbg.Get_GUI_Scale();
+	    Map_OffsetY=(int) ((sbg.Get_Display_height()-sbg.Get_GUI_Scale()*8)/2f)-sbg.Get_GUI_Scale();
+	    
+	    R1=new Rectangle((Map_OffsetX+sbg.Get_GUI_Scale())/6f,arg0.getHeight()/3f,(Map_OffsetX+sbg.Get_GUI_Scale())*4/6f,arg0.getHeight()/3f);
+	    R2=new Rectangle(sbg.Get_Display_width()-(Map_OffsetX+sbg.Get_GUI_Scale())*5/6f,arg0.getHeight()/3f,(Map_OffsetX+sbg.Get_GUI_Scale())*4/6f,arg0.getHeight()/3f);
+	    R3=new Rectangle(Map_OffsetX+sbg.Get_GUI_Scale()*2/3,Map_OffsetY+sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*11+sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*8+sbg.Get_GUI_Scale()*2/3);
 	}
 	
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -89,6 +107,11 @@ public class Gamestate extends BasicGameState{
 										Settings[1][5],
 										Settings[1][6],
 										players.size()));
+	     
+		Player1 = new Image("sprites/D_"   + Settings[0][0] + Settings[0][1] + ".png");
+		Player1=Player1.getScaledCopy(3);
+		Player2 = new Image("sprites/D_"   + Settings[1][0] + Settings[1][1] + ".png");
+		Player2=Player2.getScaledCopy(3);
 	     
 	     L.Place_Characters(players);
 	     System.out.println(sbg.Get_locked_State());
@@ -149,6 +172,17 @@ public class Gamestate extends BasicGameState{
 		//g.drawString("Game state", 50, 50);
 		//g.drawString(player1.toString(),100,100);
 		ArrayList<Element> elements;
+		g.drawImage(background, 0, 0);
+		g.texture(R3,background,true);
+		g.drawImage(Game_Background, Map_OffsetX+sbg.Get_GUI_Scale(), Map_OffsetY+sbg.Get_GUI_Scale());
+		g.texture(R1,background,true);
+		g.texture(R2, background,true);
+		
+		g.drawImage(Player1, R1.getCenterX()-Player1.getWidth()/2f,R1.getCenterY()-Player1.getHeight()/2f);
+		g.drawImage(Player2, R2.getCenterX()-Player2.getWidth()/2f,R2.getCenterY()-Player2.getHeight()/2f);
+		
+		MyFont.drawString(R1.getCenterX()-MyFont.getWidth("PLAYER 1")/2f, R1.getY(), "PLAYER 1");
+		MyFont.drawString(R2.getCenterX()-MyFont.getWidth("PLAYER 2")/2f, R2.getY(), "PLAYER 2");
 		
 		for(int x = 0 ; x < L.m.Get_RightBound() ; x++) {
 			for(int y = 0 ; y < L.m.Get_BotBound() ; y++) {
@@ -162,10 +196,10 @@ public class Gamestate extends BasicGameState{
 							}
 							else{
 								Image im = new Image(tmp.Get_Image());
-								im=im.getScaledCopy(64,64);
+								im=im.getScaledCopy(sbg.Get_GUI_Scale(),sbg.Get_GUI_Scale());
 								g.drawImage(im,
-											tmp.Get_Scale()*(tmp.getX())+Map_OffsetX, 
-											tmp.Get_Scale()*(tmp.getY())+Map_OffsetY);
+											sbg.Get_GUI_Scale()*(tmp.getX())+Map_OffsetX, 
+											sbg.Get_GUI_Scale()*(tmp.getY())+Map_OffsetY);
 							}
 						}
 					}
@@ -255,80 +289,92 @@ public class Gamestate extends BasicGameState{
 		switch(tmp) {
 		case "StopDown":
 			img= new Image("sprites/D_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
-			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					Map_OffsetY+x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			img=img.getScaledCopy(sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*2/3);
+			g.drawImage(img,Map_OffsetX+sbg.Get_GUI_Scale()*x.getX() + sbg.Get_GUI_Scale()*x.Get_OffsetX()+(sbg.Get_GUI_Scale()-img.getWidth())/2f, 
+					Map_OffsetY+sbg.Get_GUI_Scale()*(x.getY() + x.Get_OffsetY())+(sbg.Get_GUI_Scale()-img.getHeight())/2f);
 			break;
 		case "StopLeft":
 			img= new Image("sprites/D_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img=img.getScaledCopy(sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*2/3);
 			img.setRotation(90);
-			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					Map_OffsetY+x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,Map_OffsetX+sbg.Get_GUI_Scale()*x.getX() + sbg.Get_GUI_Scale()*x.Get_OffsetX()+(sbg.Get_GUI_Scale()-img.getWidth())/2f, 
+					Map_OffsetY+sbg.Get_GUI_Scale()*(x.getY() + x.Get_OffsetY())+(sbg.Get_GUI_Scale()-img.getHeight())/2f);
 			break;
 		case "StopUp":
 			img= new Image("sprites/D_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img=img.getScaledCopy(sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*2/3);
 			img.setRotation(180);
-			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					Map_OffsetY+x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,Map_OffsetX+sbg.Get_GUI_Scale()*x.getX() + sbg.Get_GUI_Scale()*x.Get_OffsetX()+(sbg.Get_GUI_Scale()-img.getWidth())/2f, 
+					Map_OffsetY+sbg.Get_GUI_Scale()*(x.getY() + x.Get_OffsetY())+(sbg.Get_GUI_Scale()-img.getHeight())/2f);
 			break;
 		case "StopRight":
 			img= new Image("sprites/D_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img=img.getScaledCopy(sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*2/3);
 			img.setRotation(270);
-			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					Map_OffsetY+x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,Map_OffsetX+sbg.Get_GUI_Scale()*x.getX() + sbg.Get_GUI_Scale()*x.Get_OffsetX()+(sbg.Get_GUI_Scale()-img.getWidth())/2f, 
+					Map_OffsetY+sbg.Get_GUI_Scale()*(x.getY() + x.Get_OffsetY())+(sbg.Get_GUI_Scale()-img.getHeight())/2f);
 			break;
 		case "Down1":
 			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
-			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					Map_OffsetY+x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			img=img.getScaledCopy(sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*2/3);
+			g.drawImage(img,Map_OffsetX+sbg.Get_GUI_Scale()*x.getX() + sbg.Get_GUI_Scale()*x.Get_OffsetX()+(sbg.Get_GUI_Scale()-img.getWidth())/2f, 
+					Map_OffsetY+sbg.Get_GUI_Scale()*(x.getY() + x.Get_OffsetY())+(sbg.Get_GUI_Scale()-img.getHeight())/2f);
 			break;
 		case "Down2":
 			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
-			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					Map_OffsetY+x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			img=img.getScaledCopy(sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*2/3);
+			g.drawImage(img,Map_OffsetX+sbg.Get_GUI_Scale()*x.getX() + sbg.Get_GUI_Scale()*x.Get_OffsetX()+(sbg.Get_GUI_Scale()-img.getWidth())/2f, 
+					Map_OffsetY+sbg.Get_GUI_Scale()*(x.getY() + x.Get_OffsetY())+(sbg.Get_GUI_Scale()-img.getHeight())/2f);
 			break;
 		case "Left1":
 			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img=img.getScaledCopy(sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*2/3);
 			img.setRotation(90);
-			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					Map_OffsetY+x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,Map_OffsetX+sbg.Get_GUI_Scale()*x.getX() + sbg.Get_GUI_Scale()*x.Get_OffsetX()+(sbg.Get_GUI_Scale()-img.getWidth())/2f, 
+					Map_OffsetY+sbg.Get_GUI_Scale()*(x.getY() + x.Get_OffsetY())+(sbg.Get_GUI_Scale()-img.getHeight())/2f);
 			break;
 		case "Left2":
 			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img=img.getScaledCopy(sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*2/3);
 			img = img.getFlippedCopy(true,false);
 			img.setRotation(90);
-			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					Map_OffsetY+x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,Map_OffsetX+sbg.Get_GUI_Scale()*x.getX() + sbg.Get_GUI_Scale()*x.Get_OffsetX()+(sbg.Get_GUI_Scale()-img.getWidth())/2f, 
+					Map_OffsetY+sbg.Get_GUI_Scale()*(x.getY() + x.Get_OffsetY())+(sbg.Get_GUI_Scale()-img.getHeight())/2f);
 			break;
 		case "Up1":
 			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img=img.getScaledCopy(sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*2/3);
 			img.setRotation(180);
-			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					Map_OffsetY+x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,Map_OffsetX+sbg.Get_GUI_Scale()*x.getX() + sbg.Get_GUI_Scale()*x.Get_OffsetX()+(sbg.Get_GUI_Scale()-img.getWidth())/2f, 
+					Map_OffsetY+sbg.Get_GUI_Scale()*(x.getY() + x.Get_OffsetY())+(sbg.Get_GUI_Scale()-img.getHeight())/2f);
 			break;
 		case "Up2":
 			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img=img.getScaledCopy(sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*2/3);
 			img = img.getFlippedCopy(true,false);
 			img.setRotation(180);
-			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					Map_OffsetY+x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,Map_OffsetX+sbg.Get_GUI_Scale()*x.getX() + sbg.Get_GUI_Scale()*x.Get_OffsetX()+(sbg.Get_GUI_Scale()-img.getWidth())/2f, 
+					Map_OffsetY+sbg.Get_GUI_Scale()*(x.getY() + x.Get_OffsetY())+(sbg.Get_GUI_Scale()-img.getHeight())/2f);
 			break;
 		case "Right1":
 			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img=img.getScaledCopy(sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*2/3);
 			img.setRotation(270);
-			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					Map_OffsetY+x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,Map_OffsetX+sbg.Get_GUI_Scale()*x.getX() + sbg.Get_GUI_Scale()*x.Get_OffsetX()+(sbg.Get_GUI_Scale()-img.getWidth())/2f, 
+					Map_OffsetY+sbg.Get_GUI_Scale()*(x.getY() + x.Get_OffsetY())+(sbg.Get_GUI_Scale()-img.getHeight())/2f);
 			break;
 		case "Right2":
 			img= new Image("sprites/D1_"   + sett[x.Get_Player()][0] + sett[x.Get_Player()][1] + ".png");
+			img=img.getScaledCopy(sbg.Get_GUI_Scale()*2/3,sbg.Get_GUI_Scale()*2/3);
 			img = img.getFlippedCopy(true,false);
 			img.setRotation(270);
-			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX() + x.Get_Scale()*x.Get_OffsetX()+(x.Get_Scale()-img.getWidth())/2f, 
-					Map_OffsetY+x.Get_Scale()*(x.getY() + x.Get_OffsetY())+(x.Get_Scale()-img.getHeight())/2f);
+			g.drawImage(img,Map_OffsetX+sbg.Get_GUI_Scale()*x.getX() + sbg.Get_GUI_Scale()*x.Get_OffsetX()+(sbg.Get_GUI_Scale()-img.getWidth())/2f, 
+					Map_OffsetY+sbg.Get_GUI_Scale()*(x.getY() + x.Get_OffsetY())+(sbg.Get_GUI_Scale()-img.getHeight())/2f);
 			break;
 		case "sprites/blood.png":
 			img= new Image(tmp);
-			img=img.getScaledCopy(64,64);
-			g.drawImage(img,Map_OffsetX+x.Get_Scale()*x.getX(),Map_OffsetY+x.Get_Scale()*x.getY());
+			img=img.getScaledCopy(sbg.Get_GUI_Scale(),sbg.Get_GUI_Scale());
+			g.drawImage(img,Map_OffsetX+sbg.Get_GUI_Scale()*x.getX(),Map_OffsetY+sbg.Get_GUI_Scale()*x.getY());
 			break;
 		}
 	}

@@ -10,7 +10,7 @@ public class Server implements Runnable{
 	private ServerSocket ss; 
 	private ArrayList<Client> queue = new ArrayList<Client>();
 	public DB database = new DB();
-	private int People_Per_Game=3;
+	private int People_Per_Game=4;
 	
 	Server() throws IOException{
 	}

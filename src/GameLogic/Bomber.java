@@ -45,6 +45,7 @@ public class Bomber extends Element implements Serializable{
 	static protected String Blood="sprites/blood.png";
     protected int upkey,downkey,rightkey,leftkey,actionkey;
     transient private int player;
+    private boolean dead=false;
     /**
 	 * Constructor for Bomber Class
 	 * <p>
@@ -207,14 +208,20 @@ public class Bomber extends Element implements Serializable{
 	}
 	
 	/**
+	 * Checks if bomber died
+	 * <p>
 	 * Indicates if Bomber is inside a square with an explosion
+	 * Transforms the Bomber into a pool of blood
+	 * <p>
 	 * @return If the position (x,y) has an explosion
 	 */
 	public boolean Death_Check(){
 		if (m.Has_Explosion(Coord.getX(),Coord.getY())){
 			lib.Flag_For_Change(this, Blood);
+			Solid=false;
 			Walking_cd=true;
 			bomb_cd=true;
+			dead=true;
 			return true;
 		}
 		
@@ -240,7 +247,10 @@ public class Bomber extends Element implements Serializable{
 		
 		public void run(){
 				progression_count++;
-				
+				if(dead) {
+					this.cancel();
+					return;
+				}
 				if(feet) {
 					if(direction==0)
 						lib.Flag_For_Change(person,Down1);
