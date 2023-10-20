@@ -1,8 +1,14 @@
 package client;
+import java.io.File;
 import java.io.IOException;
 
-import org.lwjgl.input.Mouse;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
+import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
@@ -10,13 +16,11 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.state.transition.*;
 
 public class SignupState extends BasicGameState {
 
@@ -26,10 +30,15 @@ public class SignupState extends BasicGameState {
 	private TextField Email;
 	private TextField Password_repeat;
 	private Font myFont;
-	private Image Back;
-	private Image signup;
-	private Image Ok;
+	private Image Back, Back_hover;
+	private Image signup, signup_hover;
+	private Image Ok,Ok_hover;
+	private Image background;
 	private int signup_x, signup_y;
+	private int UserTextX, UserTextY;
+	private int PassTextX, PassTextY;
+	private int EmailX, EmailY;
+	private int PassRptX, PassRptY;
 	private int ok_x, ok_y;
 	private String user;
 	private String mail;
@@ -38,52 +47,71 @@ public class SignupState extends BasicGameState {
 	private boolean pass_match = true;
 	private String server_response;
 	private boolean say_ok;
-	private Shape R1,R2;
+	private boolean hovering_l = false, hovering_b = false, hovering_o = false;
+	private boolean signup_h = false, back_h = false, ok_h = false;
+	private Shape R2;
+	private File click_file = new File("music/click.wav");
+	private File hover_file = new File("music/hover.wav");
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame arg1) throws SlickException {
 		sbg = (GUI_setup) arg1;
 		sbg.Set_Signup_State(getID());
 		myFont = gc.getDefaultFont();
-		R1 = new Rectangle(20,20,gc.getWidth()-40,gc.getHeight()-40);
+		new Rectangle(20,20,gc.getWidth()-40,gc.getHeight()-40);
 		R2 = new Rectangle(0, gc.getHeight()/3f, gc.getWidth(), gc.getHeight()/3f);
+		
+		background = new Image("sprites/background.png");
 		
 		signup = new Image("sprites/signup.png");
 		signup = signup.getScaledCopy(0.5f);
+		signup_hover = new Image("sprites/signup_hover.png");
+		signup_hover = signup_hover.getScaledCopy(0.5f);
+		
 		signup_x = (int) ((float) sbg.Get_Display_width() * 0.5 - signup.getWidth() / 2);
 		signup_y = (int) ((float) sbg.Get_Display_height() * 0.75);
 		
 		Ok = new Image("sprites/ok.png");
 		Ok = Ok.getScaledCopy(0.3f);
+		Ok_hover = new Image("sprites/ok_hover.png");
+		Ok_hover = Ok_hover.getScaledCopy(0.3f);
+		
 		ok_x = (int) ((float) sbg.Get_Display_width() * 0.5 - Ok.getWidth() / 2);
 		ok_y = (int) ((float) sbg.Get_Display_height() * 0.59);
-
-		Username = new TextField(gc, myFont, (int) ((float) sbg.Get_Display_width() * 0.40),
-				(int) ((float) sbg.Get_Display_height() * 0.30), 400, 20);
+		
+		
+		UserTextX = (int) ((float) sbg.Get_Display_width() * 0.40);
+		UserTextY = (int) ((float) sbg.Get_Display_height() * 0.30);
+		Username = new TextField(gc, myFont, UserTextX, UserTextY, 400, 20);
 		Username.setBackgroundColor(Color.white);
 		Username.setBorderColor(Color.white);
 		Username.setTextColor(Color.black);
 
-		Password = new TextField(gc, myFont, (int) ((float) sbg.Get_Display_width() * 0.40),
-				(int) ((float) sbg.Get_Display_height() * 0.50), 400, 20);
+		PassTextX = (int) ((float) sbg.Get_Display_width() * 0.40);
+		PassTextY =(int) ((float) sbg.Get_Display_height() * 0.50);
+		Password = new TextField(gc, myFont, PassTextX, PassTextY, 400, 20);
 		Password.setBackgroundColor(Color.white);
 		Password.setBorderColor(Color.white);
 		Password.setTextColor(Color.black);
 
-		Email = new TextField(gc, myFont, (int) ((float) sbg.Get_Display_width() * 0.40),
-				(int) ((float) sbg.Get_Display_height() * 0.40), 400, 20);
+		EmailX = (int) ((float) sbg.Get_Display_width() * 0.40);
+		EmailY = (int) ((float) sbg.Get_Display_height() * 0.40);
+		Email = new TextField(gc, myFont, EmailX, EmailY, 400, 20);
 		Email.setBackgroundColor(Color.white);
 		Email.setBorderColor(Color.white);
 		Email.setTextColor(Color.black);
 
-		Password_repeat = new TextField(gc, myFont, (int) ((float) sbg.Get_Display_width() * 0.40),
-				(int) ((float) sbg.Get_Display_height() * 0.60), 400, 20);
+		PassRptX = (int) ((float) sbg.Get_Display_width() * 0.40);
+		PassRptY = (int) ((float) sbg.Get_Display_height() * 0.60);
+		Password_repeat = new TextField(gc, myFont, PassRptX, PassRptY, 400, 20);
 		Password_repeat.setBackgroundColor(Color.white);
 		Password_repeat.setBorderColor(Color.white);
 		Password_repeat.setTextColor(Color.black);
 
 		Back = new Image("sprites/back.png");
 		Back = Back.getScaledCopy(0.2f);
+		Back_hover = new Image("sprites/back_hover.png");
+		Back_hover = Back_hover.getScaledCopy(0.2f);
 
 		user = "";
 		pass = "";
@@ -91,6 +119,11 @@ public class SignupState extends BasicGameState {
 		mail = "";
 		
 		say_ok = false;
+		Username.setAcceptingInput(false);
+		Password.setAcceptingInput(false);
+		Password_repeat.setAcceptingInput(false);
+		Email.setAcceptingInput(false);
+
 	}
 
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -117,10 +150,40 @@ public class SignupState extends BasicGameState {
 			user = Username.getText();
 			mail = Email.getText();
 	
-			if ((posX > 50 && posX < 50 + Back.getWidth()) && (posY > 50 && posY < 50 + Back.getHeight())) { 
-				if (gc.getInput().isMousePressed(gc.getInput().MOUSE_LEFT_BUTTON)) {
+			if ((posX > 50 && posX < 50 + Back.getWidth()) && (posY > 50 && posY < 50 + Back.getHeight())) {
+				back_h = true;
+				if(hovering_b == false) {
+					play_hover_sound();
+					hovering_b = true;
+				}
+				if (gc.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+					play_click_sound();
 					sbg.enterState(sbg.Get_Menu_State());
 				}
+			}
+			else {
+				back_h = false;
+				hovering_b = false;
+			}
+			
+			if(posX > UserTextX && posX < UserTextX + Username.getWidth() && (posY > UserTextY && posY < UserTextY + Username.getHeight())) {
+				if(Mouse.isButtonDown(0))
+					Username.setFocus(true);
+			}
+			
+			if(posX > PassTextX && posX < PassTextX + Password.getWidth() && (posY > PassTextY && posY < PassTextY + Password.getHeight())) {
+				if(Mouse.isButtonDown(0))
+					Password.setFocus(true);
+			}
+			
+			if(posX > EmailX && posX < EmailX + Email.getWidth() && (posY > EmailY && posY < EmailY + Email.getHeight())) {
+				if(Mouse.isButtonDown(0))
+					Email.setFocus(true);
+			}
+			
+			if(posX > PassRptX && posX < PassRptX + Password_repeat.getWidth() && (posY > PassRptY && posY < PassRptY + Password_repeat.getHeight())) {
+				if(Mouse.isButtonDown(0))
+					Password_repeat.setFocus(true);
 			}
 	
 			if (Username.hasFocus() && gc.getInput().isKeyPressed(15)) {
@@ -154,6 +217,7 @@ public class SignupState extends BasicGameState {
 					Password.setText(temp);
 				}
 			}
+			
 	
 			if (Password_repeat.hasFocus()) {
 				if (Password_repeat.getText().length() > pass_rpt.length()) {
@@ -171,7 +235,8 @@ public class SignupState extends BasicGameState {
 			if ((Password_repeat.hasFocus() && gc.getInput().isKeyPressed(28))
 					|| (((posX > signup_x && posX < signup_x + signup.getWidth())
 							&& (posY > signup_y && posY < signup_y + signup.getHeight()))
-							&& gc.getInput().isMousePressed(gc.getInput().MOUSE_LEFT_BUTTON))) {
+							&& gc.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON))) {
+				play_click_sound();
 				if (!pass.equals(pass_rpt)) {
 					pass_match = false;
 				} else {
@@ -190,18 +255,40 @@ public class SignupState extends BasicGameState {
 	
 				}
 			}
+			
+			if((posX > signup_x && posX < signup_x + signup.getWidth()) && (posY > signup_y && posY < signup_y + signup.getHeight())){
+				signup_h = true;
+				if(hovering_l == false) {
+					play_hover_sound();
+					hovering_l = true;
+				}
+			}
+			else {
+				hovering_l = false;
+				signup_h = false;
+			}
 		}
 		else {
-			if ((posX > ok_x && posX < ok_x + Ok.getWidth()) && (posY > ok_y && posY < ok_y + Ok.getHeight())) { 
-				if (gc.getInput().isMousePressed(gc.getInput().MOUSE_LEFT_BUTTON)) {
+			if ((posX > ok_x && posX < ok_x + Ok.getWidth()) && (posY > ok_y && posY < ok_y + Ok.getHeight())) {
+				ok_h = true;
+				if(hovering_o == false) {
+					play_hover_sound();
+					hovering_o = true;
+				}
+				if (gc.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 					sbg.enterState(sbg.Get_Menu_State());
 				}
-		}	}
+			}	
+			else {
+				ok_h = false;
+				hovering_o = false;
+			}
+		}
 	}
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame arg1, Graphics g) throws SlickException {
-		
+		background.draw(0,0);
 		g.drawString("Username:", (int) ((float) sbg.Get_Display_width() * 0.25),
 				(int) ((float) sbg.Get_Display_height() * 0.30));
 		g.drawString("Email:", (int) ((float) sbg.Get_Display_width() * 0.25),
@@ -214,12 +301,21 @@ public class SignupState extends BasicGameState {
 		Password.render(gc, g);
 		Email.render(gc, g);
 		Password_repeat.render(gc, g);
-		Back.draw(50, 50);
-		signup.draw(signup_x, signup_y);
+		
+		if(back_h == false) {
+			Back.draw(50, 50);
+		}
+		else Back_hover.draw(50, 50);
+		
+		if(signup_h == false) {
+			signup.draw(signup_x, signup_y);
+		}
+		else signup_hover.draw(signup_x, signup_y);
+
 		
 		
 		if (!pass_match) {
-			g.setColor(Color.red);
+			g.setColor(Color.white);
 			g.drawString("Passwords don't match",
 					(int) ((float) sbg.Get_Display_width() * 0.50) - myFont.getWidth("Passwords don't match") / 2,
 					(int) ((float) sbg.Get_Display_height() * 0.15));
@@ -227,7 +323,7 @@ public class SignupState extends BasicGameState {
 		}
 		else if (server_response != null) {
 				if(!server_response.equals("Registered Successfully")) {
-					g.setColor(Color.red);
+					g.setColor(Color.white);
 					g.drawString(server_response,(int) ((float) sbg.Get_Display_width() * 0.50) - myFont.getWidth(server_response) / 2,
 							(int) ((float) sbg.Get_Display_height() * 0.15));
 					g.setColor(Color.white);
@@ -236,7 +332,11 @@ public class SignupState extends BasicGameState {
 			g.setColor(Color.white);
 			g.fill(R2);
 			g.setColor(Color.black);
-			Ok.draw(ok_x,ok_y);
+			if(ok_h == false) {
+				Ok.draw(ok_x,ok_y);
+			}
+			else Ok_hover.draw(ok_x,ok_y);
+			
 			g.drawString(server_response,(int) ((float) sbg.Get_Display_width() * 0.50) - myFont.getWidth(server_response) / 2,
 					(int) ((float) sbg.Get_Display_height() * 0.45));
 		}
@@ -256,13 +356,45 @@ public class SignupState extends BasicGameState {
 		server_response = "";
 		say_ok = false;
 	}
+	
+	
+public void play_hover_sound() {
+		
+		AudioInputStream hover_sound;
+	
+		try {
+			hover_sound = AudioSystem.getAudioInputStream(hover_file);
+			Clip hover_s = AudioSystem.getClip(null);
+			hover_s.open(hover_sound);
+			hover_s.loop(0);
+		} catch (UnsupportedAudioFileException | IOException e) {
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
+			e.printStackTrace();
+		}
+	}
+	public void play_click_sound() {
+		
+		AudioInputStream click_sound;
+
+		try {
+			click_sound = AudioSystem.getAudioInputStream(click_file);
+			Clip click_s = AudioSystem.getClip(null);
+			click_s.open(click_sound);
+			click_s.loop(0);
+		} catch (UnsupportedAudioFileException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	
 
 	@Override
 	public int getID() {
 		return 7;
-	}
-	
-	private void block() {
-		
 	}
 }

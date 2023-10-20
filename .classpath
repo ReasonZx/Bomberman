@@ -13,5 +13,7 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Bomberman/libraries"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="libraries/java-openal-1.0.0.jar"/>
+	<classpathentry kind="lib" path="libraries/postgresql-42.2.9.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

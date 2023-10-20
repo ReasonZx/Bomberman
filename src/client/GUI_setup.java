@@ -1,4 +1,5 @@
-package client;
+ package client;
+import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JOptionPane;
@@ -9,10 +10,13 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class GUI_setup extends StateBasedGame{
-	private int Menu_ID,Login_ID,Game_ID,GameOver_ID,MainMenu_ID,Controls_ID,Signup_ID,OnlineGame_ID,OnlineGameOver_ID,Friends_ID;
-	private Settings Player_Settings;
+	private int Menu_ID,Login_ID,Game_ID,GameOver_ID,MainMenu_ID,Controls_ID,Signup_ID,OnlineGame_ID,OnlineGameOver_ID,Friends_ID,LockedMenu_ID, LockedSettingsState_ID, StatisticsState_ID;
+	private boolean LockedStates = false;
+	private static Settings Player_Settings;
 	private static int display_x;
 	private static int display_y;
+	private static int Resolution;
+	private static int GUI_Scale;
 
 	public ServerHandler server;
 
@@ -21,9 +25,40 @@ public class GUI_setup extends StateBasedGame{
 	}
 
 	public static void main(String args[]) throws SlickException {
+		if (System.getProperty("os.name").contains("Windows")) {
+		    // Windows
+		    System.setProperty("org.lwjgl.librarypath", new File("libraries/natives-windows").getAbsolutePath());
+		} else if (System.getProperty("os.name").contains("Mac")) {
+		    // Mac OS X
+		    System.setProperty("org.lwjgl.librarypath", new File("libraries/natives-mac").getAbsolutePath());
+		} else if (System.getProperty("os.name").contains("Linux")) {
+		    // Linux
+		    System.setProperty("org.lwjgl.librarypath", new File("libraries/natives-linux").getAbsolutePath());
+		} else {
+		    throw new RuntimeException("Your OS is not supported");
+		}
+		
 		AppGameContainer app = new AppGameContainer(new GUI_setup("Setup"));
-		display_x = 1280;
-		display_y = 720;
+		Player_Settings= new Settings();
+		Player_Settings.init_Settings();
+		
+		Resolution=Get_Resolution();
+		if(Resolution==1) {
+			display_x = 1600;
+			display_y = 900;
+			GUI_Scale=78;
+		}
+		else if(Resolution==2){
+			display_x = 1366;
+			display_y = 768;
+			GUI_Scale=64;
+		}
+		else{
+			display_x = 1024;
+			display_y = 768;
+			GUI_Scale=50;
+		}
+		
 		app.setDisplayMode(display_x, display_y, false);
 		app.setShowFPS(false);
 		app.start();
@@ -40,8 +75,9 @@ public class GUI_setup extends StateBasedGame{
 		this.addState(new OnlineGameState());
 		this.addState(new OnlineGameOverState());
         this.addState(new FriendsState());
-		Player_Settings= new Settings();
-		Player_Settings.init_Settings();
+        this.addState(new LockedMenuState());
+        this.addState(new LockedSettingsState());
+        this.addState(new StatisticsState());
 
 		try {
 			ServerHandler server = new ServerHandler();
@@ -81,8 +117,20 @@ public class GUI_setup extends StateBasedGame{
 		return Friends_ID;
     }
     
+    public int Get_LockedMenu_State() {
+		return LockedMenu_ID;
+    }
+    
+    public int Get_LockedSettings_State() {
+		return LockedSettingsState_ID;
+    }
+    
     public void Set_Friends_State(int x) {
 		Friends_ID=x;
+	}
+    
+    public void Set_LockedSettings_State(int x) {
+		LockedSettingsState_ID=x;
 	}
 	
 	public int Get_Signup_State() {
@@ -95,6 +143,10 @@ public class GUI_setup extends StateBasedGame{
 	
 	public int Get_OnlineGameOver_State() {
 		return OnlineGameOver_ID;
+	}
+	
+	public int Get_Statistics_State() {
+		return StatisticsState_ID;
 	}
 	
 	public void Set_Menu_State(int x) {
@@ -115,6 +167,10 @@ public class GUI_setup extends StateBasedGame{
 	
 	public void Set_OnlineGameOver_State(int x) {
 		OnlineGameOver_ID = x;
+	}
+	
+	public void Set_LockedMenu_State(int x) {
+		LockedMenu_ID=x;
 	}
 	
 	public int Get_Display_height() {
@@ -142,6 +198,10 @@ public class GUI_setup extends StateBasedGame{
 		OnlineGame_ID=x;
 	}
 	
+	public void Set_Statistics_State(int x) {
+		StatisticsState_ID = x;
+	}
+	
 	public int[][] Get_Settings() {
 		return Player_Settings.Get_Settings();
 	}
@@ -165,5 +225,33 @@ public class GUI_setup extends StateBasedGame{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void Set_locked_State(boolean x) {
+		LockedStates=x;
+	}
+	
+	public boolean Get_locked_State() {
+		return LockedStates;
+	}
+	
+	public static int Get_Resolution() {
+		return Player_Settings.Get_Resolution();
+	}
+	
+	public void Set_Resolution(int res){
+		Player_Settings.Set_Resolution(res);
+	}
+	
+	public void Set_Volume(int vol){
+		Player_Settings.Set_Volume(vol);
+	}
+	
+	public int Get_Volume() {
+		return Player_Settings.Get_Volume();
+	}
+	
+	public int Get_GUI_Scale() {
+		return GUI_Scale;
 	}
 }

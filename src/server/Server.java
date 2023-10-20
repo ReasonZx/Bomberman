@@ -9,6 +9,8 @@ public class Server implements Runnable{
 	private ArrayList<Client> userlist = new ArrayList<>();
 	private ServerSocket ss; 
 	private ArrayList<Client> queue = new ArrayList<Client>();
+	public DB database = new DB();
+	private int People_Per_Game=4;
 	
 	Server() throws IOException{
 	}
@@ -71,7 +73,7 @@ public class Server implements Runnable{
 	    } 
 	}
 	
-	public ArrayList<Client>Get_UserList(){
+	public ArrayList<Client> Get_UserList(){
 		return userlist;
 	}
 	
@@ -80,8 +82,18 @@ public class Server implements Runnable{
 		return queue.size()-1;
 	}
 	
-	public void Remove_From_Queue(int pos) {
-		queue.remove(pos);
+	public void Remove_From_Queue(String user) {
+		for(int i=0;i<queue.size();i++){
+			if(queue.get(i).username.equals(user))
+				queue.remove(i);
+		}
+	}
+	
+	public void Remove_User_From_Userlist(String user) {
+		for(int i=0;i<userlist.size();i++){
+			if(userlist.get(i).username.equals(user))
+				userlist.remove(i);
+		}
 	}
 	
 	private class Queue_Handler extends TimerTask{
@@ -89,7 +101,7 @@ public class Server implements Runnable{
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			if(queue.size()>=2) {
+			if(queue.size()>=People_Per_Game) {
 				for(int i=0;i<10;i++){
 					if(queue.size()<2)
 						break;
@@ -99,7 +111,7 @@ public class Server implements Runnable{
 						for(i=0;i<queue.size();i++) {
 							queue.get(i).Send_Game_Found_Message();
 							tmp.add(queue.get(i));
-							if(i==3)
+							if(i==People_Per_Game)
 								break;
 						}
 					} catch (IOException e) {
@@ -108,11 +120,21 @@ public class Server implements Runnable{
 					}
 					GameHandler g = new GameHandler(tmp);
 					g.start();
-					queue.remove(0);
-					queue.remove(0);
+					for(i=0;i<People_Per_Game;i++) {
+						queue.remove(0);
+					}
 				}
 			}
 		}
 		
+	}
+	
+	public Client Is_Player_Online(String s) {
+		for(int i=0;i<userlist.size();i++) {
+			if(userlist.get(i).username!=null)
+				if(userlist.get(i).username.equals(s))
+					return userlist.get(i);
+		}
+		return null;
 	}
 }

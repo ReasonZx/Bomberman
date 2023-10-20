@@ -5,6 +5,7 @@ import java.util.TimerTask;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
@@ -19,12 +20,17 @@ public class OnlineGameOverState extends BasicGameState{
 	private int block_time=1000;
 	private Font myFont;
 	private boolean won;
+	private Image background;
+	
 	
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		Input = new KeyPressAny();
 		sbg=(GUI_setup) arg1;
 		sbg.Set_OnlineGameOver_State(getID());
 		myFont=arg0.getDefaultFont();
+		
+		background=new Image("sprites/background.png");
+		background=background.getScaledCopy(arg0.getWidth(), arg0.getHeight());
 	}
 	
 	public void enter(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -48,11 +54,14 @@ public class OnlineGameOverState extends BasicGameState{
 	
 
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics g) throws SlickException {
+		g.drawImage(background, 0, 0);
 		if(won) {
-			myFont.drawString(300, 300, "CONGRATULATIONS YOU WON PLAYER " + Winner);
+			myFont.drawString(sbg.Get_Display_width()/2f-myFont.getWidth("CONGRATULATIONS YOU WON PLAYER " + Winner)/2f, 
+					  sbg.Get_Display_height()/2f-myFont.getHeight("CONGRATULATIONS YOU WON PLAYER " + Winner)/2f, "CONGRATULATIONS YOU WON PLAYER " + Winner);
 		}
 		else {
-			myFont.drawString(300, 300, "YOU LOSE! PLAYER " + Winner + " IS THE WINNER");
+			myFont.drawString(sbg.Get_Display_width()/2f-myFont.getWidth("YOU LOSE! PLAYER " + Winner + " IS THE WINNER")/2f, 
+					  sbg.Get_Display_height()/2f-myFont.getHeight("YOU LOSE! PLAYER " + Winner + " IS THE WINNER")/2f, "YOU LOSE! PLAYER " + Winner + " IS THE WINNER");
 		}
 	}
 	
@@ -102,7 +111,7 @@ public class OnlineGameOverState extends BasicGameState{
 		@Override
 		public void keyPressed(int arg0, char arg1) {
 			
-			sbg.enterState(sbg.Get_Menu_State());
+			sbg.enterState(sbg.Get_MainMenu_State());
 		}
 
 		@Override

@@ -59,4 +59,13 @@ public class ServerHandler {
 		this.ois = new ObjectInputStream(socketObject.getInputStream());
 		
 	}
+
+	public void send(String string) {
+		try {
+			if(string!=null)
+				dos.writeUTF(string);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
